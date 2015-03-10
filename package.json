@@ -1,0 +1,41 @@
+{
+  "name": "fluxthis",
+  "version": "1.0.0",
+  "description": "AddThis Flux Framework",
+  "main": "build/FluxThis.js",
+  "directories": {
+    "install": "make dev",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "make test",
+    "prepublish": "make test && make prod && make dev"
+  },
+  "keywords": [
+    "Flux",
+    "React",
+    "AddThis"
+  ],
+  "author": "Jake Scott",
+  "license": "Apache v2.0",
+  "devDependencies": {
+    "6to5": "3.0.4",
+    "6to5-core": "3.0.4",
+    "6to5-loader": "3.0.0",
+    "phantomjs": "1.9.13",
+    "should": "4.4.1",
+    "webpack": "1.4.13"
+  },
+  "dependencies": {
+    "6to5": "2.6.3",
+    "6to5-loader": "1.0.0",
+    "body-parser": "1.10.1",
+    "express": "4.11.0",
+    "immutable": "3.4.1",
+    "implore": "0.0.0",
+    "invariant": "1.0.2",
+    "mocha": "2.2.1",
+    "mocha-phantomjs": "3.5.3",
+    "react": "0.12.2"
+  }
+}

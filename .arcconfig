@@ -1,0 +1,8 @@
+{
+    "phabricator.uri" : "http://phabricator.clearspring.local",
+    "load": [
+        ".arcanist-extensions/tap_test_engine"
+    ],
+    "unit.engine": "TAPTestEngine",
+    "unit.engine.tap.command": "make tap-test"
+}

@@ -1,0 +1,359 @@
+# FluxThis
+
+The super-opinionated, yell-at-you-for-everything, immutable Flux framework by
+AddThis.
+
+## High Level Objectives
+
+1. Enforce Flux design patterns
+2. Make debugging extremely easy
+3. Reduce boilerplate and create simple modular apis
+4. Allow individual modules to be used standalone
+
+## Building
+
+Build the project with `make`.
+Build the project when a file changes with `make watch`.
+Run tests with `make test`.
+
+## Motivation
+
+One of the great things about React is how strict it is. If you do something
+wrong, 9 times out of 10 you will be assaulted by `invariant` exceptions. This
+kind of attitude keeps bad code from taking over your codebase.
+
+Flux is a great design pattern, but following patterns is a matter of
+convention, and conventions are easy to break. FluxThis takes the pattern and
+turns it into a super-strict framework, to help large teams of devs avoid bad
+practices, and write sustainable, bug-free code.
+
+
+## Immutability Built-in
+
+The FluxThis Store enforces the use of immutable objects when dealing with
+store state. Accessors are required to return immutables (or primitives), and
+adding non-immutable properties to the store will throw errors.
+
+You can create immutables through the FluxThis Store by accessing
+`Store.Immutable`.
+
+```js
+var myStore = new Store({
+	init: function () {
+		this.data = Store.Immutable.Map({a: 'b', c: 'd'})
+	},
+	public: {
+		/*...*/
+	},
+	private: {
+		/*...*/
+	}
+})
+```
+
+For more information on how immutables work, please check out
+[facebook's library here](https://github.com/facebook/immutable-js).
+
+## Modularity
+
+You can pick and choose which FluxThis components to use. Each top-level
+component is able to stand on its own to deliver some benefit. Use many
+components together to get the full benefits of the debugger.
+
+Check out src/FluxThis.js to see how you can pick and choose individual modules,
+or replace parts of the framework with your own creations.
+
+**Note:** *FluxThis modules are written in es6, which means you'll need to use
+something like the 6to5-loader in webpack to take advantage of them. If you
+don't want to do that, you'll have to require FluxThis.js, which has all of the
+FluxThis components built into it. See the webpack.config.js in the root
+directory for an example.*
+
+
+
+## API
+All of our components can be used standalone, but they all use the FluxThis
+dispatcher, found at `fluxthis/src/dispatcherInstance.js`.
+
+### ImmutableStore
+The ImmutableStore is a very OO inspired store which strictly enforces the use
+of immutable data. All properties of the store must be either immutable or JS
+primitives to avoid throwing errors. If a public function ever returns a value
+which does not meet these requirements, a different error is thrown. Let the
+code enforce best practices so your team can relax.
+
+```js
+var FluxThis = require('FluxThis');
+var ImmutableStore = FluxThis.ImmutableStore;
+var myStore = new ImmutableStore({
+	init: function () {
+		this.url = 'github.com';
+		this.count = 10;
+		this.data = ImmutableStore.Immutable.fromJS({
+			hi: [1,2,3],
+			mom: 'lol'
+		});
+	},
+	private: {
+		/* learn about accessors later */
+	},
+	public: {
+		getUrl: function () {
+			return this.url;
+		},
+		getCount: function () {
+			return this.count;
+		},
+		getData: function () {
+			return this.data;
+		}
+	}
+});
+```
+
+#### Requiring
+
+```js
+// individually, with webpack and an es6 loader
+var ImmutableStore = require('FluxThis/src/ImmutableStore');
+```
+#### Constructing
+
+```js
+var myStore = new ImmutableStore(options);
+```
+
+#### Options
+- `displayName` Human readable name for debugging *optional*
+- `private` An object of private methods used to update store data *required*
+- `public` An object of public methods used to access store data *required*
+- `init` A function which is called at the creation of the store. Used to set up
+initial store state, as well as call `bindActions`.
+
+#### Public methods
+Public methods are exposed on the Store after its creation. They should not be
+used to update the state of a store, only access data that is inside of it.
+
+To keep you honest, public methods of `ImmutableStore`s will throw errors if
+they return any value which is not primitive or Immutable, which would allow
+an outside called to mutate store data.
+
+```js
+public: {
+	// returning primitives is OK.
+	getName: function (id) {
+		// this.info = Immutable.fromJS({id_0: {name: 'jake'}, id_1: ...})
+		return this.info.get(id).get('name');
+	},
+
+	// returning immutables is OK too
+	getInfo: function (id) {
+		return this.info.get(id);
+	},
+
+	// returning objects is NOT OKAY WHAT THE HELL ARE YOU THINKING?!
+	getPlainInfo: function () {
+		badIdea = {id_0: {name: 'jake'}};
+		return badIdea;
+	}
+}
+```
+
+#### Private methods
+Private methods are available through `this` only when inside of other Store
+methods. Inside private methods, you have access to both public and private
+methods of the store, as well as private store data.
+
+```js
+private: {
+	// Update private, Immutable values
+	setNameValue: function (name, value) {
+		// if this is confusing, check out the docs for Immutable JS
+		this.names = this.names.update(name, value);
+	},
+
+	// Update private, primitive values
+	setAge: function (newAge) {
+		this.age = Number(newAge);
+	}
+}
+```
+
+#### Initialization
+The `init` function is used to set up initial store state, as well as bind
+private store functions to handle dispatched actions using `this.bindActions`.
+
+```js
+init: function () {
+	var Immutable = ImmutableStore.Immutable;
+	this.names = Immutable.Map({jake: '1', scott: '0'});
+}
+```
+#### Binding actions
+The ImmutableStore lets you easily handle dispatched actions without any messy
+switch statement. Just pass `bindActions` pairs of constants (either action
+types or action sources) and private store functions to handle them.
+
+```js
+init: function () {
+	this.bindActions(
+		SOME_ACTION_TYPE, this.coolPrivateStoreMethod,
+		OTHER_ACTION_TYPE, this.coolerPrivateStoreMethod,
+		AN_ACTION_SOURCE, this.coolestPrivateStoreMethod
+	);
+}
+```
+
+#### Waiting for other Stores
+You have access to `waitFor` inside your store which behaves sililarly to
+`dispatcher.waitFor`.
+
+```js
+private: {
+	myMethod: function () {
+		this.waitFor(Store1.dispatchToken, Store2.dispatchToken);
+		this.lol = 5;
+	}
+}
+```
+
+### React Mixin
+FluxThis stores provide mixins to incorporate themselves into React classes.
+These mixins automaticall subscript the view to changes from the store, and call
+pull in new state from the stores using `getStateFromStores`.
+
+To use the mixin, simply list all of the stores a view depends on in its `mixin`
+property, and define `getStateFromStores` to access those stores and properly
+populate the view's state.
+
+Views with the FluxThis mixin should sit at the top of your React structure, so
+that they may pass their state down to children components through props. Having
+too much nested state in your application can be dangerous and hard to debug, so
+we suggest that you strongly limit your use of the mixin in child components.
+
+```js
+var MyView = React.createClass({
+	displayName: 'MyView',
+	mixin: [StoreA.mixin, StoreB.mixin],
+	getStateFromStores: function () {
+		return {
+			name: StoreA.getName(),
+			age: StoreB.getAge()
+		}
+	},
+	getDefaultProps: function () {
+		return {a: 0, b: 1}
+	},
+	render: function () {
+		return <div>hi!</div>
+	}
+});
+
+// and to render it:
+var element = React.createElement(MyView);
+React.render(element, document.getElementById('main'));
+```
+#### getStateFromStores
+This function will be called when any dependant store fires a change event. In
+the built-in stores, change events are fired any time a private function is
+called (their purpose is changing data).
+
+
+### ActionCreator
+
+```js
+var FluxThis = require('FluxThis');
+var ActionCreator = FluxThis.ActionCreator;
+var myActionCreator = new ActionCreator({
+	// used for debugging messages
+	displayName: 'My',
+
+	//used by stores to identity a group of related actions
+	actionSource: 'CONTRIVED_EXAMPLE',
+
+	//defines a public method
+	doThing: {
+		//used by stores to identify an action
+		actionType: 'DO_THING',
+
+		//define what payloads for this action should look like
+		payloadType: ActionCreator.PayloadType.shape({
+			do: ActionCreator.PayloadType.string,
+			thing: ActionCreator.PayloadType.number.isRequired,
+		}).isRequired,
+
+		createPayload: function (arg1, arg2) {
+			$.get('/lol/' + arg1 + '/wut/' + arg2)
+				.always(this.doOtherThing);
+
+			//this value is sent to all registered stores
+			return {
+				sum: arg1 + arg2
+			};
+		}
+	},
+
+	//defines another public method
+	doOtherThing: {
+		actionType: 'DO_OTHER_THING',
+
+		//some actions should be dispatched without payloads
+		payloadType: null
+	}
+});
+
+myActionCreator.doThing({
+	do: 'hi!',
+	thing: 5
+});
+
+myActionCreator.doOtherThing();
+```
+
+
+### Dispatcher
+The dispatcher is the key to Flux. The FluxThis dispatcher is basically the same
+as Facebook's dispatcher, only a little more locked down. For example, all
+actions dispatched by the FluxThis dispatcher are deeply frozen with
+`Object.freeze` to protect them from mutation in store handlers. Our dispatcher
+also has a little bit extra to allow for rich debugging to the Flux cycle.
+
+Unless you're planning on extending our dispatcher, you won't ever need to
+require it. Every FluxThis component knows about the dispatcher singleton
+internally.
+
+However, if you're integrating FluxThis in to an existing project, you can
+require our dispatcher instance at `fluxthis/src/distpatcherInstance.js` and
+drop it in your code to replace your current dispatcher.
+
+## Debugging
+The default debugging values are shown below:
+
+```js
+var FLUX_DEBUG_DEFAULTS = {
+	all: false,
+	types: [],
+	sources: [],
+	unused: process.env.NODE_ENV !== 'production';,
+	unusedTimeout: 3000
+};
+```
+You may override these by setting values on `window.FLUX_DEBUG`.
+- `all`, `boolean`: print all debug statements
+- `types`, `string[]`: print all results of actions that match any of the
+	types provided
+- `sources`, `string[]`: print all results of actions taht match any of the
+	sources provided
+- `unused`, `boolean`: print warnings on startup about possible unused constants
+- `unusedTimeout`, `number`: in miliseconds, how long before the check for
+	`unused` fires
+
+Example:
+
+```js
+FLUX_DEBUG = {
+	types: [MY_FAVORITE_ACTION_TYPE, BUTTON_CLICKED],
+	sources: [USEFUL_SOURCE],
+	unused: false
+}
+```
