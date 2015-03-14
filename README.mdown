@@ -10,11 +10,10 @@ AddThis.
 3. Reduce boilerplate and create simple modular apis
 4. Allow individual modules to be used standalone
 
-## Building
+## Installation
 
-Build the project with `make`.
-Build the project when a file changes with `make watch`.
-Run tests with `make test`.
+Install from npm:
+`npm install fluxthis --save`
 
 ## Motivation
 
@@ -115,7 +114,7 @@ var myStore = new ImmutableStore({
 
 ```js
 // individually, with webpack and an es6 loader
-var ImmutableStore = require('FluxThis/src/ImmutableStore');
+var ImmutableStore = require('fluxthis/src/ImmutableStore');
 ```
 #### Constructing
 
@@ -357,3 +356,9 @@ FLUX_DEBUG = {
 	unused: false
 }
 ```
+
+## Building for Development
+
+Build the project with `make`.
+Build the project when a file changes with `make watch`.
+Run tests with `make test`.
