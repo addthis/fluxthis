@@ -7,6 +7,10 @@
     "install": "make dev",
     "test": "test"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/addthis/fluxthis"
+  },
   "scripts": {
     "test": "make test",
     "prepublish": "make test && make prod && make dev"
