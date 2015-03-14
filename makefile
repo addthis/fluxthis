@@ -25,16 +25,11 @@ stop-server:
 	rm ./server.pid
 
 test: test/build/tests.js server.pid
-<<<<<<< HEAD
 	@if test -n "$$JENKINS"; \
 	then ./node_modules/.bin/mocha-phantomjs -R xunit http://localhost:21029/test/fixtures/index.html | \
 		sed '/^[^<]/ d' > \
 		test/build/xunit.xml; \
 	fi;
-=======
-	@if test -n "$$JENKINS"; then ./node_modules/.bin/mocha-phantomjs -R xunit --file test/build/xunit.xml http://localhost:21029/test/fixtures/index.html; fi;
->>>>>>> removed mocha/should from non-node_modules folder
-	./node_modules/.bin/mocha-phantomjs http://localhost:21029/test/fixtures/index.html; make stop-server
 
 # Output TAP formatted tests on stdout, used for phabricator/arc pre-commit
 tap-test: test/build/tests.js server.pid
