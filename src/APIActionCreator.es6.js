@@ -15,7 +15,7 @@
 
 var dispatcher = require('./dispatcherInstance');
 var invariant = require('invariant');
-var implore = require('implore');
+var implore = require('../lib/implore');
 var debug = require('./debug');
 var ActionCreator = require('./ActionCreator');
 

@@ -36,7 +36,6 @@
     "body-parser": "1.10.1",
     "express": "4.11.0",
     "immutable": "3.4.1",
-    "implore": "0.0.0",
     "invariant": "1.0.2",
     "mocha": "2.2.1",
     "mocha-phantomjs": "3.5.3",

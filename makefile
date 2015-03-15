@@ -30,6 +30,7 @@ test: test/build/tests.js server.pid
 		sed '/^[^<]/ d' > \
 		test/build/xunit.xml; \
 	fi;
+	./node_modules/.bin/mocha-phantomjs http://localhost:21029/test/fixtures/index.html; make stop-server
 
 # Output TAP formatted tests on stdout, used for phabricator/arc pre-commit
 tap-test: test/build/tests.js server.pid
