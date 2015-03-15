@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-require('6to5/polyfill');
+require('babel/polyfill');
 
 window.FluxThis = {
     dispatcher: require('../../src/dispatcherInstance'),

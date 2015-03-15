@@ -43,7 +43,7 @@ module.exports = {
     },
     module: {
         loaders: [{
-             test: /\.es6\.js$/, exclude: /node_modules/, loader: '6to5-loader'
+             test: /\.es6\.js$/, exclude: /node_modules/, loader: 'babel-loader'
         }]
     }
 };
