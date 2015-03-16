@@ -18,10 +18,12 @@ var debug = require('./debug');
 var each = require('../lib/each');
 var invariant = require('invariant');
 
+var CHANGE_LISTENERS = Symbol();
+
 /**
  * A Flux Store which allows for public/private methods and attributes
  */
-class ObjectOrientedStore extends Store {
+export default class ObjectOrientedStore extends Store {
 
    /**
 	* @param {object} options
@@ -59,24 +61,20 @@ class ObjectOrientedStore extends Store {
 		);
 
 		this.displayName = options.displayName;
-		this.__changeListeners = [];
 		this.dispatchToken = null;
 
-        if (process.env.NODE_ENV !== 'production') {
-            this.mockDispatch = null;
-        }
+		this[CHANGE_LISTENERS] = new Set();
 
 		publicMethods = Object.assign(this, options.public);
+
 		privateMethods = Object.create(publicMethods, {
 			bindActions: {
 				enumerable: true,
 				value () {
-					var bindActionCtx = this;
 					var i = 0;
 					var actions = {};
 					var constant;
 					var handler;
-
 
 					invariant(
 						arguments.length % 2 === 0,
@@ -85,8 +83,7 @@ class ObjectOrientedStore extends Store {
 						this
 					);
 
-
-					while(i*2 < arguments.length) {
+					while (i*2 < arguments.length) {
 						constant = arguments[2*i];
 						handler = arguments[2*i + 1];
 
@@ -113,31 +110,50 @@ class ObjectOrientedStore extends Store {
 						i++;
 					}
 
-                    var dispatchFunction = function (action) {
-                        var sourceHandler = actions[action.source];
-                        var typeHandler = actions[action.type];
+					var dispatchFunction = function (action) {
+						var sourceHandler = actions[action.source];
+						var typeHandler = actions[action.type];
 
-                        if (sourceHandler) {
-                            sourceHandler.call(store, action.payload);
-                        }
-                        if (typeHandler) {
-                            typeHandler.call(store, action.payload);
-                        }
-                    };
+						if (sourceHandler) {
+							sourceHandler.call(store, action.payload);
+						}
+						if (typeHandler) {
+							typeHandler.call(store, action.payload);
+						}
+					};
 
-                    if (process.env.NODE_ENV !== 'production') {
-                        store.TestUtils = {
+					/**
+					 * Expose TestUtils only if we are not in the
+					 * production environment for ease of testing.
+					 *
+					 */
+					if (process.env.NODE_ENV !== 'production') {
+						store.TestUtils = {
+							/**
+							 * This method mocks the dispatcher, so that you
+							 * can call this method with the same
+							 * payload you would pass to dispatch
+							 * and only call this stores methods.
+							 *
+							 * ** Wait fors are ignored **
+							 */
 							mockDispatch () {
-	                            var waitFor = store.waitFor;
+								// Store the current waitFor and reset.
+								var waitFor = store.waitFor;
+								store.waitFor = function () {};
+								/*
+									Context doesn't matter here since it
+									always has the store's context
+								 */
+								dispatchFunction.apply(null, arguments);
+								// Put the waitFor back
+								store.waitFor = waitFor;
+							},
 
-	                            store.waitFor = function () {};
-	                            dispatchFunction.apply(bindActionCtx, arguments);
-
-	                            store.waitFor = waitFor;
-	                        },
-
-							//Reset a store back to a clean state by clearing out it's
-							//private members, and reinitializing it
+							/**
+							 * Reset a store back to a clean state by clearing
+							 * out it's private members, and reinitializing it.
+							 */
 							reset () {
 								dispatcher.unregister(store.dispatchToken);
 								each(privateMembers, key => {
@@ -146,10 +162,9 @@ class ObjectOrientedStore extends Store {
 								options.init.call(privateMembers);
 							}
 						};
-                    }
+					}
 
 					store.dispatchToken = dispatcher.register(dispatchFunction);
-
 				}
 			}
 		});
@@ -157,7 +172,7 @@ class ObjectOrientedStore extends Store {
 		privateMembers = Object.create(privateMethods);
 
 		// Create private methods
-		each(options.private || {}, (prop, method) => {
+		each(options.private, (prop, method) => {
 			invariant(
 				method instanceof Function,
 				'private member `%s` is not a function. Non-function private ' +
@@ -171,16 +186,13 @@ class ObjectOrientedStore extends Store {
 
 				debug.logStore(this, prop, ...args);
 
-
 				// Notify all listening views that we've potentially changed
 				// due to a private fn modifying our state, but only after this
 				// tick (so we can batch these events)
 				if(!changeEventPending) {
 					setTimeout(() => {
 						changeEventPending = false;
-						each(store.__changeListeners, (i, fn) => {
-							fn.call(this);
-						});
+						store[CHANGE_LISTENERS].forEach(fn => fn.call(this));
 					});
 
 					changeEventPending = true;
@@ -207,12 +219,7 @@ class ObjectOrientedStore extends Store {
 	}
 
 	toString () {
-		if(this.displayName) {
-			return '[ObjectOrientedStore ' + this.displayName + ']';
-		}
-		else {
-			return '[unnamed ObjectOrientedStore]';
-		}
+		return `[ObjectOrientedStore ${this.displayName || 'unnamed'}]`;
 	}
 
 	/**
@@ -222,7 +229,7 @@ class ObjectOrientedStore extends Store {
 	 * @param {function} fn
 	 */
 	__addChangeListener (fn) {
-		this.__changeListeners.push(fn);
+		this[CHANGE_LISTENERS].add(fn);
 	}
 
 	/**
@@ -232,11 +239,6 @@ class ObjectOrientedStore extends Store {
 	 * @param {function} fn
 	 */
 	__removeChangeListener (fn) {
-		var index = this.__changeListeners.indexOf(fn);
-		if(index > -1) {
-			this.__changeListeners.splice(index, 1);
-		}
+		this[CHANGE_LISTENERS].delete(fn);
 	}
 }
-
-module.exports = ObjectOrientedStore;

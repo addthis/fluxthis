@@ -22,9 +22,9 @@ var invariant = require('invariant');
  * @param {string...} any amount of strings to transform into constants for this
  *	group. The strings should be unique.
  */
-class ConstantCollection {
+export default class ConstantCollection {
 	constructor (...names) {
-		names.forEach((name) => {
+		names.forEach(name => {
 
 			invariant(
 				this[name] === undefined,
@@ -35,7 +35,7 @@ class ConstantCollection {
 			this[name] = new Constant(name, this);
 		});
 
-		if(Object.freeze instanceof Function) {
+		if (Object.freeze instanceof Function) {
 			Object.freeze(this);
 		}
 	}
@@ -47,5 +47,3 @@ class Constant {
 		this.collection = collection;
 	}
 }
-
-module.exports = ConstantCollection;
