@@ -43,164 +43,164 @@ var PENDING_ACTION = Symbol();
 var LAST_ACTION = Symbol();
 
 export default class Dispatcher {
-    constructor () {
-        this[CALLBACKS] = {};
-        this[IS_PENDING] = {};
-        this[IS_HANDLED] = {};
-        this[IS_DISPATCHING] = false;
-        this[PENDING_ACTION] = null;
-        this[LAST_ACTION] = null;
-    }
+	constructor () {
+		this[CALLBACKS] = {};
+		this[IS_PENDING] = {};
+		this[IS_HANDLED] = {};
+		this[IS_DISPATCHING] = false;
+		this[PENDING_ACTION] = null;
+		this[LAST_ACTION] = null;
+	}
 
-    /**
-     * Registers a callback to be invoked with every dispatched action. Returns
-     * a token that can be used with `waitFor()`.
-     *
-     * @param {function} callback
-     * @return {string}
-     */
-    register (callback) {
-        var id = _prefix + _lastID++;
-        this[CALLBACKS][id] = callback;
-        return id;
-    }
+	/**
+	 * Registers a callback to be invoked with every dispatched action. Returns
+	 * a token that can be used with `waitFor()`.
+	 *
+	 * @param {function} callback
+	 * @return {string}
+	 */
+	register (callback) {
+		var id = _prefix + _lastID++;
+		this[CALLBACKS][id] = callback;
+		return id;
+	}
 
-    /**
-     * Removes a callback based on its token.
-     *
-     * @param {string} id
-     */
-    unregister (id) {
-        invariant(
-            this[CALLBACKS][id],
-            'Dispatcher.unregister(...): `%s` does not map to a registered callback.',
-            id
-        );
-        delete this[CALLBACKS][id];
-    }
+	/**
+	 * Removes a callback based on its token.
+	 *
+	 * @param {string} id
+	 */
+	unregister (id) {
+		invariant(
+			this[CALLBACKS][id],
+			'Dispatcher.unregister(...): `%s` does not map to a registered callback.',
+			id
+		);
+		delete this[CALLBACKS][id];
+	}
 
 
-    /**
-     * Waits for the callbacks specified to be invoked before continuing execution
-     * of the current callback. This method should only be used by a callback in
-     * response to a dispatched action.
-     *
-     * @param {array<string>} ids
-     */
-    waitFor (ids) {
-        invariant(
-            this[IS_DISPATCHING],
-            'Dispatcher.waitFor(...): Must be invoked while dispatching.'
-        );
+	/**
+	 * Waits for the callbacks specified to be invoked before continuing execution
+	 * of the current callback. This method should only be used by a callback in
+	 * response to a dispatched action.
+	 *
+	 * @param {array<string>} ids
+	 */
+	waitFor (ids) {
+		invariant(
+			this[IS_DISPATCHING],
+			'Dispatcher.waitFor(...): Must be invoked while dispatching.'
+		);
 
-        if (!Array.isArray(ids)) {
-            ids = [ids];
-        }
+		if (!Array.isArray(ids)) {
+			ids = [ids];
+		}
 
-        for (var i = 0; i < ids.length; i++) {
-            var id = ids[i];
+		for (var i = 0; i < ids.length; i++) {
+			var id = ids[i];
 
-            if (this[IS_PENDING][id]) {
-                invariant(
-                    this[IS_HANDLED][id],
-                    'Dispatcher.waitFor(...): Circular dependency detected while ' +
-                    'waiting for `%s`.',
-                    id
-                );
-                continue;
-            }
+			if (this[IS_PENDING][id]) {
+				invariant(
+					this[IS_HANDLED][id],
+					'Dispatcher.waitFor(...): Circular dependency detected while ' +
+					'waiting for `%s`.',
+					id
+				);
+				continue;
+			}
 
-            invariant(
-                this[CALLBACKS][id],
-                'Dispatcher.waitFor(...): `%s` does not map to a registered callback.',
-                id
-            );
+			invariant(
+				this[CALLBACKS][id],
+				'Dispatcher.waitFor(...): `%s` does not map to a registered callback.',
+				id
+			);
 
-            invokeCallback.call(this, id);
-        }
-    }
+			invokeCallback.call(this, id);
+		}
+	}
 
-    /**
-     * Dispatches an immutable action to all registered callbacks.
-     *
-     * @param {object} action
-     */
-    dispatch (action) {
-        var serializedAction;
+	/**
+	 * Dispatches an immutable action to all registered callbacks.
+	 *
+	 * @param {object} action
+	 */
+	dispatch (action) {
+		var serializedAction;
 
-        invariant(
-            !this[IS_DISPATCHING],
-            'Dispatch.dispatch(...): Cannot dispatch ' +
-            'in the middle of a dispatch.'
-        );
+		invariant(
+			!this[IS_DISPATCHING],
+			'Dispatch.dispatch(...): Cannot dispatch ' +
+			'in the middle of a dispatch.'
+		);
 
-        invariant(
-            action.type !== undefined && action.type !== null,
-            'Attempted to dispatch an action with unrecognizable type `%s`',
-            action.type
-        );
+		invariant(
+			action.type !== undefined && action.type !== null,
+			'Attempted to dispatch an action with unrecognizable type `%s`',
+			action.type
+		);
 
-        // make the object immutable if we're in production. Otherwise, check
-        // to see if the object has changed. The check is not very efficient,
-        // but will at least throw errors when things change, like freeze would
-        // do for us in strict mode
-        if (process.env.NODE_ENV !== 'production') {
-            try {
-                serializedAction = JSON.stringify(action);
-            }
-            catch(err) {
-                invariant(
-                    !err,
-                    'Actions must be simple objects, and must be stringifyable.'
-                );
-            }
-        }
+		// make the object immutable if we're in production. Otherwise, check
+		// to see if the object has changed. The check is not very efficient,
+		// but will at least throw errors when things change, like freeze would
+		// do for us in strict mode
+		if (process.env.NODE_ENV !== 'production') {
+			try {
+				serializedAction = JSON.stringify(action);
+			}
+			catch(err) {
+				invariant(
+					!err,
+					'Actions must be simple objects, and must be stringifyable.'
+				);
+			}
+		}
 
-        startDispatching.call(this, action);
+		startDispatching.call(this, action);
 
-        try {
-            for (var id in this[CALLBACKS]) {
-                if (this[IS_PENDING][id]) {
-                    continue;
-                }
+		try {
+			for (var id in this[CALLBACKS]) {
+				if (this[IS_PENDING][id]) {
+					continue;
+				}
 
-                invokeCallback.call(this, id);
-            }
-        }
-        finally {
-            stopDispatching.call(this);
+				invokeCallback.call(this, id);
+			}
+		}
+		finally {
+			stopDispatching.call(this);
 
-            //check for mutations
-            if (process.env.NODE_ENV !== 'production') {
-                invariant(
-                    JSON.stringify(action) === serializedAction,
-                    `An action dispatched by the FluxThis dispatcher was
-                    mutated. This is bad. Please check the handlers for
-                    %s %s.`,
-                    action.source,
-                    action.type
-                );
-            }
-        }
-    }
+			//check for mutations
+			if (process.env.NODE_ENV !== 'production') {
+				invariant(
+					JSON.stringify(action) === serializedAction,
+					`An action dispatched by the FluxThis dispatcher was
+					mutated. This is bad. Please check the handlers for
+					%s %s.`,
+					action.source,
+					action.type
+				);
+			}
+		}
+	}
 
-    /**
-     * Is this Dispatcher currently dispatching.
-     *
-     * @return {boolean}
-     */
-    isDispatching () {
-        return this[IS_DISPATCHING];
-    }
+	/**
+	 * Is this Dispatcher currently dispatching.
+	 *
+	 * @return {boolean}
+	 */
+	isDispatching () {
+		return this[IS_DISPATCHING];
+	}
 
-    /**
-     * Grab either the current dispatch or the most recently finished one
-     *
-     * @return {object} - most recent action
-     */
-    getRecentDispatch () {
-        return this[PENDING_ACTION] || this[LAST_ACTION];
-    }
+	/**
+	 * Grab either the current dispatch or the most recently finished one
+	 *
+	 * @return {object} - most recent action
+	 */
+	getRecentDispatch () {
+		return this[PENDING_ACTION] || this[LAST_ACTION];
+	}
 }
 
 /**
@@ -211,9 +211,9 @@ export default class Dispatcher {
  * @internal
  */
 function invokeCallback (id) {
-    this[IS_PENDING][id] = true;
-    this[CALLBACKS][id](this[PENDING_ACTION]);
-    this[IS_HANDLED][id] = true;
+	this[IS_PENDING][id] = true;
+	this[CALLBACKS][id](this[PENDING_ACTION]);
+	this[IS_HANDLED][id] = true;
 }
 
 /**
@@ -223,18 +223,18 @@ function invokeCallback (id) {
  * @internal
  */
 function startDispatching (action) {
-    require('./debug').logDispatch(action);
+	require('./debug').logDispatch(action);
 
-    for (var id in this[CALLBACKS]) {
-        this[IS_PENDING][id] = false;
-        this[IS_HANDLED][id] = false;
-    }
-    this[PENDING_ACTION] = action;
-    this[IS_DISPATCHING] = true;
+	for (var id in this[CALLBACKS]) {
+		this[IS_PENDING][id] = false;
+		this[IS_HANDLED][id] = false;
+	}
+	this[PENDING_ACTION] = action;
+	this[IS_DISPATCHING] = true;
 }
 
 function stopDispatching () {
-    this[LAST_ACTION] = this[PENDING_ACTION];
-    this[PENDING_ACTION] = null;
-    this[IS_DISPATCHING] = false;
+	this[LAST_ACTION] = this[PENDING_ACTION];
+	this[PENDING_ACTION] = null;
+	this[IS_DISPATCHING] = false;
 }

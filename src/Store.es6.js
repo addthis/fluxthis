@@ -18,64 +18,64 @@ var debug = require('./debug');
 var renderedComponentSet = new WeakSet();
 
 export default class Store {
-    constructor () {
-        var store = this;
+	constructor () {
+		var store = this;
 
-        // Expose the mixin for the Store.
-        this.mixin = {
-            /**
-             * Automatically add the change listener for the given
-             * store when the component is going did mount.
-             */
-            componentDidMount () {
-                invariant(
-                    this.getStateFromStores instanceof Function,
-                    '`%s` must define `getStateFromStores` in order to use ' +
-                    'the FluxThis mixin.',
-                    this.displayName
-                );
+		// Expose the mixin for the Store.
+		this.mixin = {
+			/**
+			 * Automatically add the change listener for the given
+			 * store when the component is going did mount.
+			 */
+			componentDidMount () {
+				invariant(
+					this.getStateFromStores instanceof Function,
+					'`%s` must define `getStateFromStores` in order to use ' +
+					'the FluxThis mixin.',
+					this.displayName
+				);
 
-                if (!this.__fluxChangeListener) {
-                    this.__fluxChangeListener = () => {
-                        this.setState(this.getStateFromStores());
-                    };
-                }
+				if (!this.__fluxChangeListener) {
+					this.__fluxChangeListener = () => {
+						this.setState(this.getStateFromStores());
+					};
+				}
 
-                store.__addChangeListener(this.__fluxChangeListener);
-            },
+				store.__addChangeListener(this.__fluxChangeListener);
+			},
 
-            /**
-             * Automatically remove the change listener for the given
-             * store when the component is going to unmount.
-             */
-            componentWillUnmount () {
-                store.__removeChangeListener(this.__fluxChangeListener);
-            },
+			/**
+			 * Automatically remove the change listener for the given
+			 * store when the component is going to unmount.
+			 */
+			componentWillUnmount () {
+				store.__removeChangeListener(this.__fluxChangeListener);
+			},
 
-            getInitialState() {
-                // This check ensures that we do not use the mixins
-                // get initial state twice on the same method.
-                // This is the case when a view uses more than 1 FluxThis store.
-                if (!this.state && !renderedComponentSet.has(this)) {
-                    renderedComponentSet.add(this);
+			getInitialState() {
+				// This check ensures that we do not use the mixins
+				// get initial state twice on the same method.
+				// This is the case when a view uses more than 1 FluxThis store.
+				if (!this.state && !renderedComponentSet.has(this)) {
+					renderedComponentSet.add(this);
 
-                    // the initialState props is used to create state
-                    // from props in certain cases like tests.
-                    if (this.props.initialState) {
-                        return this.props.initialState;
-                    }
+					// the initialState props is used to create state
+					// from props in certain cases like tests.
+					if (this.props.initialState) {
+						return this.props.initialState;
+					}
 
-                    return this.getStateFromStores();
-                }
-            },
+					return this.getStateFromStores();
+				}
+			},
 
-            componentWillUpdate (nextProps, nextState) {
-                debug.logView(this, nextProps, nextState);
-            }
-        };
-    }
+			componentWillUpdate (nextProps, nextState) {
+				debug.logView(this, nextProps, nextState);
+			}
+		};
+	}
 
-    waitFor (...tokens) {
-        return dispatcher.waitFor(tokens);
-    }
+	waitFor (...tokens) {
+		return dispatcher.waitFor(tokens);
+	}
 }

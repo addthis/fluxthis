@@ -90,7 +90,7 @@ class ImmutableStore extends ObjectOrientedStore {
 	}
 
 	toString () {
-        return `[ImmutableStore ${this.displayName || 'unnamed'}]`;
+		return `[ImmutableStore ${this.displayName || 'unnamed'}]`;
 	}
 }
 

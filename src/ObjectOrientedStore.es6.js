@@ -63,7 +63,7 @@ export default class ObjectOrientedStore extends Store {
 		this.displayName = options.displayName;
 		this.dispatchToken = null;
 
-        this[CHANGE_LISTENERS] = new Set();
+		this[CHANGE_LISTENERS] = new Set();
 
 		publicMethods = Object.assign(this, options.public);
 
@@ -110,50 +110,50 @@ export default class ObjectOrientedStore extends Store {
 						i++;
 					}
 
-                    var dispatchFunction = function (action) {
-                        var sourceHandler = actions[action.source];
-                        var typeHandler = actions[action.type];
+					var dispatchFunction = function (action) {
+						var sourceHandler = actions[action.source];
+						var typeHandler = actions[action.type];
 
-                        if (sourceHandler) {
-                            sourceHandler.call(store, action.payload);
-                        }
-                        if (typeHandler) {
-                            typeHandler.call(store, action.payload);
-                        }
-                    };
+						if (sourceHandler) {
+							sourceHandler.call(store, action.payload);
+						}
+						if (typeHandler) {
+							typeHandler.call(store, action.payload);
+						}
+					};
 
-                    /**
-                     * Expose TestUtils only if we are not in the
-                     * production environment for ease of testing.
-                     *
-                     */
-                    if (process.env.NODE_ENV !== 'production') {
-                        store.TestUtils = {
-                            /**
-                             * This method mocks the dispatcher, so that you
-                             * can call this method with the same
-                             * payload you would pass to dispatch
-                             * and only call this stores methods.
-                             *
-                             * ** Wait fors are ignored **
-                             */
+					/**
+					 * Expose TestUtils only if we are not in the
+					 * production environment for ease of testing.
+					 *
+					 */
+					if (process.env.NODE_ENV !== 'production') {
+						store.TestUtils = {
+							/**
+							 * This method mocks the dispatcher, so that you
+							 * can call this method with the same
+							 * payload you would pass to dispatch
+							 * and only call this stores methods.
+							 *
+							 * ** Wait fors are ignored **
+							 */
 							mockDispatch () {
-                                // Store the current waitFor and reset.
-	                            var waitFor = store.waitFor;
-	                            store.waitFor = function () {};
-                                /*
-                                    Context doesn't matter here since it
-                                    always has the store's context
-                                 */
-	                            dispatchFunction.apply(null, arguments);
-                                // Put the waitFor back
-	                            store.waitFor = waitFor;
-	                        },
+								// Store the current waitFor and reset.
+								var waitFor = store.waitFor;
+								store.waitFor = function () {};
+								/*
+									Context doesn't matter here since it
+									always has the store's context
+								 */
+								dispatchFunction.apply(null, arguments);
+								// Put the waitFor back
+								store.waitFor = waitFor;
+							},
 
 							/**
-                             * Reset a store back to a clean state by clearing
-                             * out it's private members, and reinitializing it.
-                             */
+							 * Reset a store back to a clean state by clearing
+							 * out it's private members, and reinitializing it.
+							 */
 							reset () {
 								dispatcher.unregister(store.dispatchToken);
 								each(privateMembers, key => {
@@ -162,7 +162,7 @@ export default class ObjectOrientedStore extends Store {
 								options.init.call(privateMembers);
 							}
 						};
-                    }
+					}
 
 					store.dispatchToken = dispatcher.register(dispatchFunction);
 				}
@@ -219,7 +219,7 @@ export default class ObjectOrientedStore extends Store {
 	}
 
 	toString () {
-        return `[ObjectOrientedStore ${this.displayName || 'unnamed'}]`;
+		return `[ObjectOrientedStore ${this.displayName || 'unnamed'}]`;
 	}
 
 	/**
