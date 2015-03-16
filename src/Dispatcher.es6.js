@@ -42,8 +42,7 @@ var IS_DISPATCHING = Symbol();
 var PENDING_ACTION = Symbol();
 var LAST_ACTION = Symbol();
 
-
-class Dispatcher {
+export default class Dispatcher {
     constructor () {
         this[CALLBACKS] = {};
         this[IS_PENDING] = {};
@@ -94,12 +93,13 @@ class Dispatcher {
             'Dispatcher.waitFor(...): Must be invoked while dispatching.'
         );
 
-        if(!Array.isArray(ids)) {
+        if (!Array.isArray(ids)) {
             ids = [ids];
         }
 
-        for (var ii = 0; ii < ids.length; ii++) {
-            var id = ids[ii];
+        for (var i = 0; i < ids.length; i++) {
+            var id = ids[i];
+
             if (this[IS_PENDING][id]) {
                 invariant(
                     this[IS_HANDLED][id],
@@ -130,7 +130,8 @@ class Dispatcher {
 
         invariant(
             !this[IS_DISPATCHING],
-            'Dispatch.dispatch(...): Cannot dispatch in the middle of a dispatch.'
+            'Dispatch.dispatch(...): Cannot dispatch ' +
+            'in the middle of a dispatch.'
         );
 
         invariant(
@@ -143,7 +144,7 @@ class Dispatcher {
         // to see if the object has changed. The check is not very efficient,
         // but will at least throw errors when things change, like freeze would
         // do for us in strict mode
-        if(process.env.NODE_ENV !== 'production') {
+        if (process.env.NODE_ENV !== 'production') {
             try {
                 serializedAction = JSON.stringify(action);
             }
@@ -170,20 +171,18 @@ class Dispatcher {
             stopDispatching.call(this);
 
             //check for mutations
-            if(process.env.NODE_ENV !== 'production') {
+            if (process.env.NODE_ENV !== 'production') {
                 invariant(
                     JSON.stringify(action) === serializedAction,
-                    'An action dispatched by the FluxThis dispatcher was ' +
-                    'mutated. This is bad. Please check the handlers for ' +
-                    '%s %s.',
+                    `An action dispatched by the FluxThis dispatcher was
+                    mutated. This is bad. Please check the handlers for
+                    %s %s.`,
                     action.source,
                     action.type
                 );
             }
         }
     }
-
-
 
     /**
      * Is this Dispatcher currently dispatching.
@@ -200,8 +199,7 @@ class Dispatcher {
      * @return {object} - most recent action
      */
     getRecentDispatch () {
-        return this[PENDING_ACTION] ||
-        this[LAST_ACTION];
+        return this[PENDING_ACTION] || this[LAST_ACTION];
     }
 }
 
@@ -216,7 +214,7 @@ function invokeCallback (id) {
     this[IS_PENDING][id] = true;
     this[CALLBACKS][id](this[PENDING_ACTION]);
     this[IS_HANDLED][id] = true;
-};
+}
 
 /**
  * Set up bookkeeping needed when dispatching.
@@ -226,18 +224,17 @@ function invokeCallback (id) {
  */
 function startDispatching (action) {
     require('./debug').logDispatch(action);
+
     for (var id in this[CALLBACKS]) {
         this[IS_PENDING][id] = false;
         this[IS_HANDLED][id] = false;
     }
     this[PENDING_ACTION] = action;
     this[IS_DISPATCHING] = true;
-};
+}
 
 function stopDispatching () {
     this[LAST_ACTION] = this[PENDING_ACTION];
     this[PENDING_ACTION] = null;
     this[IS_DISPATCHING] = false;
 }
-
-module.exports = Dispatcher;

@@ -29,8 +29,7 @@ class ImmutableStore extends ObjectOrientedStore {
 	 * @return {boolean}
 	 */
 	static checkImmutable (item) {
-		return item instanceof Immutable.Iterable ||
-		!(item instanceof Object);
+		return item instanceof Immutable.Iterable || !(item instanceof Object);
 	}
 
    /**
@@ -48,7 +47,7 @@ class ImmutableStore extends ObjectOrientedStore {
 		//wrap methods with immutability checkers before creating the OOStore
 		var parentOptions = {};
 
-		if(options.init) {
+		if (options.init) {
 			parentOptions.init = function () {
 				options.init.call(this);
 
@@ -63,11 +62,12 @@ class ImmutableStore extends ObjectOrientedStore {
 			};
 		}
 
-		if(options.public) {
+		if (options.public) {
 			parentOptions.public = {};
 			each(options.public, (key, fn) => {
 				parentOptions.public[key] = function () {
 					var result = fn.apply(this, arguments);
+
 					invariant(
 						ImmutableStore.checkImmutable(result),
 						'public method `%s` attempted to return a ' +
@@ -76,12 +76,13 @@ class ImmutableStore extends ObjectOrientedStore {
 						'prevent errors from mutation of objects',
 						key
 					);
+
 					return result;
 				};
 			});
 		}
 
-		if(options.private) {
+		if (options.private) {
 			parentOptions.private = options.private;
 		}
 
@@ -89,15 +90,10 @@ class ImmutableStore extends ObjectOrientedStore {
 	}
 
 	toString () {
-		if(this.displayName) {
-			return '[ImmutableStore ' + this.displayName + ']';
-		}
-		else {
-			return '[unnamed ImmutableStore]';
-		}
+        return `[ImmutableStore ${this.displayName || 'unnamed'}]`;
 	}
 }
 
 ImmutableStore.Immutable = Immutable;
 
-module.exports = ImmutableStore;
+export default ImmutableStore;

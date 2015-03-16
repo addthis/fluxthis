@@ -17,10 +17,16 @@ var invariant = require('invariant');
 var debug = require('./debug');
 var renderedComponentSet = new WeakSet();
 
-class Store {
+export default class Store {
     constructor () {
         var store = this;
+
+        // Expose the mixin for the Store.
         this.mixin = {
+            /**
+             * Automatically add the change listener for the given
+             * store when the component is going did mount.
+             */
             componentDidMount () {
                 invariant(
                     this.getStateFromStores instanceof Function,
@@ -38,13 +44,11 @@ class Store {
                 store.__addChangeListener(this.__fluxChangeListener);
             },
 
+            /**
+             * Automatically remove the change listener for the given
+             * store when the component is going to unmount.
+             */
             componentWillUnmount () {
-                invariant(
-                    this.__fluxChangeListener instanceof Function,
-                    'Expected `%s` to provide the function `__fluxChangeListener`.',
-                    this.__fluxChangeListener
-                );
-
                 store.__removeChangeListener(this.__fluxChangeListener);
             },
 
@@ -55,6 +59,8 @@ class Store {
                 if (!this.state && !renderedComponentSet.has(this)) {
                     renderedComponentSet.add(this);
 
+                    // the initialState props is used to create state
+                    // from props in certain cases like tests.
                     if (this.props.initialState) {
                         return this.props.initialState;
                     }
@@ -73,5 +79,3 @@ class Store {
         return dispatcher.waitFor(tokens);
     }
 }
-
-module.exports = Store;

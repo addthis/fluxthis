@@ -14,7 +14,7 @@
 
 require('babel/polyfill');
 
-var FluxThis = {
+export default FluxThis = {
 	ConstantCollection: require('./ConstantCollection'),
 	ImmutableStore: require('./ImmutableStore'),
 	ObjectOrientedStore: require('./ObjectOrientedStore'),
@@ -22,5 +22,3 @@ var FluxThis = {
 	APIActionCreator: require('./APIActionCreator'),
 	dispatcher: require('./dispatcherInstance')
 };
-
-module.exports = FluxThis;
