@@ -73,7 +73,8 @@ export default class Dispatcher {
 	unregister (id) {
 		invariant(
 			this[CALLBACKS][id],
-			'Dispatcher.unregister(...): `%s` does not map to a registered callback.',
+			'Dispatcher.unregister(...): `%s` does not map to a ' +
+            'registered callback.',
 			id
 		);
 		delete this[CALLBACKS][id];
@@ -81,9 +82,9 @@ export default class Dispatcher {
 
 
 	/**
-	 * Waits for the callbacks specified to be invoked before continuing execution
-	 * of the current callback. This method should only be used by a callback in
-	 * response to a dispatched action.
+	 * Waits for the callbacks specified to be invoked before
+     * continuing execution of the current callback. This method
+     * should only be used by a callback in response to a dispatched action.
 	 *
 	 * @param {array<string>} ids
 	 */
@@ -103,7 +104,8 @@ export default class Dispatcher {
 			if (this[IS_PENDING][id]) {
 				invariant(
 					this[IS_HANDLED][id],
-					'Dispatcher.waitFor(...): Circular dependency detected while ' +
+					'Dispatcher.waitFor(...): Circular ' +
+                    'dependency detected while ' +
 					'waiting for `%s`.',
 					id
 				);
@@ -112,7 +114,8 @@ export default class Dispatcher {
 
 			invariant(
 				this[CALLBACKS][id],
-				'Dispatcher.waitFor(...): `%s` does not map to a registered callback.',
+				'Dispatcher.waitFor(...): `%s` does not map ' +
+                'to a registered callback.',
 				id
 			);
 
