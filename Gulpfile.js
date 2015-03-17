@@ -34,11 +34,33 @@ gulp.task('test', function(callback) {
         callback);
 });
 
-gulp.task('build', function (callback) {
-    process.env.NODE_ENV = 'development';
+gulp.task('build-dev', function (callback) {
+    webpackConfig.plugins = webpackConfig.plugins.concat(
+        new webpack.DefinePlugin({
+            "process.env": {
+                "NODE_ENV": JSON.stringify("development")
+            }
+        })
+    );
 
+    webpackHelper(webpackConfig, callback);
+});
+
+gulp.task('build-prod', function (callback) {
+    webpackConfig.plugins = webpackConfig.plugins.concat(
+        new webpack.DefinePlugin({
+            "process.env": {
+                "NODE_ENV": JSON.stringify("production")
+            }
+        }),
+        new webpack.optimize.UglifyJsPlugin()
+    );
+
+    webpackHelper(webpackConfig, callback);
+});
+
+function webpackHelper(webpackConfig, callback) {
     webpack(webpackConfig, function(err, stats) {
-        console.log(process.env.NODE_ENV);
         if (err) {
             throw new gutil.PluginError('webpack', err);
         }
@@ -46,8 +68,7 @@ gulp.task('build', function (callback) {
         gutil.log('[webpack]', stats.toString());
         return callback();
     });
-});
-
+}
 gulp.task('clean', function () {
     return gulp.src(['build/*', 'test/build/*'])
         .pipe(clean())
@@ -65,7 +86,8 @@ gulp.task('tag', function (callback){
 
 gulp.task('publish', function (callback) {
     runSequence('test',
-        'build',
+        'build-prod',
+        'build-dev',
         'tag',
         callback);
 });
