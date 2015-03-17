@@ -1,12 +1,16 @@
-var fs = require('fs');
-var pj = JSON.parse(fs.readFileSync('./package.json'));
-var version = pj.version;
+'use strict';
+var version = require('../package.json').version;
 var exec = require('child_process').exec;
-exec('git tag -a v' + version + ' -m "Automaticly tagged for npm publish"', function (err) {
-    if(err) {
-        throw err;
-    }
-    else {
-        exec('git push --tags');
-    }
-});
+
+module.exports = function (callback) {
+    exec('git tag -a v' + version + ' -m "Automaticly tagged for npm publish"', function (err) {
+        if (err) {
+            return callback(err);
+        }
+
+        exec('git push --tags', function (err) {
+            return callback(err);
+        });
+    });
+};
+
