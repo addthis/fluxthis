@@ -1,0 +1,7 @@
+node_modules/*
+test/build/*
+tmp
+.idea
+server.pid
+.DS_Store
+xunit.xml
