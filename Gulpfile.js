@@ -6,7 +6,6 @@ var clean = require('gulp-clean');
 var mochaPhantomJS = require('gulp-mocha-phantomjs');
 var server = require('gulp-express');
 var runSequence = require('run-sequence');
-var preprocess = require('gulp-preprocess');
 
 var webpack = require('webpack');
 var webpackConfig = require('./webpack.config');
@@ -36,14 +35,15 @@ gulp.task('test', function(callback) {
 });
 
 gulp.task('build', function (callback) {
-    preprocess({context: {NODE_ENV: 'development'}});
+    process.env.NODE_ENV = 'development';
 
     webpack(webpackConfig, function(err, stats) {
+        console.log(process.env.NODE_ENV);
         if (err) {
             throw new gutil.PluginError('webpack', err);
         }
 
-        gutil.log('[webpack]', stats.toString());
+        //gutil.log('[webpack]', stats.toString());
         return callback();
     });
 });
