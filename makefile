@@ -48,7 +48,9 @@ watch:
 tag:
 	node ./bin/tag.js
 
+publish: test prod dev tag
+
 test/build/tests.js: test/src/* src/*
 	./node_modules/.bin/webpack test/src/tests.js $@ --config test/webpack.config.js
 
-.PHONY: clean build test jenkins watch tap-test stop-server server.pid
+.PHONY: clean build test jenkins watch tap-test stop-server server.pid tag publish

@@ -12,8 +12,7 @@
     "url": "https://github.com/addthis/fluxthis"
   },
   "scripts": {
-    "test": "make test",
-    "prepublish": "make test && make prod && make dev && make tag"
+    "test": "make test"
   },
   "keywords": [
     "Flux",
