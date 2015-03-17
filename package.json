@@ -1,6 +1,6 @@
 {
   "name": "fluxthis",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "AddThis Flux Framework",
   "main": "build/FluxThis.js",
   "directories": {
@@ -13,7 +13,6 @@
   },
   "scripts": {
     "test": "make test",
-    "install": "make prod && make dev",
     "prepublish": "make test && make prod && make dev && make tag"
   },
   "keywords": [

@@ -44,6 +44,10 @@ clean:
 watch:
 	NODE_ENV=development && ./node_modules/.bin/webpack --watch
 
+# Tag git with package.json version
+tag:
+	node ./bin/tag.js
+
 test/build/tests.js: test/src/* src/*
 	./node_modules/.bin/webpack test/src/tests.js $@ --config test/webpack.config.js
 
