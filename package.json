@@ -13,7 +13,8 @@
   },
   "scripts": {
     "test": "make test",
-    "prepublish": "make test && make prod && make dev"
+    "install": "make prod && make dev",
+    "prepublish": "make test && make prod && make dev && make tag"
   },
   "keywords": [
     "Flux",
