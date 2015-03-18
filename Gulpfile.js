@@ -9,6 +9,7 @@ var runSequence = require('run-sequence');
 
 var webpack = require('webpack');
 var webpackConfig = require('./webpack.config');
+var testWebpackConfig = require('./test/webpack.config');
 
 var tag = require('./bin/tag');
 
@@ -27,8 +28,21 @@ gulp.task('mocha-test', function () {
     return stream;
 });
 
+gulp.task('build-test', function (callback) {
+    testWebpackConfig.plugins = testWebpackConfig.plugins.concat(
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('development')
+            }
+        })
+    );
+
+    webpackHelper(testWebpackConfig, callback);
+});
 gulp.task('test', function(callback) {
-    runSequence('test-server-start',
+
+    runSequence('build-test',
+        'test-server-start',
         'mocha-test',
         'test-server-stop',
         callback);
@@ -37,8 +51,8 @@ gulp.task('test', function(callback) {
 gulp.task('build-dev', function (callback) {
     webpackConfig.plugins = webpackConfig.plugins.concat(
         new webpack.DefinePlugin({
-            "process.env": {
-                "NODE_ENV": JSON.stringify("development")
+            'process.env': {
+                'NODE_ENV': JSON.stringify('development')
             }
         })
     );
@@ -49,8 +63,8 @@ gulp.task('build-dev', function (callback) {
 gulp.task('build-prod', function (callback) {
     webpackConfig.plugins = webpackConfig.plugins.concat(
         new webpack.DefinePlugin({
-            "process.env": {
-                "NODE_ENV": JSON.stringify("production")
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
             }
         }),
         new webpack.optimize.UglifyJsPlugin()
@@ -69,6 +83,11 @@ function webpackHelper(webpackConfig, callback) {
         return callback();
     });
 }
+
+gulp.task('watch', function () {
+    gulp.watch(['src/**/*'], ['build-dev']);
+});
+
 gulp.task('clean', function () {
     return gulp.src(['build/*', 'test/build/*'])
         .pipe(clean())

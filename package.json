@@ -12,7 +12,7 @@
     "url": "https://github.com/addthis/fluxthis"
   },
   "scripts": {
-    "test": "make test"
+    "test": "gulp test"
   },
   "keywords": [
     "Flux",
