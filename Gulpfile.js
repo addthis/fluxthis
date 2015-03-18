@@ -57,6 +57,9 @@ gulp.task('build-dev', function (callback) {
 });
 
 gulp.task('build-prod', function (callback) {
+    // Make minified file for production.
+    webpackConfig.output.filename = 'FluxThis.min.js';
+
     webpackConfig.plugins = webpackConfig.plugins.concat(
         new webpack.DefinePlugin({
             'process.env': {
