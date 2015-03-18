@@ -38,7 +38,7 @@ gulp.task('build-test', function (callback) {
         })
     );
     return gulp.src(testWebpackConfig.entry.tests)
-        .pipe(webpack(testWebpackConfig))
+        .pipe(gulpWebpack(testWebpackConfig))
         .pipe(gulp.dest(testWebpackConfig.output.path));
 });
 gulp.task('test', function(callback) {
