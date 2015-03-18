@@ -13,9 +13,6 @@
  */
 
 var webpack = require('webpack');
-var filename = 'FluxThis' +
-    (process.env.NODE_ENV ==='production' ? '.min' : '') +
-    '.js';
 
 module.exports = {
     cache: true,
@@ -24,7 +21,7 @@ module.exports = {
     },
     output: {
         path: __dirname + '/build',
-        filename: filename,
+        filename: 'FluxThis.js',
         library: 'FluxThis',
         libraryTarget: 'umd'
     },

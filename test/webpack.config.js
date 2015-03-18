@@ -16,6 +16,15 @@ var webpack = require('webpack');
 
 module.exports = {
     cache: true,
+    entry: {
+        tests: './test/src/tests'
+    },
+    output: {
+        path: __dirname + '/build',
+        filename: 'tests.js',
+        library: 'tests',
+        libraryTarget: 'umd'
+    },
     devtool: 'sourcemap',
     plugins: [
         new webpack.DefinePlugin({
