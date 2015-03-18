@@ -5,13 +5,14 @@ var gutil = require('gulp-util');
 var clean = require('gulp-clean');
 var mochaPhantomJS = require('gulp-mocha-phantomjs');
 var server = require('gulp-express');
-var runSequence = require('run-sequence');
 
 var webpack = require('webpack');
+var gulpWebpack = require('gulp-webpack');
 var webpackConfig = require('./webpack.config');
 var testWebpackConfig = require('./test/webpack.config');
 
 var tag = require('./bin/tag');
+var runSequence = require('run-sequence');
 
 gulp.task('test-server-start', function () {
     server.run(['test/server.js']);
@@ -36,8 +37,9 @@ gulp.task('build-test', function (callback) {
             }
         })
     );
-
-    webpackHelper(testWebpackConfig, callback);
+    return gulp.src(testWebpackConfig.entry.tests)
+        .pipe(webpack(testWebpackConfig))
+        .pipe(gulp.dest(testWebpackConfig.output.path));
 });
 gulp.task('test', function(callback) {
 
@@ -49,15 +51,9 @@ gulp.task('test', function(callback) {
 });
 
 gulp.task('build-dev', function (callback) {
-    webpackConfig.plugins = webpackConfig.plugins.concat(
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify('development')
-            }
-        })
-    );
-
-    webpackHelper(webpackConfig, callback);
+    return gulp.src(webpackConfig.entry.FluxThis)
+        .pipe(gulpWebpack(webpackConfig))
+        .pipe(gulp.dest(webpackConfig.output.path));
 });
 
 gulp.task('build-prod', function (callback) {
@@ -67,25 +63,23 @@ gulp.task('build-prod', function (callback) {
                 'NODE_ENV': JSON.stringify('production')
             }
         }),
-        new webpack.optimize.UglifyJsPlugin()
+        new webpack.optimize.UglifyJsPlugin({
+           compress: {
+               warnings: false
+           }
+        })
     );
 
-    webpackHelper(webpackConfig, callback);
+    return gulp.src(webpackConfig.entry.FluxThis)
+        .pipe(gulpWebpack(webpackConfig))
+        .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-function webpackHelper(webpackConfig, callback) {
-    webpack(webpackConfig, function(err, stats) {
-        if (err) {
-            throw new gutil.PluginError('webpack', err);
-        }
-
-        gutil.log('[webpack]', stats.toString());
-        return callback();
-    });
-}
-
 gulp.task('watch', function () {
-    gulp.watch(['src/**/*'], ['build-dev']);
+    webpackConfig.watch = true;
+    return gulp.src(webpackConfig.entry.FluxThis)
+        .pipe(gulpWebpack(webpackConfig))
+        .pipe(gulp.dest(webpackConfig.output.path));
 });
 
 gulp.task('clean', function () {
