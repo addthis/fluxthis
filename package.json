@@ -4,7 +4,7 @@
   "description": "AddThis Flux Framework",
   "main": "build/FluxThis.js",
   "directories": {
-    "install": "make dev",
+    "install": "gulp build-dev",
     "test": "test"
   },
   "repository": {
