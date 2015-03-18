@@ -42,7 +42,6 @@ gulp.task('build-test', function (callback) {
         .pipe(gulp.dest(testWebpackConfig.output.path));
 });
 gulp.task('test', function(callback) {
-
     runSequence('build-test',
         'test-server-start',
         'mocha-test',
