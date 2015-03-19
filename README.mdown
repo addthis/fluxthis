@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/addthis/fluxthis.svg?branch=jah%2Ftravisci)](https://travis-ci.org/addthis/fluxthis)
+[![Build Status](https://travis-ci.org/addthis/fluxthis.svg?branch=master)](https://travis-ci.org/addthis/fluxthis)
 
 # FluxThis
 
