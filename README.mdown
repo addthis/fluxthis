@@ -1,7 +1,4 @@
-[![Build Status](https://travis-ci.org/addthis/fluxthis.svg?branch=master)](https://travis-ci.org/addthis/fluxthis)
-
-# FluxThis
-
+# FluxThis [![NPM version](http://img.shields.io/npm/v/fluxthis.svg)](https://www.npmjs.com/package/fluxthis) [![Build Status](https://travis-ci.org/addthis/fluxthis.svg?branch=master)](https://travis-ci.org/addthis/fluxthis)
 The super-opinionated, yell-at-you-for-everything, immutable Flux framework by
 AddThis.
 
