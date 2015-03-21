@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 var dispatcher = require('./dispatcherInstance');
 var Store = require('./Store');
 var debug = require('./debug');

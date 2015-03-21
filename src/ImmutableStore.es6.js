@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 var each = require('../lib/each');
 var invariant = require('invariant');
 var Immutable = require('immutable');

@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 var dispatcher = require('./dispatcherInstance');
 var invariant = require('invariant');
 var each = require('../lib/each');

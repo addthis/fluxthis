@@ -12,5 +12,7 @@
  * limitations under the License.
  */
 
+'use strict';
+
 var Dispatcher = require('./Dispatcher');
 module.exports = new Dispatcher();
