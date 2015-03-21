@@ -46,7 +46,7 @@ class APIActionCreator extends ActionCreator {
 		var match;
 		var regexp = /\/:([^:\/]+)/g;
 		var args = [];
-		while(match = regexp.exec(route)) {
+		while((match = regexp.exec(route)) !== null) {
 			args.push(match);
 		}
 		return args;
@@ -70,7 +70,7 @@ class APIActionCreator extends ActionCreator {
 			route: ActionCreator.PayloadTypes.string.isRequired,
 			body: ActionCreator.PayloadTypes.object,
 			query: ActionCreator.PayloadTypes.object,
-			params: ActionCreator.PayloadTypes.object,
+			params: ActionCreator.PayloadTypes.object
 		}).isRequired;
 		var actionSource = this.actionSource;
 

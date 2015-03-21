@@ -83,9 +83,9 @@ export default class ObjectOrientedStore extends Store {
 						this
 					);
 
-					while (i*2 < arguments.length) {
-						constant = arguments[2*i];
-						handler = arguments[2*i + 1];
+					while (i * 2 < arguments.length) {
+						constant = arguments[2 * i];
+						handler = arguments[2 * i + 1];
 
 						invariant(
 							constant !== undefined && constant !== null,

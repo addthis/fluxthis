@@ -148,7 +148,7 @@ class FluxDebugger {
 		consoleGroupEnd();
 	}
 
-	logStore (store, methodName, ...args)  {
+	logStore (store, methodName, ...args) {
 		if(!FluxDebugger.shouldLog()) {
 			return;
 		}
