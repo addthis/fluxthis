@@ -125,8 +125,7 @@ gulp.task('tag', function (callback){
 });
 
 gulp.task('publish', function (callback) {
-    runSequence('lint',
-        'test',
+    runSequence('test',
         'build-prod',
         'build-dev',
         'tag',
