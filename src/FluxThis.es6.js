@@ -12,9 +12,11 @@
  * limitations under the License.
  */
 
+'use strict';
+
 require('babel/polyfill');
 
-export default FluxThis = {
+export default {
 	ConstantCollection: require('./ConstantCollection'),
 	ImmutableStore: require('./ImmutableStore'),
 	ObjectOrientedStore: require('./ObjectOrientedStore'),

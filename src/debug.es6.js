@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 var dispatcher = require('./dispatcherInstance');
 var invariant = require('invariant');
 var each = require('../lib/each');
@@ -148,7 +150,7 @@ class FluxDebugger {
 		consoleGroupEnd();
 	}
 
-	logStore (store, methodName, ...args)  {
+	logStore (store, methodName, ...args) {
 		if(!FluxDebugger.shouldLog()) {
 			return;
 		}

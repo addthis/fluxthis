@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 
+'use strict';
+
 var invariant = require('invariant');
 
 /**

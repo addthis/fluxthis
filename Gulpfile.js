@@ -19,6 +19,7 @@ var gutil = require('gulp-util');
 var clean = require('gulp-clean');
 var mochaPhantomJS = require('gulp-mocha-phantomjs');
 var server = require('gulp-express');
+var eslint = require('gulp-eslint');
 
 var webpack = require('webpack');
 var gulpWebpack = require('gulp-webpack');
@@ -56,7 +57,8 @@ gulp.task('build-test', function (callback) {
         .pipe(gulp.dest(testWebpackConfig.output.path));
 });
 gulp.task('test', function(callback) {
-    runSequence('build-test',
+    runSequence('lint',
+        'build-test',
         'test-server-start',
         'mocha-test',
         'test-server-stop',
@@ -103,6 +105,15 @@ gulp.task('clean', function () {
         .pipe(clean())
 });
 
+gulp.task('lint', function () {
+    // Note: To have the process exit with an error code (1) on
+    //  lint error, return the stream and pipe to failOnError last.
+    return gulp.src(['src/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failOnError());
+});
+
 gulp.task('tag', function (callback){
     tag(function (err) {
         if (err) {
@@ -120,3 +131,5 @@ gulp.task('publish', function (callback) {
         'tag',
         callback);
 });
+
+
