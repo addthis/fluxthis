@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-var ConstantCollection = require('../../src/ConstantCollection');
+var ConstantCollection = require('../../src/ConstantCollection.es6');
 
 describe('Constant Collections', function () {
     it('should create a collection of constants', function () {

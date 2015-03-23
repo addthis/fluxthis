@@ -12,8 +12,8 @@
  * limitations under the License.
  */
 
-var ActionCreator = require('../../src/ActionCreator');
-var Store = require('../../src/ImmutableStore');
+var ActionCreator = require('../../src/ActionCreator.es6');
+var Store = require('../../src/ImmutableStore.es6');
 
 describe('Integration', function () {
 	var MY_SOURCE = 'MY_SOURCE';

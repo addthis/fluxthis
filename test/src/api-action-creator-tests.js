@@ -12,8 +12,8 @@
  * limitations under the License.
  */
 
-var APIActionCreator = require('../../src/APIActionCreator');
-var dispatcher = require('../../src/dispatcherInstance');
+var APIActionCreator = require('../../src/APIActionCreator.es6');
+var dispatcher = require('../../src/dispatcherInstance.es6');
 
 describe('APIActionCreators', function () {
 

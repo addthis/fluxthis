@@ -15,7 +15,7 @@
 require('babel/polyfill');
 
 window.FluxThis = {
-    dispatcher: require('../../src/dispatcherInstance'),
+    dispatcher: require('../../src/dispatcherInstance.es6'),
     Immutable: require('immutable')
 };
 

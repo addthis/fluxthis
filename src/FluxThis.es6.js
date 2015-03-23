@@ -14,5 +14,13 @@
 
 'use strict';
 
-var Dispatcher = require('./Dispatcher');
-module.exports = new Dispatcher();
+require('babel/polyfill');
+
+export default {
+	ConstantCollection: require('./ConstantCollection.es6'),
+	ImmutableStore: require('./ImmutableStore.es6'),
+	ObjectOrientedStore: require('./ObjectOrientedStore.es6'),
+	ActionCreator: require('./ActionCreator.es6'),
+	APIActionCreator: require('./APIActionCreator.es6'),
+	dispatcher: require('./dispatcherInstance.es6')
+};

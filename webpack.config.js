@@ -17,7 +17,7 @@ var webpack = require('webpack');
 module.exports = {
     cache: true,
     entry: {
-        FluxThis: './src/FluxThis'
+        FluxThis: './src/FluxThis.es6'
     },
     output: {
         path: __dirname + '/build',
@@ -40,7 +40,7 @@ module.exports = {
     },
     module: {
         loaders: [{
-             test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'
+             test: /\.es6\.js$/, exclude: /node_modules/, loader: 'babel-loader'
         }]
     }
 };

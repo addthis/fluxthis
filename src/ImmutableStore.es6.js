@@ -17,7 +17,7 @@
 var each = require('../lib/each');
 var invariant = require('invariant');
 var Immutable = require('immutable');
-var ObjectOrientedStore = require('./ObjectOrientedStore');
+var ObjectOrientedStore = require('./ObjectOrientedStore.es6');
 
 /**
  * A Flux Store which is strict on Immutability

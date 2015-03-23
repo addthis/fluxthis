@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-var Store = require('../../src/ObjectOrientedStore');
+var Store = require('../../src/ObjectOrientedStore.es6');
 
 describe('ObjectOrientedStore', function () {
 

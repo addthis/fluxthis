@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-var Dispatcher = require('../../src/Dispatcher');
+var Dispatcher = require('../../src/Dispatcher.es6');
 var dispatcher;
 
 describe('Dispatcher', function () {
