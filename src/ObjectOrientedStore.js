@@ -225,6 +225,11 @@ export default class ObjectOrientedStore extends Store {
 		// If bindActions wasn't called, then we need to setup the
 		// store appropriately by calling the method.
 		if (!bindActionsWasCalled) {
+			if (typeof console !== 'undefined') {
+				console.warn('Warning: You are missing a `this.bindActions()`' +
+				' method invocation inside your ' + this.toString() + '\'s ' +
+				'init method');
+			}
 			privateMembers.bindActions();
 		}
 	}
