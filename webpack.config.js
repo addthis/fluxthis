@@ -35,12 +35,12 @@ module.exports = {
     ],
     resolve: {
         root: __dirname,
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.es6.js'],
+        extensions: ['', '.webpack.js', '.web.js', '.js'],
         modulesDirectories: ['web_modules', 'node_modules']
     },
     module: {
         loaders: [{
-             test: /\.es6\.js$/, exclude: /node_modules/, loader: 'babel-loader'
+             test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader'
         }]
     }
 };

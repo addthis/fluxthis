@@ -27,23 +27,24 @@ var CHANGE_LISTENERS = Symbol();
  */
 export default class ObjectOrientedStore extends Store {
 
-   /**
-	* @param {object} options
-	* @param {function} options.init - this fn should set up initial state and
-	*	also be used to call `bindActions`
-	* @param {object} [options.private] - object of private functions, usually
-	*	modifiers. Not every store will need this!
-	* @param {object} options.public - object of public functions, usually
-	*	accessors
-	* @param {string} options.displayName - a human readable name, used for
-	*	debugging
-	*/
+    /**
+	 * @param {object} options
+	 * @param {function} options.init - this fn should set up initial state and
+	 *	also be used to call `bindActions`
+	 * @param {object} [options.private] - object of private functions, usually
+	 *	modifiers. Not every store will need this!
+	 * @param {object} options.public - object of public functions, usually
+	 *	accessors
+	 * @param {string} options.displayName - a human readable name, used for
+	 *	debugging
+	 */
 	constructor (options) {
 		var store = this;
 		var changeEventPending = false;
 		var publicMethods;
 		var privateMethods;
 		var privateMembers;
+        var bindActionsWasCalled = false;
 
 		super();
 
@@ -64,7 +65,6 @@ export default class ObjectOrientedStore extends Store {
 
 		this.displayName = options.displayName;
 		this.dispatchToken = null;
-
 		this[CHANGE_LISTENERS] = new Set();
 
 		publicMethods = Object.assign(this, options.public);
@@ -73,6 +73,8 @@ export default class ObjectOrientedStore extends Store {
 			bindActions: {
 				enumerable: true,
 				value () {
+                    bindActionsWasCalled = true;
+
 					var i = 0;
 					var actions = {};
 					var constant;
@@ -139,7 +141,7 @@ export default class ObjectOrientedStore extends Store {
 							 *
 							 * ** Wait fors are ignored **
 							 */
-							mockDispatch () {
+							mockDispatch() {
 								// Store the current waitFor and reset.
 								var waitFor = store.waitFor;
 								store.waitFor = function () {};
@@ -156,7 +158,7 @@ export default class ObjectOrientedStore extends Store {
 							 * Reset a store back to a clean state by clearing
 							 * out it's private members, and reinitializing it.
 							 */
-							reset () {
+							reset() {
 								dispatcher.unregister(store.dispatchToken);
 								each(privateMembers, key => {
 									delete privateMembers[key];
@@ -217,7 +219,14 @@ export default class ObjectOrientedStore extends Store {
 			};
 		});
 
+        // Call the init method defined by the user's store.
 		options.init.call(privateMembers);
+
+        // If bindActions wasn't called, then we need to setup the
+        // store appropriately by calling the method.
+        if (!bindActionsWasCalled) {
+            privateMembers.bindActions();
+        }
 	}
 
 	toString () {

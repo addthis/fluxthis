@@ -41,6 +41,15 @@ describe('ObjectOrientedStore', function () {
 		}).should.not.throw();
 	});
 
+    it('should have a dispatch token without calling bindActions', function () {
+        var store = new Store({
+            init: function(){},
+            public:{},
+            private:{}
+        });
+        Should.exist(store.dispatchToken);
+    });
+
     describe('during init', function () {
         var config = {
 			public: {},
