@@ -24,7 +24,7 @@ module.exports = function (callback) {
 		}
 
 		exec('git push --tags', function (err) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
