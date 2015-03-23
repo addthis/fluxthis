@@ -17,7 +17,7 @@ var webpack = require('webpack');
 module.exports = {
     cache: true,
     entry: {
-        FluxThis: './src/FluxThis'
+        FluxThis: './src/FluxThis.es6'
     },
     output: {
         path: __dirname + '/build',
@@ -35,7 +35,7 @@ module.exports = {
     ],
     resolve: {
         root: __dirname,
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.es6.js'],
+        extensions: ['', '.webpack.js', '.web.js', '.js'],
         modulesDirectories: ['web_modules', 'node_modules']
     },
     module: {

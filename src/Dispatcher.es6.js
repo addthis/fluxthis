@@ -228,7 +228,7 @@ function invokeCallback (id) {
  * @internal
  */
 function startDispatching (action) {
-	require('./debug').logDispatch(action);
+	require('./debug.es6').logDispatch(action);
 
 	for (var id in this[CALLBACKS]) {
 		this[IS_PENDING][id] = false;

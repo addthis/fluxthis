@@ -30,7 +30,10 @@
     "no-underscore-dangle": 0
   },
   "globals": {
-    "window": true
   },
-  "env":{ "node": true }
+  "env":{
+    "browser": true,
+    "es6": true,
+    "node": true
+  }
 }

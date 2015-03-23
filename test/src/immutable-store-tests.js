@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-var Store = require('../../src/ImmutableStore');
+var Store = require('../../src/ImmutableStore.es6');
 var Immutable = Store.Immutable;
 
 describe('ImmutableStore', function () {

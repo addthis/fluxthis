@@ -14,9 +14,9 @@
 
 'use strict';
 
-var dispatcher = require('./dispatcherInstance');
+var dispatcher = require('./dispatcherInstance.es6');
 var invariant = require('invariant');
-var debug = require('./debug');
+var debug = require('./debug.es6');
 var renderedComponentSet = new WeakSet();
 
 export default class Store {

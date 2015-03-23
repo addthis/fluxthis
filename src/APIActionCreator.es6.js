@@ -14,11 +14,11 @@
 
 'use strict';
 
-var dispatcher = require('./dispatcherInstance');
+var dispatcher = require('./dispatcherInstance.es6');
 var invariant = require('invariant');
 var implore = require('../lib/implore');
-var debug = require('./debug');
-var ActionCreator = require('./ActionCreator');
+var debug = require('./debug.es6');
+var ActionCreator = require('./ActionCreator.es6');
 
 
 class APIActionCreator extends ActionCreator {

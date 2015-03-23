@@ -58,12 +58,12 @@ You can pick and choose which FluxThis components to use. Each top-level
 component is able to stand on its own to deliver some benefit. Use many
 components together to get the full benefits of the debugger.
 
-Check out src/FluxThis.js to see how you can pick and choose individual modules,
+Check out src/FluxThis.es6.js to see how you can pick and choose individual modules,
 or replace parts of the framework with your own creations.
 
 **Note:** *FluxThis modules are written in es6, which means you'll need to use
 something like the 6to5-loader in webpack to take advantage of them. If you
-don't want to do that, you'll have to require FluxThis.js, which has all of the
+don't want to do that, you'll have to require FluxThis.es6.js, which has all of the
 FluxThis components built into it. See the webpack.config.js in the root
 directory for an example.*
 
@@ -71,7 +71,7 @@ directory for an example.*
 
 ## API
 All of our components can be used standalone, but they all use the FluxThis
-dispatcher, found at `fluxthis/src/dispatcherInstance.js`.
+dispatcher, found at `fluxthis/src/dispatcherInstance.es6.js`.
 
 ### ImmutableStore
 The ImmutableStore is a very OO inspired store which strictly enforces the use

@@ -34,7 +34,7 @@ module.exports = {
         })
     ],
     resolve: {
-        extensions: ['', '.webpack.js', '.web.js', '.js', '.es6.js']
+        extensions: ['', '.webpack.js', '.web.js', '.js']
     },
     module: {
         loaders: [{

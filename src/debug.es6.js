@@ -14,7 +14,7 @@
 
 'use strict';
 
-var dispatcher = require('./dispatcherInstance');
+var dispatcher = require('./dispatcherInstance.es6');
 var invariant = require('invariant');
 var each = require('../lib/each');
 

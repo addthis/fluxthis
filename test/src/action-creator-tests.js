@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-var ActionCreator = require('../../src/ActionCreator');
+var ActionCreator = require('../../src/ActionCreator.es6');
 
 describe('ActionCreators', function () {
 
