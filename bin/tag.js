@@ -24,7 +24,14 @@ module.exports = function (callback) {
         }
 
         exec('git push --tags', function (err) {
-            return callback(err);
+			if(err) {
+            	return callback(err);
+        	}
+
+        	exec('npm publish', function (err) {
+    			return callback(err);
+        	});
+        	
         });
     });
 };
