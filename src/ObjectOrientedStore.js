@@ -27,7 +27,7 @@ var CHANGE_LISTENERS = Symbol();
  */
 export default class ObjectOrientedStore extends Store {
 
-    /**
+	/**
 	 * @param {object} options
 	 * @param {function} options.init - this fn should set up initial state and
 	 *	also be used to call `bindActions`
@@ -44,7 +44,7 @@ export default class ObjectOrientedStore extends Store {
 		var publicMethods;
 		var privateMethods;
 		var privateMembers;
-        var bindActionsWasCalled = false;
+		var bindActionsWasCalled = false;
 
 		super();
 
@@ -73,7 +73,7 @@ export default class ObjectOrientedStore extends Store {
 			bindActions: {
 				enumerable: true,
 				value () {
-                    bindActionsWasCalled = true;
+					bindActionsWasCalled = true;
 
 					var i = 0;
 					var actions = {};
@@ -219,14 +219,14 @@ export default class ObjectOrientedStore extends Store {
 			};
 		});
 
-        // Call the init method defined by the user's store.
+		// Call the init method defined by the user's store.
 		options.init.call(privateMembers);
 
-        // If bindActions wasn't called, then we need to setup the
-        // store appropriately by calling the method.
-        if (!bindActionsWasCalled) {
-            privateMembers.bindActions();
-        }
+		// If bindActions wasn't called, then we need to setup the
+		// store appropriately by calling the method.
+		if (!bindActionsWasCalled) {
+			privateMembers.bindActions();
+		}
 	}
 
 	toString () {
