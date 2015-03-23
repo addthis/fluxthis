@@ -18,21 +18,21 @@ var version = require('../package.json').version;
 var exec = require('child_process').exec;
 
 module.exports = function (callback) {
-    exec('git tag -a v' + version + ' -m "Automatically tagged for npm publish"', function (err) {
-        if (err) {
-            return callback(err);
-        }
+	exec('git tag -a v' + version + ' -m "Automatically tagged for npm publish"', function (err) {
+		if (err) {
+			return callback(err);
+		}
 
-        exec('git push --tags', function (err) {
-            if(err) {
-                return callback(err);
-            }
+		exec('git push --tags', function (err) {
+			if(err) {
+				return callback(err);
+			}
 
-            exec('npm publish', function (err) {
-                return callback(err);
-            });
-            
-        });
-    });
+			exec('npm publish', function (err) {
+				return callback(err);
+			});
+			
+		});
+	});
 };
 
