@@ -12,7 +12,8 @@
  * limitations under the License.
  */
 
-require('babel/polyfill');
+// THIS MUST BE FIRST. It loads the babel/polyfill
+require('./require-test');
 
 window.FluxThis = {
     dispatcher: require('../../src/dispatcherInstance.es6'),
@@ -26,3 +27,4 @@ require('./immutable-store-tests');
 require('./object-oriented-store-tests');
 require('./integration-tests');
 require('./constant-collection-tests');
+
