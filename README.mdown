@@ -1,4 +1,6 @@
 # FluxThis [![NPM version](http://img.shields.io/npm/v/fluxthis.svg)](https://www.npmjs.com/package/fluxthis) [![Build Status](https://travis-ci.org/addthis/fluxthis.svg?branch=master)](https://travis-ci.org/addthis/fluxthis)
+
+[![Join the chat at https://gitter.im/addthis/fluxthis](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/addthis/fluxthis?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 The super-opinionated, yell-at-you-for-everything, immutable Flux framework by
 AddThis.
 
