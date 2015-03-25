@@ -280,9 +280,9 @@ describe('ObjectOrientedStore', function () {
 				payload: 5
 			});
 
-			Should.exist(s.TestUtils.mockPublicMethod);
+			Should.exist(s.TestUtils.mockPublicMethods);
 
-			s.TestUtils.mockPublicMethod({
+			s.TestUtils.mockPublicMethods({
 				getThing: function () {
 					return 'i am mocked';
 				}
@@ -297,7 +297,7 @@ describe('ObjectOrientedStore', function () {
 		it('should be able to mock public method and reset just mocked public methods', function () {
 			var s = new Store(config);
 
-			s.TestUtils.mockPublicMethod({
+			s.TestUtils.mockPublicMethods({
 				getThing: function () {
 					return 'i am mocked';
 				}
@@ -318,7 +318,7 @@ describe('ObjectOrientedStore', function () {
 			var s = new Store(config);
 
 			(function() {
-				s.TestUtils.mockPublicMethod({
+				s.TestUtils.mockPublicMethods({
 					wtfThisIsntAMethod: function () {}
 				});
 			}).should.throw();

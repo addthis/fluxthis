@@ -166,7 +166,7 @@ export default class ObjectOrientedStore extends Store {
 							 *
 							 * @param object
 							 */
-							mockPublicMethod(object) {
+							mockPublicMethods(object) {
 								each(object, (key, func) => {
 									if (publicMethods[key]) {
 										originalPublicMethods.set(key, publicMethods[key]);
