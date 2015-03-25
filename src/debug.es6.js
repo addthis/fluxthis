@@ -161,6 +161,12 @@ class FluxDebugger {
 		consoleGroupEnd();
 	}
 
+	/**
+	 *
+	 * @param view - context of view
+	 * @param {object} nextProps - optional. defaults to current props
+	 * @param nextState - optional. defaults to current state
+	 */
 	logView (view, nextProps, nextState) {
 		var str = view.constructor.displayName ?
 			`[Component ${view.constructor.displayName}]` :
@@ -171,9 +177,17 @@ class FluxDebugger {
 		}
 
 		consoleGroup('%c%s', styles.view, str);
-		console.log('%ccomponentWillUpdate', styles.plain);
-		console.log('nextProps', nextProps);
-		console.log('nextState', nextState);
+
+		if (nextProps || nextState) {
+			console.log('%componentWillUpdate', styles.plain);
+			console.log('nextProps', nextProps);
+			console.log('nextState', nextState);
+		} else {
+			console.log('%componentDidMount', styles.plain);
+			console.log('current props', view.props);
+			console.log('next props', view.state);
+		}
+
 		consoleGroupEnd();
 	}
 
