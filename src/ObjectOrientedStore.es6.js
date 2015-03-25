@@ -59,6 +59,11 @@ export default class ObjectOrientedStore extends Store {
 		);
 
 		invariant(
+			options.displayName,
+			'ObjectOrientedStore requires a `displayName` to assist you with debugging'
+		);
+
+		invariant(
 			options.public,
 			'ObjectOrientedStore requires `public` functions'
 		);
@@ -235,7 +240,7 @@ export default class ObjectOrientedStore extends Store {
 	}
 
 	toString () {
-		return `[ObjectOrientedStore ${this.displayName || 'unnamed'}]`;
+		return `[ObjectOrientedStore ${this.displayName}]`;
 	}
 
 	/**

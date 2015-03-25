@@ -62,6 +62,11 @@ class ActionCreator {
 		);
 
 		invariant(
+			options.displayName,
+			'Could not create ActionCreator. Missing required parameter `displayName`'
+		);
+
+		invariant(
 			options.actionSource,
 			'Could not create `%s`. Missing required parameter `actionSource`',
 			this
@@ -160,9 +165,7 @@ class ActionCreator {
 	}
 
 	toString () {
-		return this.displayName ?
-			'[ActionCreator ' + this.displayName + ']' :
-			'[unnamed ActionCreator]';
+		return `[ActionCreator ${this.displayName}]`;
 	}
 }
 

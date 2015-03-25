@@ -21,7 +21,7 @@ var debug = require('./debug.es6');
 var ActionCreator = require('./ActionCreator.es6');
 
 
-class APIActionCreator extends ActionCreator {
+export default class APIActionCreator extends ActionCreator {
 
 	/**
 	 * Fallback when no successTest is provided. Given a response, check to
@@ -73,7 +73,19 @@ class APIActionCreator extends ActionCreator {
 			query: ActionCreator.PayloadTypes.object,
 			params: ActionCreator.PayloadTypes.object
 		}).isRequired;
+
 		var actionSource = this.actionSource;
+
+		invariant(
+			this.displayName,
+			'Could not create the API Action Creator. Missing required parameter `displayName`'
+		);
+
+		invariant(
+			this.actionSource,
+			'Could not create `%s`. Missing required parameter `actionSource`',
+			this
+		);
 
 		invariant(
 			successTest instanceof Function,
@@ -175,11 +187,6 @@ class APIActionCreator extends ActionCreator {
 	}
 
 	toString () {
-		return this.displayName ?
-			'[APIActionCreator ' + this.displayName + ']' :
-			'[unnamed APIActionCreator]';
+		return `[APIActionCreator ${this.displayName}]`;
 	}
-
 }
-
-module.exports = APIActionCreator;
