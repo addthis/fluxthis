@@ -272,6 +272,47 @@ describe('ObjectOrientedStore', function () {
 			s.getThing().should.equal(privateAttribute);
 		});
 
+        it('should be able to mock public method', function () {
+            var s = new Store(config);
+
+            s.TestUtils.mockDispatch({
+                type: 'FOO_BAR',
+                payload: 5
+            });
+
+            Should.exist(s.TestUtils.mockPublicMethod);
+
+            s.TestUtils.mockPublicMethod({
+                getThing: function () {
+                    return 'i am mocked';
+                }
+            });
+
+            s.getThing().should.equal('i am mocked');
+
+            s.TestUtils.reset();
+            s.getThing().should.equal(privateAttribute);
+        });
+
+        it('should be able to mock public method and reset just mocked public methods', function () {
+            var s = new Store(config);
+
+            s.TestUtils.mockPublicMethod({
+                getThing: function () {
+                    return 'i am mocked';
+                }
+            });
+
+            s.TestUtils.mockDispatch({
+                type: 'FOO_BAR',
+                payload: 5
+            });
+
+            s.getThing().should.equal('i am mocked');
+
+            s.TestUtils.resetMockedPublicMethods();
+            s.getThing().should.equal(5);
+        });
     });
 
 });
