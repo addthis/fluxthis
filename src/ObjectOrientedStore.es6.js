@@ -173,7 +173,7 @@ export default class ObjectOrientedStore extends Store {
 										publicMethods[key] = func.bind(store);
 									} else {
 										throw new Error(`You are trying to mock a public method that
-											'does not exist! (${key})`)
+											'does not exist! (${key})`);
 									}
 								});
 							},

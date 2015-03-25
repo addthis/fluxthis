@@ -313,6 +313,16 @@ describe('ObjectOrientedStore', function () {
 			s.TestUtils.resetMockedPublicMethods();
 			s.getThing().should.equal(5);
 		});
+
+		it('should throw an error for trying to mock a method that does not exist', function () {
+			var s = new Store(config);
+
+			(function() {
+				s.TestUtils.mockPublicMethod({
+					wtfThisIsntAMethod: function () {}
+				});
+			}).should.throw();
+		});
 	});
 
 });
