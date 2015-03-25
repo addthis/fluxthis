@@ -15,4 +15,12 @@ AddThis.
 
 ## Documentation
 
-Please head over and check out our [documentation](fluxthis.io/#/docs/about) to learn more!
+* Learn [about](http://fluxthis.io/#/docs/about) FluxThis
+* [Installation](http://fluxthis.io/#/docs/installation)
+* [Immutable Stores](http://fluxthis.io/#/docs/stores)
+* [Controller Views](http://fluxthis.io/#/docs/controller-views)
+* [Action Creators](http://fluxthis.io/#/docs/action-creators)
+* [Dispatcher & Migration](http://fluxthis.io/#/docs/dispatcher)
+* [Debugging](http://fluxthis.io/#/docs/debugging)
+* [Testing](http://fluxthis.io/#/docs/testing)
+
