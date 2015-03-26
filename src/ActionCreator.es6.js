@@ -75,7 +75,7 @@ class ActionCreator {
 		// create public methods for every key on options that isn't a reserved
 		// one
 		each(options, (key, val) => {
-			if(reservedKeys[key]) {
+			if (reservedKeys[key]) {
 				this[key] = val;
 			}
 			else {

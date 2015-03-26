@@ -46,8 +46,13 @@ class ImmutableStore extends ObjectOrientedStore {
 	*	debugging
 	*/
 	constructor (options) {
-		//wrap methods with immutability checkers before creating the OOStore
-		var parentOptions = {};
+		// Wrap methods with immutability checkers before creating the OOStore
+		var parentOptions = {
+			displayName: options.displayName,
+			init: null,
+			public: null,
+			private: null
+		};
 
 		if (options.init) {
 			parentOptions.init = function () {

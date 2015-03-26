@@ -17,9 +17,10 @@ var dispatcher = require('../../src/dispatcherInstance.es6');
 
 describe('APIActionCreators', function () {
 
-    it('should expose methods passed to their constructor', function () {
+	it('should expose methods passed to their constructor', function () {
         var aac = new APIActionCreator({
             actionSource: 'TEST',
+			displayName: 'test',
             doThing: {
                 method: 'GET',
                 route: '/cat',
@@ -39,6 +40,7 @@ describe('APIActionCreators', function () {
     it('should call handleSuccess on a successful request', function (done) {
         var aac = new APIActionCreator({
             actionSource: 'TEST',
+			displayName: 'test',
             doThing: {
                 route: '/mirror',
                 method: 'POST',
@@ -58,6 +60,7 @@ describe('APIActionCreators', function () {
     it('should call handleFailure on a failed request', function (done) {
         var aac = new APIActionCreator({
             actionSource: 'TEST',
+			displayName: 'test',
             doThing: {
                 route: '/bad-endpoint',
                 method: 'POST',
@@ -78,6 +81,7 @@ describe('APIActionCreators', function () {
         var query = {};
         var aac = new APIActionCreator({
             actionSource: 'TEST',
+			displayName: 'test',
             doThing: {
                 route: '/mirror',
                 method: 'POST',
@@ -112,6 +116,7 @@ describe('APIActionCreators', function () {
         (function () {
             new APIActionCreator({
                 actionSource: 'TEST',
+				displayName: 'test',
                 doThing: {
                     method: 'POST',
                     pending: 'TEST_' + Math.random()
@@ -147,6 +152,7 @@ describe('APIActionCreators', function () {
             query = {};
             aac = new APIActionCreator({
                 actionSource: 'TEST',
+				displayName: 'test',
                 doThing: {
                     route: '/cat',
                     method: 'GET',

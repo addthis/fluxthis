@@ -46,6 +46,7 @@ describe('Integration', function () {
 		});
 
 		store = new Store({
+			displayName: 'Store1',
 			init: function () {
 				this.things = Store.Immutable.List([1,2,3,4]);
 				this.bindActions(
@@ -68,6 +69,7 @@ describe('Integration', function () {
 		});
 
 		store2 = new Store({
+			displayName: 'Store2',
 			init: function () {
 				this.things = Store.Immutable.List([1,2,3,4]);
 				this.bindActions(
@@ -164,6 +166,7 @@ describe('Integration', function () {
 		it('should wait for other stores', function () {
 			var str = '';
 			var s = new Store({
+				displayName: 'store1',
 				init: function () {
 					this.bindActions(MY_SOURCE, this.a);
 				},
@@ -175,6 +178,7 @@ describe('Integration', function () {
 				}
 			});
 			var s2 = new Store({
+				displayName: 'store2',
 				init: function () {
 					this.bindActions(MY_SOURCE, this.b);
 				},
@@ -188,6 +192,7 @@ describe('Integration', function () {
 			});
 
 			new Store({
+				displayName: 'store3',
 				init: function () {
 					this.bindActions(MY_SOURCE, this.c);
 				},

@@ -16,8 +16,25 @@ var ActionCreator = require('../../src/ActionCreator.es6');
 
 describe('ActionCreators', function () {
 
+	it('should thrown an error without actionSource', function () {
+		(function () {
+			new ActionCreator({
+				displayName: 'test'
+			});
+		}).should.throw();
+	});
+
+	it('should thrown an error without display name', function () {
+		(function () {
+			new ActionCreator({
+				actionSource: 'TEST'
+			});
+		}).should.throw();
+	});
+
 	it('should expose methods passed to their constructor', function () {
 		var ac = new ActionCreator({
+			displayName: 'test',
 			actionSource: 'TEST',
 			doThing: {
 				actionType: 'TEST_' + Math.random()
@@ -29,6 +46,7 @@ describe('ActionCreators', function () {
 
 	it('should call createPayload', function (done) {
 		var ac = new ActionCreator({
+			displayName: 'test',
 			actionSource: 'TEST',
 			doThing: {
 				actionType: 'TEST_' + Math.random(),
@@ -43,6 +61,7 @@ describe('ActionCreators', function () {
 
 	it('should not expose a dispatch method', function () {
 		var ac = new ActionCreator({
+			displayName: 'test',
 			actionSource: 'TEST',
 			doThing: {
 				actionType: 'TEST_' + Math.random()

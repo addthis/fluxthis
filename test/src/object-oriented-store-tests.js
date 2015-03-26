@@ -25,15 +25,27 @@ describe('ObjectOrientedStore', function () {
 	it('should throw an error when passed no public fns', function () {
 		(function () {
 			new Store({
+				displayName: 'store',
 				init: function(){},
 				private:{}
 			});
 		}).should.throw();
 	});
 
-	it('should create when passed private, public, and init', function () {
+	it('should throw an error when passed no display name', function () {
 		(function () {
 			new Store({
+				init: function(){},
+				public:{},
+				private:{}
+			});
+		}).should.throw();
+	});
+
+	it('should create when passed display name, private, public, and init', function () {
+		(function () {
+			new Store({
+				displayName: 'store',
 				init: function(){},
 				public:{},
 				private:{}
@@ -43,7 +55,8 @@ describe('ObjectOrientedStore', function () {
 
     it('should have a dispatch token without calling bindActions', function () {
         var store = new Store({
-            init: function(){},
+			displayName: 'store',
+			init: function(){},
             public:{},
             private:{}
         });
@@ -52,6 +65,7 @@ describe('ObjectOrientedStore', function () {
 
     describe('during init', function () {
         var config = {
+			displayName: 'store',
 			public: {},
 			private: {}
 		};
@@ -179,6 +193,7 @@ describe('ObjectOrientedStore', function () {
     describe('after init', function () {
 		var privateAttribute = '1234abc';
 		var config = {
+			displayName: 'store',
 			init: function () {
 				this.thing = privateAttribute;
                 this.bindActions();
@@ -221,6 +236,7 @@ describe('ObjectOrientedStore', function () {
     describe('TestUtils', function () {
         var privateAttribute = '1234abc';
         var config = {
+			displayName: 'store',
             init: function () {
                 this.thing = privateAttribute;
                 this.bindActions(

@@ -45,6 +45,7 @@ describe('ImmutableStore', function () {
 
 	describe('during init', function () {
 		var config = {
+			displayName: 'test',
 			public: {},
 			private: {}
 		};
@@ -63,6 +64,7 @@ describe('ImmutableStore', function () {
 
 		describe('when attempting to set an immutable value', function () {
 			it('should not throw an error', function () {
+				debugger;
 				config.init = function () {
 					this.prop = new Immutable.Map({a: 0});
 				};
@@ -91,6 +93,7 @@ describe('ImmutableStore', function () {
 	describe('after init', function () {
 		var privateAttribute = '1234abc';
 		var config = {
+			displayName: 'test',
 			init: function () {
 				this.thing = privateAttribute;
                 this.bindActions();

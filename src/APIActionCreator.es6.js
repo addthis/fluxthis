@@ -77,17 +77,6 @@ export default class APIActionCreator extends ActionCreator {
 		var actionSource = this.actionSource;
 
 		invariant(
-			this.displayName,
-			'Could not create the API Action Creator. Missing required parameter `displayName`'
-		);
-
-		invariant(
-			this.actionSource,
-			'Could not create `%s`. Missing required parameter `actionSource`',
-			this
-		);
-
-		invariant(
 			successTest instanceof Function,
 			'The method `%s` could not be created on `%s`; ' +
 			'`successTest` must be a `Function`',
