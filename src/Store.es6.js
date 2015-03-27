@@ -37,6 +37,8 @@ export default class Store {
 					this.displayName
 				);
 
+				debug.logView(this);
+
 				if (!this.__fluxChangeListener) {
 					this.__fluxChangeListener = () => {
 						this.setState(this.getStateFromStores());
@@ -54,7 +56,7 @@ export default class Store {
 				store.__removeChangeListener(this.__fluxChangeListener);
 			},
 
-			getInitialState() {
+			getInitialState () {
 				// This check ensures that we do not use the mixins
 				// get initial state twice on the same method.
 				// This is the case when a view uses more than 1 FluxThis store.
