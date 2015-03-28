@@ -17,9 +17,10 @@ var dispatcher = require('../../src/dispatcherInstance.es6');
 
 describe('APIActionCreators', function () {
 
-    it('should expose methods passed to their constructor', function () {
+	it('should expose methods passed to their constructor', function () {
         var aac = new APIActionCreator({
-            actionSource: 'TEST',
+            actionSource: 'apiSource1',
+			displayName: 'api1',
             doThing: {
                 method: 'GET',
                 route: '/cat',
@@ -38,7 +39,8 @@ describe('APIActionCreators', function () {
 
     it('should call handleSuccess on a successful request', function (done) {
         var aac = new APIActionCreator({
-            actionSource: 'TEST',
+            actionSource: 'apiSource2',
+			displayName: 'api2',
             doThing: {
                 route: '/mirror',
                 method: 'POST',
@@ -57,7 +59,8 @@ describe('APIActionCreators', function () {
 
     it('should call handleFailure on a failed request', function (done) {
         var aac = new APIActionCreator({
-            actionSource: 'TEST',
+            actionSource: 'apiSource3',
+			displayName: 'api3',
             doThing: {
                 route: '/bad-endpoint',
                 method: 'POST',
@@ -77,7 +80,8 @@ describe('APIActionCreators', function () {
     it('should transform a request with createRequest', function (done) {
         var query = {};
         var aac = new APIActionCreator({
-            actionSource: 'TEST',
+            actionSource: 'apiSource4',
+			displayName: 'api4',
             doThing: {
                 route: '/mirror',
                 method: 'POST',
@@ -111,7 +115,8 @@ describe('APIActionCreators', function () {
     it('should throw errors when route is missing', function () {
         (function () {
             new APIActionCreator({
-                actionSource: 'TEST',
+                actionSource: 'apiSource5',
+				displayName: 'api5',
                 doThing: {
                     method: 'POST',
                     pending: 'TEST_' + Math.random()
@@ -123,7 +128,8 @@ describe('APIActionCreators', function () {
     it('should throw errors when method is missing', function () {
         (function () {
             new APIActionCreator({
-                actionSource: 'TEST',
+                actionSource: 'apiSource6',
+				displayName: 'api6',
                 doThing: {
                     route: '/dog',
                     penging: 'TEST_' + Math.random(),
@@ -146,7 +152,8 @@ describe('APIActionCreators', function () {
             failure = 'FAILURE_' + Math.random();
             query = {};
             aac = new APIActionCreator({
-                actionSource: 'TEST',
+                actionSource: 'apiSource_' + String(Math.random()),
+				displayName: String(Math.random()),
                 doThing: {
                     route: '/cat',
                     method: 'GET',

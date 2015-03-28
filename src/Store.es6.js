@@ -19,9 +19,24 @@ var invariant = require('invariant');
 var debug = require('./debug.es6');
 var renderedComponentSet = new WeakSet();
 
+var IN_PRODUCTION = process.env.NODE_ENV === 'production';
+
+var StoreDisplayNames = new Set();
+
 export default class Store {
 	constructor () {
 		var store = this;
+		var ViewDisplayNames = new Set();
+
+		// Ensure we have unique display names to assist with debugging.
+		if (!IN_PRODUCTION) {
+			invariant(
+				!StoreDisplayNames.has(this.displayName),
+				`Store: Your displayName of ${this.displayName} is` +
+					'not unique.'
+			);
+			StoreDisplayNames.add(this.displayName);
+		}
 
 		// Expose the mixin for the Store.
 		this.mixin = {
@@ -30,12 +45,33 @@ export default class Store {
 			 * store when the component is going did mount.
 			 */
 			componentDidMount () {
+				var displayName = this.constructor.displayName;
+				invariant(
+					displayName,
+					'Could not successfully add the mixin to your ' +
+					'new controller view because it\'s missing ' +
+					'a displayName, which is used for debugging ' +
+					'purposes.'
+				);
+
+				invariant(
+					!ViewDisplayNames.has(displayName),
+					`Error: ${store.toString()} already has a ` +
+					'controller view registered with the display name ' +
+					`of ${displayName}. Please make sure ` +
+					'display names are unique.'
+				);
+
+				ViewDisplayNames.add(displayName);
+
 				invariant(
 					this.getStateFromStores instanceof Function,
 					'`%s` must define `getStateFromStores` in order to use ' +
 					'the FluxThis mixin.',
 					this.displayName
 				);
+
+				debug.logView(this);
 
 				if (!this.__fluxChangeListener) {
 					this.__fluxChangeListener = () => {
@@ -51,10 +87,12 @@ export default class Store {
 			 * store when the component is going to unmount.
 			 */
 			componentWillUnmount () {
+				renderedComponentSet.remove(this);
+				ViewDisplayNames.remove(this.displayName);
 				store.__removeChangeListener(this.__fluxChangeListener);
 			},
 
-			getInitialState() {
+			getInitialState () {
 				// This check ensures that we do not use the mixins
 				// get initial state twice on the same method.
 				// This is the case when a view uses more than 1 FluxThis store.
@@ -79,5 +117,9 @@ export default class Store {
 
 	waitFor (...tokens) {
 		return dispatcher.waitFor(tokens);
+	}
+
+	toString () {
+		return `[Store ${this.displayName}]`;
 	}
 }

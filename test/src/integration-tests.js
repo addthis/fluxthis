@@ -16,7 +16,7 @@ var ActionCreator = require('../../src/ActionCreator.es6');
 var Store = require('../../src/ImmutableStore.es6');
 
 describe('Integration', function () {
-	var MY_SOURCE = 'MY_SOURCE';
+	var MY_SOURCE;
 	var ADD_THING;
 	var ADD_THING_2;
 	var ac;
@@ -32,8 +32,10 @@ describe('Integration', function () {
 	beforeEach(function () {
 		ADD_THING = 'ADD_THING_' + Math.random();
 		ADD_THING_2 = 'ADD_THING_2_' + Math.random();
+		MY_SOURCE = 'MY_SOURCE_' + Math.random();
+
 		ac = new ActionCreator({
-			displayName: 'TestAC',
+			displayName: 'apiDisplay_' + String(Math.random()),
 			actionSource: MY_SOURCE,
 			addThing: {
 				actionType: ADD_THING,
@@ -46,6 +48,7 @@ describe('Integration', function () {
 		});
 
 		store = new Store({
+			displayName: String(Math.random()),
 			init: function () {
 				this.things = Store.Immutable.List([1,2,3,4]);
 				this.bindActions(
@@ -68,6 +71,7 @@ describe('Integration', function () {
 		});
 
 		store2 = new Store({
+			displayName: String(Math.random()),
 			init: function () {
 				this.things = Store.Immutable.List([1,2,3,4]);
 				this.bindActions(
@@ -91,6 +95,7 @@ describe('Integration', function () {
 
 		viewConfig = {
 			mixins: [store.mixin],
+			displayName: 'VIEW_' +  Math.random(),
 			getStateFromStores: function () {
 				return {
 					things: store.getThings()
@@ -130,6 +135,7 @@ describe('Integration', function () {
 
 	describe('A view which depends on multiple stores', function () {
 		beforeEach(function () {
+			viewConfig.displayName = 'VIEW_' +  Math.random();
 			viewConfig.mixins = [store.mixin, store2.mixin];
 		});
 
@@ -164,6 +170,7 @@ describe('Integration', function () {
 		it('should wait for other stores', function () {
 			var str = '';
 			var s = new Store({
+				displayName: 'store1',
 				init: function () {
 					this.bindActions(MY_SOURCE, this.a);
 				},
@@ -175,6 +182,7 @@ describe('Integration', function () {
 				}
 			});
 			var s2 = new Store({
+				displayName: 'store2',
 				init: function () {
 					this.bindActions(MY_SOURCE, this.b);
 				},
@@ -188,6 +196,7 @@ describe('Integration', function () {
 			});
 
 			new Store({
+				displayName: 'store3',
 				init: function () {
 					this.bindActions(MY_SOURCE, this.c);
 				},

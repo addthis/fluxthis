@@ -16,7 +16,7 @@ var Store = require('../../src/ObjectOrientedStore.es6');
 
 describe('ObjectOrientedStore', function () {
 
-    it('should throw an error when passed no arguments', function () {
+	it('should throw an error when passed no arguments', function () {
 		(function () {
 			new Store();
 		}).should.throw();
@@ -25,15 +25,27 @@ describe('ObjectOrientedStore', function () {
 	it('should throw an error when passed no public fns', function () {
 		(function () {
 			new Store({
+				displayName: 'oo1',
 				init: function(){},
 				private:{}
 			});
 		}).should.throw();
 	});
 
-	it('should create when passed private, public, and init', function () {
+	it('should throw an error when passed no display name', function () {
 		(function () {
 			new Store({
+				init: function(){},
+				public:{},
+				private:{}
+			});
+		}).should.throw();
+	});
+
+	it('should create when passed display name, private, public, and init', function () {
+		(function () {
+			new Store({
+				displayName: 'oo2',
 				init: function(){},
 				public:{},
 				private:{}
@@ -43,7 +55,8 @@ describe('ObjectOrientedStore', function () {
 
     it('should have a dispatch token without calling bindActions', function () {
         var store = new Store({
-            init: function(){},
+			displayName: 'oo3',
+			init: function(){},
             public:{},
             private:{}
         });
@@ -51,10 +64,14 @@ describe('ObjectOrientedStore', function () {
     });
 
     describe('during init', function () {
-        var config = {
-			public: {},
-			private: {}
-		};
+		var config;
+		beforeEach(function () {
+			config = {
+				displayName: String(Math.random()),
+				public: {},
+				private: {}
+			}
+		});
 
 		it('should have access to private functions', function () {
 			config.private.setThingPrivately = function (b) {
@@ -92,6 +109,10 @@ describe('ObjectOrientedStore', function () {
 		});
 
 		describe('when binding actions', function () {
+
+			beforeEach(function () {
+				config.displayName = String(Math.random());
+			})
 
 			it('should create a dispatch token', function () {
 				config.init = function () {
@@ -174,26 +195,30 @@ describe('ObjectOrientedStore', function () {
 
 		});
 
-    });
+	});
 
-    describe('after init', function () {
+	describe('after init', function () {
 		var privateAttribute = '1234abc';
-		var config = {
-			init: function () {
-				this.thing = privateAttribute;
-                this.bindActions();
-			},
-			private: {
-				setThing: function (thing) {
-					this.thing = thing;
+		var config;
+		beforeEach(function () {
+			config = {
+				displayName: String(Math.random()),
+				init: function () {
+					this.thing = privateAttribute;
+					this.bindActions();
+				},
+				private: {
+					setThing: function (thing) {
+						this.thing = thing;
+					}
+				},
+				public: {
+					getThing: function () {
+						return this.thing;
+					}
 				}
-			},
-			public: {
-				getThing: function () {
-					return this.thing;
-				}
-			}
-		};
+			};
+		});
 
 		it('should not have access to private methods', function () {
 			var s = new Store(config);
@@ -215,48 +240,52 @@ describe('ObjectOrientedStore', function () {
 			var s = new Store(config);
 			s.getThing().should.equal(privateAttribute);
 		});
-
     });
 
     describe('TestUtils', function () {
         var privateAttribute = '1234abc';
-        var config = {
-            init: function () {
-                this.thing = privateAttribute;
-                this.bindActions(
-                    'FOO_BAR', this.setThing
-                );
-            },
-            private: {
-                setThing: function (thing) {
-                    this.waitFor(this.dispatchToken);
-                    this.thing = thing;
-                }
-            },
-            public: {
-                getThing: function () {
-                    return this.thing;
-                }
-            }
-        };
+        var config;
+
+		beforeEach(function () {
+			config = {
+				displayName: String(Math.random()),
+				init: function () {
+					this.thing = privateAttribute;
+					this.bindActions(
+						'FOO_BAR', this.setThing
+					);
+				},
+				private: {
+					setThing: function (thing) {
+						this.waitFor(this.dispatchToken);
+						this.thing = thing;
+					}
+				},
+				public: {
+					getThing: function () {
+						return this.thing;
+					}
+				}
+			};
+		});
 
 		it('should exist', function () {
 			var s = new Store(config);
 			Should.exist(s.TestUtils);
 		});
 
-        it('should be able to mock dispatches', function () {
-            config.public.getGoodThing = function () {
-                return '';
-            };
-            var s = new Store(config);
+		it('should be able to mock dispatches', function () {
+			config.public.getGoodThing = function () {
+				return '';
+			};
+			var s = new Store(config);
 
 			Should.exist(s.TestUtils.mockDispatch);
 
-            s.TestUtils.mockDispatch({
-                type: 'FOO_BAR'
-            });
-        });
+			s.TestUtils.mockDispatch({
+				type: 'FOO_BAR'
+			});
+		});
 
 		it('should be able to reset a store', function () {
 			var s = new Store(config);
@@ -272,6 +301,57 @@ describe('ObjectOrientedStore', function () {
 			s.getThing().should.equal(privateAttribute);
 		});
 
-    });
+		it('should be able to mock public method', function () {
+			var s = new Store(config);
+
+			s.TestUtils.mockDispatch({
+				type: 'FOO_BAR',
+				payload: 5
+			});
+
+			Should.exist(s.TestUtils.mockPublicMethods);
+
+			s.TestUtils.mockPublicMethods({
+				getThing: function () {
+					return 'i am mocked';
+				}
+			});
+
+			s.getThing().should.equal('i am mocked');
+
+			s.TestUtils.reset();
+			s.getThing().should.equal(privateAttribute);
+		});
+
+		it('should be able to mock public method and reset just mocked public methods', function () {
+			var s = new Store(config);
+
+			s.TestUtils.mockPublicMethods({
+				getThing: function () {
+					return 'i am mocked';
+				}
+			});
+
+			s.TestUtils.mockDispatch({
+				type: 'FOO_BAR',
+				payload: 5
+			});
+
+			s.getThing().should.equal('i am mocked');
+
+			s.TestUtils.resetMockedPublicMethods();
+			s.getThing().should.equal(5);
+		});
+
+		it('should throw an error for trying to mock a method that does not exist', function () {
+			var s = new Store(config);
+
+			(function() {
+				s.TestUtils.mockPublicMethods({
+					wtfThisIsntAMethod: function () {}
+				});
+			}).should.throw();
+		});
+	});
 
 });
