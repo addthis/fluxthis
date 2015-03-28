@@ -16,7 +16,7 @@ var Store = require('../../src/ObjectOrientedStore.es6');
 
 describe('ObjectOrientedStore', function () {
 
-    it('should throw an error when passed no arguments', function () {
+	it('should throw an error when passed no arguments', function () {
 		(function () {
 			new Store();
 		}).should.throw();
@@ -188,15 +188,15 @@ describe('ObjectOrientedStore', function () {
 
 		});
 
-    });
+	});
 
-    describe('after init', function () {
+	describe('after init', function () {
 		var privateAttribute = '1234abc';
 		var config = {
 			displayName: 'store',
 			init: function () {
 				this.thing = privateAttribute;
-                this.bindActions();
+				this.bindActions();
 			},
 			private: {
 				setThing: function (thing) {
@@ -230,7 +230,6 @@ describe('ObjectOrientedStore', function () {
 			var s = new Store(config);
 			s.getThing().should.equal(privateAttribute);
 		});
-
     });
 
     describe('TestUtils', function () {
@@ -261,18 +260,18 @@ describe('ObjectOrientedStore', function () {
 			Should.exist(s.TestUtils);
 		});
 
-        it('should be able to mock dispatches', function () {
-            config.public.getGoodThing = function () {
-                return '';
-            };
-            var s = new Store(config);
+		it('should be able to mock dispatches', function () {
+			config.public.getGoodThing = function () {
+				return '';
+			};
+			var s = new Store(config);
 
 			Should.exist(s.TestUtils.mockDispatch);
 
-            s.TestUtils.mockDispatch({
-                type: 'FOO_BAR'
-            });
-        });
+			s.TestUtils.mockDispatch({
+				type: 'FOO_BAR'
+			});
+		});
 
 		it('should be able to reset a store', function () {
 			var s = new Store(config);
@@ -288,6 +287,57 @@ describe('ObjectOrientedStore', function () {
 			s.getThing().should.equal(privateAttribute);
 		});
 
-    });
+		it('should be able to mock public method', function () {
+			var s = new Store(config);
+
+			s.TestUtils.mockDispatch({
+				type: 'FOO_BAR',
+				payload: 5
+			});
+
+			Should.exist(s.TestUtils.mockPublicMethods);
+
+			s.TestUtils.mockPublicMethods({
+				getThing: function () {
+					return 'i am mocked';
+				}
+			});
+
+			s.getThing().should.equal('i am mocked');
+
+			s.TestUtils.reset();
+			s.getThing().should.equal(privateAttribute);
+		});
+
+		it('should be able to mock public method and reset just mocked public methods', function () {
+			var s = new Store(config);
+
+			s.TestUtils.mockPublicMethods({
+				getThing: function () {
+					return 'i am mocked';
+				}
+			});
+
+			s.TestUtils.mockDispatch({
+				type: 'FOO_BAR',
+				payload: 5
+			});
+
+			s.getThing().should.equal('i am mocked');
+
+			s.TestUtils.resetMockedPublicMethods();
+			s.getThing().should.equal(5);
+		});
+
+		it('should throw an error for trying to mock a method that does not exist', function () {
+			var s = new Store(config);
+
+			(function() {
+				s.TestUtils.mockPublicMethods({
+					wtfThisIsntAMethod: function () {}
+				});
+			}).should.throw();
+		});
+	});
 
 });
