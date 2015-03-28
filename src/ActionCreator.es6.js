@@ -204,9 +204,8 @@ class ActionCreator {
 			// This is used for more complex payload checking
 			// like instanceOf, etc.
 			else if (expected) {
-
-					err.message = this + ' ' + name + ' was provided ' +
-					'an invalid payload. Expected ' + expected + '.';
+				err.message = this + ' ' + name + ' was provided ' +
+				'an invalid payload. Expected ' + expected + '.';
 			}
 
 			throw err;
