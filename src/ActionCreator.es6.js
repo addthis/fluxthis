@@ -185,6 +185,7 @@ class ActionCreator {
 
 			required = message.match(RE_REQUIRED_PROP);
 			expected = message.match(RE_WARNING_EXPECTED);
+			found = message.match(RE_WARNING_FOUND);
 
 			// If the message is that it's missing a required prop
 			if (required) {
@@ -192,23 +193,20 @@ class ActionCreator {
 					'the required prop `' + required[1] + '`.';
 			}
 			// Else we found a prop of one type when we expected another
-			else if (expected) {
+			else if (expected && found) {
 				expected = expected[1];
 				found = message.match(RE_WARNING_FOUND);
 
-				if (found) {
-					// If we found something, then that means
-					// we are checking primitive payloads.
-					err.message = this + ' ' + name + ' was provided ' +
-					'an invalid payload. Expected ' + expected + ', got `' +
-					found[1] + '`.';
-				} else {
-					// This is used for more complex payload checking
-					// like instanceOf, etc.
+				err.message = this + ' ' + name + ' was provided ' +
+				'an invalid payload. Expected ' + expected + ', got `' +
+				found[1] + '`.';
+			}
+			// This is used for more complex payload checking
+			// like instanceOf, etc.
+			else if (expected) {
+
 					err.message = this + ' ' + name + ' was provided ' +
 					'an invalid payload. Expected ' + expected + '.';
-				}
-
 			}
 
 			throw err;
