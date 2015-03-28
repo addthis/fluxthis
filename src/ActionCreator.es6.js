@@ -20,7 +20,7 @@ var each = require('../lib/each');
 var PropTypes = require('react/lib/ReactPropTypes');
 var invariant = require('invariant');
 
-var RE_REQUIRED_PROP = /Required prop .*`(.*?)`/;
+var RE_REQUIRED_PROP = /Required prop `(.*?)`/;
 
 var RE_WARNING_EXPECTED = /expected (.*`(.*?)`)/;
 var RE_WARNING_FOUND = /type `(.*?)`/;
