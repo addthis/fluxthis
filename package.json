@@ -5,7 +5,7 @@
   "main": "build/FluxThis.js",
   "directories": {
     "install": "gulp build-dev",
-    "test": "test"
+    "test": "babel-node test.js"
   },
   "repository": {
     "type": "git",

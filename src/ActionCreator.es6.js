@@ -20,6 +20,8 @@ var each = require('../lib/each');
 var PropTypes = require('react/lib/ReactPropTypes');
 var invariant = require('invariant');
 
+var RE_REQUIRED_PROP = /Required prop `(.*?)`/;
+
 var RE_WARNING_EXPECTED = /expected `(.*?)`/;
 var RE_WARNING_FOUND = /type `(.*?)`/;
 
@@ -176,13 +178,28 @@ class ActionCreator {
 		var err = payloadType({payload: payload}, 'payload', 'NAME', 'prop');
 		var expected;
 		var found;
+		var required;
 
 		if(err) {
-			expected = err.message.match(RE_WARNING_EXPECTED)[1];
-			found = err.message.match(RE_WARNING_FOUND)[1];
-			err.message = this + ' ' + name + ' was provided ' +
-			'an invalid payload. Expected `' + expected + '`, got `' +
-			found + '`.';
+			var message = err.message;
+
+			required = message.match(RE_REQUIRED_PROP);
+			expected = message.match(RE_WARNING_EXPECTED);
+
+			// If the message is that it's missing a required prop
+			if (required) {
+				err.message = this + ' ' + name + ' was not provided ' +
+					'the required prop `' + required[1] + '`.';
+			}
+			// Else we found a prop of one type when we expected another
+			else if (expected) {
+				expected = expected[1];
+				found = message.match(RE_WARNING_FOUND)[1];
+				err.message = this + ' ' + name + ' was provided ' +
+				'an invalid payload. Expected `' + expected + '`, got `' +
+				found + '`.';
+			}
+
 			throw err;
 		}
 	}
