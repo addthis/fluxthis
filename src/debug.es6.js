@@ -23,6 +23,8 @@ var FLUX_DEBUG_DEFAULTS = {
 	all: false,
 	types: [],
 	sources: [],
+	stores: [],
+	controllerViews: [],
 	unused: !IN_PRODUCTION,
 	unusedTimeout: 3000
 };
@@ -55,10 +57,13 @@ var consoleGroupEnd = console.groupEnd ?
 
 class FluxDebugger {
 
-	static shouldLog () {
+	static shouldLog (dispalyName) {
 		var settings = FluxDebugger.getDebugSettings();
 		var action = dispatcher.getRecentDispatch();
+
 		return action && (settings.all ||
+			settings.stores.indexOf(this.storeDisplayName) > -1 ||
+			settings.controllerViews.indexOf(this.viewDisplayName) > -1 ||
 			settings.types.indexOf(action.type) > -1 ||
 			settings.sources.indexOf(action.source) > -1);
 	}
@@ -151,7 +156,8 @@ class FluxDebugger {
 	}
 
 	logStore (store, methodName, ...args) {
-		if(!FluxDebugger.shouldLog()) {
+		if(!FluxDebugger.shouldLog
+				.call({storeDisplayName: store.displayName})) {
 			return;
 		}
 
@@ -172,7 +178,8 @@ class FluxDebugger {
 			`[Component ${view.constructor.displayName}]` :
 			`[unnamed Component]`;
 
-		if(!FluxDebugger.shouldLog()) {
+		if (!FluxDebugger
+				.shouldLog.call({viewDisplayName: view.displayName})) {
 			return;
 		}
 
@@ -225,7 +232,7 @@ class FluxDebugger {
 			var sourceMatched = registeredSources.indexOf(sourceOrType) > -1;
 			var typeMatched = registeredTypes.indexOf(sourceOrType) > -1;
 
-			if(!sourceMatched && !typeMatched) {
+			if (!sourceMatched && !typeMatched) {
 				unregistered.push({
 					sourceOrType: sourceOrType,
 					stores: stores
@@ -237,7 +244,7 @@ class FluxDebugger {
 		// by Stores
 		each(this.registeredActions, (source, actionsByType) => {
 			each(actionsByType, (type, actionCreator) => {
-				if(!this.registeredHandlers[source] &&
+				if (!this.registeredHandlers[source] &&
 					!this.registeredHandlers[type]) {
 					unhandled.push({
 						actionCreator: actionCreator,
@@ -248,7 +255,7 @@ class FluxDebugger {
 			});
 		});
 
-		if(unregistered.length > 1) {
+		if (unregistered.length > 1) {
 			console.warn(
 				'The following actions have handlers in stores, but no ' +
 				'ActionCreator has registered an action for them:\n',
@@ -256,7 +263,7 @@ class FluxDebugger {
 			);
 		}
 
-		if(unhandled.length > 1) {
+		if (unhandled.length > 1) {
 			console.warn(
 				'The following actions were registered by ActionCreators but ' +
 				'are not handled in any known Store:\n',
@@ -266,4 +273,4 @@ class FluxDebugger {
 	}
 }
 
-module.exports = new FluxDebugger();
+export default new FluxDebugger();

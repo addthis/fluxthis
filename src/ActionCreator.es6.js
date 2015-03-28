@@ -76,21 +76,21 @@ class ActionCreator {
 			this
 		);
 
-		if (!IN_PRODUCTION) {
-			// Lets make sure we have unique action sources
-			if (ActionSources.has(options.actionSource)) {
-				throw new Error(`ActionCreator Error: Your ${options.actionSource} must be unique.`);
-			}
+		// Lets make sure we have unique action sources
+		invariant(
+			!ActionSources.has(options.actionSource),
+			`ActionCreator - Your actionSource of ` +
+			`${options.actionSource} is not unique.`
+		);
+		ActionSources.add(options.actionSource);
 
-			ActionSources.add(options.actionSource);
-
-			// Lets make sure we have unique display names
-			if (DisplayNames.has(options.displayName)) {
-				throw new Error(`ActionCreator Error: Your ${options.displayName} must be unique.`);
-			}
-
-			DisplayNames.add(options.displayName);
-		}
+		// Lets make sure we have unique display names
+		invariant(
+			!DisplayNames.has(options.displayName),
+			`ActionCreator - Your displayName of ` +
+			`${options.displayName} is not unique.`
+		);
+		DisplayNames.add(options.displayName);
 
 		// create public methods for every key on options that isn't a reserved
 		// one

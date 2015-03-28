@@ -95,6 +95,7 @@ describe('Integration', function () {
 
 		viewConfig = {
 			mixins: [store.mixin],
+			displayName: 'VIEW_' +  Math.random(),
 			getStateFromStores: function () {
 				return {
 					things: store.getThings()
@@ -134,6 +135,7 @@ describe('Integration', function () {
 
 	describe('A view which depends on multiple stores', function () {
 		beforeEach(function () {
+			viewConfig.displayName = 'VIEW_' +  Math.random();
 			viewConfig.mixins = [store.mixin, store2.mixin];
 		});
 
