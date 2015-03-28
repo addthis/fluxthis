@@ -14,7 +14,13 @@
 
 'use strict';
 
-require('babel/polyfill');
+try {
+	require('babel/pollyfill');
+} catch (e) {
+	// This will throw an error if polyfill is
+	// already required.
+}
+
 
 export default {
 	ConstantCollection: require('./ConstantCollection.es6'),
