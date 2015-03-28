@@ -53,24 +53,24 @@ describe('ObjectOrientedStore', function () {
 		}).should.not.throw();
 	});
 
-    it('should have a dispatch token without calling bindActions', function () {
-        var store = new Store({
+	it('should have a dispatch token without calling bindActions', function () {
+		var store = new Store({
 			displayName: 'oo3',
 			init: function(){},
-            public:{},
-            private:{}
-        });
-        Should.exist(store.dispatchToken);
-    });
+			public:{},
+			private:{}
+		});
+		Should.exist(store.dispatchToken);
+	});
 
-    describe('during init', function () {
+	describe('during init', function () {
 		var config;
 		beforeEach(function () {
 			config = {
 				displayName: String(Math.random()),
 				public: {},
 				private: {}
-			}
+			};
 		});
 
 		it('should have access to private functions', function () {
@@ -112,7 +112,7 @@ describe('ObjectOrientedStore', function () {
 
 			beforeEach(function () {
 				config.displayName = String(Math.random());
-			})
+			});
 
 			it('should create a dispatch token', function () {
 				config.init = function () {
@@ -240,11 +240,11 @@ describe('ObjectOrientedStore', function () {
 			var s = new Store(config);
 			s.getThing().should.equal(privateAttribute);
 		});
-    });
+	});
 
-    describe('TestUtils', function () {
-        var privateAttribute = '1234abc';
-        var config;
+	describe('TestUtils', function () {
+		var privateAttribute = '1234abc';
+		var config;
 
 		beforeEach(function () {
 			config = {
