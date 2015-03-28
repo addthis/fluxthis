@@ -20,9 +20,9 @@ var each = require('../lib/each');
 var PropTypes = require('react/lib/ReactPropTypes');
 var invariant = require('invariant');
 
-var RE_REQUIRED_PROP = /Required prop `(.*?)`/;
+var RE_REQUIRED_PROP = /Required prop .*`(.*?)`/;
 
-var RE_WARNING_EXPECTED = /expected `(.*?)`/;
+var RE_WARNING_EXPECTED = /expected (.*`(.*?)`)/;
 var RE_WARNING_FOUND = /type `(.*?)`/;
 
 var IN_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -175,7 +175,7 @@ class ActionCreator {
 	 *	against.
 	 */
 	validatePayload (name, payload, payloadType) {
-		var err = payloadType({payload: payload}, 'payload', 'NAME', 'prop');
+		var err = payloadType({payload: payload}, 'payload', name, 'prop');
 		var expected;
 		var found;
 		var required;
@@ -194,10 +194,21 @@ class ActionCreator {
 			// Else we found a prop of one type when we expected another
 			else if (expected) {
 				expected = expected[1];
-				found = message.match(RE_WARNING_FOUND)[1];
-				err.message = this + ' ' + name + ' was provided ' +
-				'an invalid payload. Expected `' + expected + '`, got `' +
-				found + '`.';
+				found = message.match(RE_WARNING_FOUND);
+
+				if (found) {
+					// If we found something, then that means
+					// we are checking primitive payloads.
+					err.message = this + ' ' + name + ' was provided ' +
+					'an invalid payload. Expected ' + expected + ', got `' +
+					found[1] + '`.';
+				} else {
+					// This is used for more complex payload checking
+					// like instanceOf, etc.
+					err.message = this + ' ' + name + ' was provided ' +
+					'an invalid payload. Expected ' + expected + '.';
+				}
+
 			}
 
 			throw err;
