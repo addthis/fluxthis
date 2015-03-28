@@ -23,6 +23,10 @@ var invariant = require('invariant');
 var RE_WARNING_EXPECTED = /expected `(.*?)`/;
 var RE_WARNING_FOUND = /type `(.*?)`/;
 
+var IN_PRODUCTION = process.env.NODE_ENV === 'production';
+var DisplayNames = new Set();
+var ActionSources = new Set();
+
 /**
  * @typedef {object} ApiDescription
  * @property {Constant} actionType
@@ -72,6 +76,22 @@ class ActionCreator {
 			this
 		);
 
+		if (!IN_PRODUCTION) {
+			// Lets make sure we have unique action sources
+			if (ActionSources.has(options.actionSource)) {
+				throw new Error(`ActionCreator Error: Your ${options.actionSource} must be unique.`);
+			}
+
+			ActionSources.add(options.actionSource);
+
+			// Lets make sure we have unique display names
+			if (DisplayNames.has(options.displayName)) {
+				throw new Error(`ActionCreator Error: Your ${options.displayName} must be unique.`);
+			}
+
+			DisplayNames.add(options.displayName);
+		}
+
 		// create public methods for every key on options that isn't a reserved
 		// one
 		each(options, (key, val) => {
@@ -89,6 +109,9 @@ class ActionCreator {
 	 *
 	 * @param {string} name - methods name to create
 	 * @param {ApiDescription} description - specifics about the method to
+	 * @param {Function} description.createPayload
+	 * @param {string} description.payloadType
+	 * @param {string} description.actionType
 	 *	create
 	 */
 	createPublicMethod (name, description) {

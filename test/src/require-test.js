@@ -10,6 +10,7 @@ describe('Require Built FluxThis package', function () {
 
 	it('should have ImmutableStore', function () {
 		var Store = new FluxThis.ImmutableStore({
+			displayName: 'requireTestImmutable',
 			init: function () { },
 			public: {},
 			private: {}
@@ -19,6 +20,7 @@ describe('Require Built FluxThis package', function () {
 
 	it('should have ObjectOrientedStore', function () {
 		var OOStore = new FluxThis.ObjectOrientedStore({
+			displayName: 'requireTestOO',
 			init: function () { },
 			public: {},
 			private: {}
@@ -28,14 +30,16 @@ describe('Require Built FluxThis package', function () {
 
 	it('should have ActionCreator', function () {
 		var AC = new FluxThis.ActionCreator({
-			actionSource: 'test'
+			displayName: 'requireTestAC',
+			actionSource: 'requireTestACSource'
 		});
 		AC.should.be.an.instanceOf(FluxThis.ActionCreator);
 	});
 
 	it('should have APIActionCreator', function () {
 		var AC = new FluxThis.APIActionCreator({
-			actionSource: 'test'
+			displayName: 'requireTestAPI',
+			actionSource: 'requireTestACDisplay'
 		});
 		AC.should.be.an.instanceOf(FluxThis.APIActionCreator);
 	});

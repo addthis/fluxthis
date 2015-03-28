@@ -46,8 +46,6 @@ export default class ObjectOrientedStore extends Store {
 		var privateMembers;
 		var bindActionsWasCalled = false;
 
-		super();
-
 		invariant(
 			options,
 			'Cannot create ObjectOrientedStore without arguments'
@@ -71,6 +69,9 @@ export default class ObjectOrientedStore extends Store {
 		this.displayName = options.displayName;
 		this.dispatchToken = null;
 		this[CHANGE_LISTENERS] = new Set();
+
+		// This must be below displayName for displayName uniqueness checks
+		super();
 
 		publicMethods = Object.assign(this, options.public);
 

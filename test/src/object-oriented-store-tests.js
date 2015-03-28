@@ -25,7 +25,7 @@ describe('ObjectOrientedStore', function () {
 	it('should throw an error when passed no public fns', function () {
 		(function () {
 			new Store({
-				displayName: 'store',
+				displayName: 'oo1',
 				init: function(){},
 				private:{}
 			});
@@ -45,7 +45,7 @@ describe('ObjectOrientedStore', function () {
 	it('should create when passed display name, private, public, and init', function () {
 		(function () {
 			new Store({
-				displayName: 'store',
+				displayName: 'oo2',
 				init: function(){},
 				public:{},
 				private:{}
@@ -55,7 +55,7 @@ describe('ObjectOrientedStore', function () {
 
     it('should have a dispatch token without calling bindActions', function () {
         var store = new Store({
-			displayName: 'store',
+			displayName: 'oo3',
 			init: function(){},
             public:{},
             private:{}
@@ -64,11 +64,14 @@ describe('ObjectOrientedStore', function () {
     });
 
     describe('during init', function () {
-        var config = {
-			displayName: 'store',
-			public: {},
-			private: {}
-		};
+		var config;
+		beforeEach(function () {
+			config = {
+				displayName: String(Math.random()),
+				public: {},
+				private: {}
+			}
+		});
 
 		it('should have access to private functions', function () {
 			config.private.setThingPrivately = function (b) {
@@ -106,6 +109,10 @@ describe('ObjectOrientedStore', function () {
 		});
 
 		describe('when binding actions', function () {
+
+			beforeEach(function () {
+				config.displayName = String(Math.random());
+			})
 
 			it('should create a dispatch token', function () {
 				config.init = function () {
@@ -192,23 +199,26 @@ describe('ObjectOrientedStore', function () {
 
 	describe('after init', function () {
 		var privateAttribute = '1234abc';
-		var config = {
-			displayName: 'store',
-			init: function () {
-				this.thing = privateAttribute;
-				this.bindActions();
-			},
-			private: {
-				setThing: function (thing) {
-					this.thing = thing;
+		var config;
+		beforeEach(function () {
+			config = {
+				displayName: String(Math.random()),
+				init: function () {
+					this.thing = privateAttribute;
+					this.bindActions();
+				},
+				private: {
+					setThing: function (thing) {
+						this.thing = thing;
+					}
+				},
+				public: {
+					getThing: function () {
+						return this.thing;
+					}
 				}
-			},
-			public: {
-				getThing: function () {
-					return this.thing;
-				}
-			}
-		};
+			};
+		});
 
 		it('should not have access to private methods', function () {
 			var s = new Store(config);
@@ -234,26 +244,30 @@ describe('ObjectOrientedStore', function () {
 
     describe('TestUtils', function () {
         var privateAttribute = '1234abc';
-        var config = {
-			displayName: 'store',
-            init: function () {
-                this.thing = privateAttribute;
-                this.bindActions(
-                    'FOO_BAR', this.setThing
-                );
-            },
-            private: {
-                setThing: function (thing) {
-                    this.waitFor(this.dispatchToken);
-                    this.thing = thing;
-                }
-            },
-            public: {
-                getThing: function () {
-                    return this.thing;
-                }
-            }
-        };
+        var config;
+
+		beforeEach(function () {
+			config = {
+				displayName: String(Math.random()),
+				init: function () {
+					this.thing = privateAttribute;
+					this.bindActions(
+						'FOO_BAR', this.setThing
+					);
+				},
+				private: {
+					setThing: function (thing) {
+						this.waitFor(this.dispatchToken);
+						this.thing = thing;
+					}
+				},
+				public: {
+					getThing: function () {
+						return this.thing;
+					}
+				}
+			};
+		});
 
 		it('should exist', function () {
 			var s = new Store(config);

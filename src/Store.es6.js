@@ -19,9 +19,21 @@ var invariant = require('invariant');
 var debug = require('./debug.es6');
 var renderedComponentSet = new WeakSet();
 
+var IN_PRODUCTION = process.env.NODE_ENV === 'production';
+
+var DisplayNames = new Set();
+
 export default class Store {
 	constructor () {
 		var store = this;
+
+		// Ensure we have unique display names to assist with debugging.
+		if (!IN_PRODUCTION) {
+			if (DisplayNames.has(this.displayName)) {
+				throw new Error(`Store Error: Your ${this.displayName} is not unique.`);
+			}
+			DisplayNames.add(this.displayName);
+		}
 
 		// Expose the mixin for the Store.
 		this.mixin = {

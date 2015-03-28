@@ -44,11 +44,14 @@ describe('ImmutableStore', function () {
 	});
 
 	describe('during init', function () {
-		var config = {
-			displayName: 'test',
-			public: {},
-			private: {}
-		};
+		var config;
+		beforeEach(function () {
+			config = {
+				displayName: String(Math.random()),
+				public: {},
+				private: {}
+			}
+		});
 
 		describe('when attempting to set a non-immutable value', function () {
 			it('should throw an error', function () {
@@ -64,7 +67,6 @@ describe('ImmutableStore', function () {
 
 		describe('when attempting to set an immutable value', function () {
 			it('should not throw an error', function () {
-				debugger;
 				config.init = function () {
 					this.prop = new Immutable.Map({a: 0});
 				};
@@ -91,24 +93,29 @@ describe('ImmutableStore', function () {
 	});
 
 	describe('after init', function () {
+		var config;
 		var privateAttribute = '1234abc';
-		var config = {
-			displayName: 'test',
-			init: function () {
-				this.thing = privateAttribute;
-                this.bindActions();
-			},
-			private: {
-				setThing: function (thing) {
-					this.thing = thing;
+
+		beforeEach(function () {
+			config = {
+				displayName: String(Math.random()),
+				init: function () {
+					this.thing = privateAttribute;
+					this.bindActions();
+				},
+				private: {
+					setThing: function (thing) {
+						this.thing = thing;
+					}
+				},
+				public: {
+					getThing: function () {
+						return this.thing;
+					}
 				}
-			},
-			public: {
-				getThing: function () {
-					return this.thing;
-				}
-			}
-		};
+			};
+		});
+
 
 		describe('when an accessor returns a non-immutable', function () {
 			it('should throw an error', function () {
