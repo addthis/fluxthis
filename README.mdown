@@ -17,7 +17,8 @@ AddThis.
 
 * Learn [about](http://fluxthis.io/#/docs/about) FluxThis
 * [Installation](http://fluxthis.io/#/docs/installation)
-* [Immutable Stores](http://fluxthis.io/#/docs/stores)
+* [Immutable Stores](http://fluxthis.io/#/docs/immutable-stores)
+* [Non-Immutable Stores](http://fluxthis.io/#/docs/oo-stores)
 * [Controller Views](http://fluxthis.io/#/docs/controller-views)
 * [Action Creators](http://fluxthis.io/#/docs/action-creators)
 * [Dispatcher & Migration](http://fluxthis.io/#/docs/dispatcher)
