@@ -38,22 +38,6 @@ export default class APIActionCreator extends ActionCreator {
 		response.status < 300;
 	}
 
-	/**
-	 * Given a route string, get the expected argument names from it
-	 *
-	 * @param {string} route - a route e.g. '/abc/:def/ghi/:hi'
-	 * @return {string[]} - list of url param names e.g. ['def','hi']
-	 */
-	static getURLParamsFromRoute (route) {
-		var match;
-		var regexp = /\/:([^:\/]+)/g;
-		var args = [];
-		while((match = regexp.exec(route)) !== null) {
-			args.push(match);
-		}
-		return args;
-	}
-
 	constructor (options) {
 		super(options, {successTest: 1});
 	}
