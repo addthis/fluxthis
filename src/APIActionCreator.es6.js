@@ -16,7 +16,7 @@
 
 var dispatcher = require('./dispatcherInstance.es6');
 var invariant = require('invariant');
-var implore = require('../lib/implore');
+var implore = require('../lib/implore.es6');
 var debug = require('./debug.es6');
 var ActionCreator = require('./ActionCreator.es6');
 
@@ -27,7 +27,8 @@ export default class APIActionCreator extends ActionCreator {
 	 * Fallback when no successTest is provided. Given a response, check to
 	 * make sure we got a code back in the 200s range
 	 *
-	 * @param {XMLHTTPResponse} response
+	 * @param {XMLHTTPResponse} response\
+	 * @param {number} response.status
 	 * @return {boolean}
 	 */
 	static defaultSuccessTest (response) {
@@ -64,9 +65,14 @@ export default class APIActionCreator extends ActionCreator {
 		var successActionType = description.success;
 		var failureActionType = description.failure;
 		var pendingActionType = description.pending;
+
+		// successTest can come from the top level object
+		// or each function can use their own successTest.
+		// The default is response code 2xx.
 		var successTest = description.successTest ||
 			this.successTest ||
 			APIActionCreator.defaultSuccessTest;
+
 		var payloadType = ActionCreator.PayloadTypes.shape({
 			route: ActionCreator.PayloadTypes.string.isRequired,
 			body: ActionCreator.PayloadTypes.object,
@@ -116,11 +122,12 @@ export default class APIActionCreator extends ActionCreator {
 			this
 		);
 
-		this[name] = function (request, ...args) {
+		this[name] = (...args) => {
 			var action;
+			var request;
 
-			if(createRequest) {
-				request = createRequest.apply(this, arguments);
+			if (createRequest) {
+				request = createRequest.apply(this, args);
 			}
 
 			request = Object.assign({
@@ -138,41 +145,43 @@ export default class APIActionCreator extends ActionCreator {
 
 			debug.logActionCreator(this, name, request, ...args);
 
-			if(description.pending) {
+			if (description.pending) {
 				dispatcher.dispatch(action);
 			}
 
-			implore(request, function (req, res) {
-				var success = successTest(res);
-				var action;
+			implore(request)
+				.then(result => {
+					var {response, request} = result;
+					var success = successTest(response);
+					var action;
 
-				if(success) {
-					if(handleSuccess) {
-						handleSuccess.call(this, req, res);
+					// These methods allow the user to process
+					// the request and modify it how they please
+					// or dispatch more actions.
+					if (success && handleSuccess) {
+						handleSuccess.call(this, request, response);
 					}
-				}
-				else {
-					if(handleFailure) {
-						handleFailure.call(this, req, res);
+					else if (handleFailure) {
+						handleFailure.call(this, request, response);
 					}
-				}
 
-				action = {
-					source: actionSource,
-					type: success ? successActionType : failureActionType,
-					payload: {
-						request: req,
-						response: res
+					action = {
+						source: actionSource,
+						type: success ? successActionType : failureActionType,
+						payload: {
+							request,
+							response
+						}
+					};
+
+					// Finally, lets dispatch the action if the user
+					// specified the required conditionals.
+					if ((success && successActionType) ||
+						(!success && failureActionType)) {
+						dispatcher.dispatch(action);
 					}
-				};
-
-				if((success && successActionType) ||
-					(!success && failureActionType)) {
-					dispatcher.dispatch(action);
-				}
-
-			});
-		}.bind(this);
+				});
+		};
 	}
 
 	toString () {
