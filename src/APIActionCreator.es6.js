@@ -148,10 +148,13 @@ export default class APIActionCreator extends ActionCreator {
 					var {response, request} = result;
 					var success = successTest(response);
 
+					// These methods allow the user to process
+					// the request and modify it how they please
+					// or dispatch more actions.
 					if (success && handleSuccess) {
 						handleSuccess.call(this, request, response);
 					}
-					else if (!success && handleFailure) {
+					else if (handleFailure) {
 						handleFailure.call(this, request, response);
 					}
 
