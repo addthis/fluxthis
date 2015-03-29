@@ -115,8 +115,23 @@ describe('APIActionCreators', function () {
             }
         });
 
-        aac.doThing('hi','mom');
+        aac.doThing('hi', 'mom');
     });
+
+	it('should throw an error for passing args without create request', function () {
+		(function () {
+			var aac = new APIActionCreator({
+				actionSource: 'apiSource55',
+				displayName: 'api55',
+				doThing: {
+					route: '/mirror',
+					method: 'POST',
+					pending: 'TEST_' + Math.random()
+				}
+			});
+			aac.doThing('hi', 'mom');
+		}).should.throw();
+	});
 
     it('should throw errors when route is missing', function () {
         (function () {
@@ -215,7 +230,7 @@ describe('APIActionCreators', function () {
                 }
             });
 
-            aac.doBrokenThing('hi','mom');
+            aac.doBrokenThing();
         });
     });
 

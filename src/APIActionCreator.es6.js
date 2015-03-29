@@ -126,6 +126,14 @@ export default class APIActionCreator extends ActionCreator {
 			var action;
 			var request;
 
+			invariant(
+				createRequest || args.length === 0,
+				`${this.toString()}'s ${name} action received ` +
+				'arguments without a `createRequest` method. You must ' +
+				'provide a `createRequest` method so you can format ' +
+				'these arguments in the request.'
+			);
+
 			if (createRequest) {
 				request = createRequest.apply(this, args);
 			}
