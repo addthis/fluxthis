@@ -58,7 +58,6 @@ export default class APIActionCreator extends ActionCreator {
 			APIActionCreator.defaultSuccessTest;
 
 		var payloadType = ActionCreator.PayloadTypes.shape({
-			route: ActionCreator.PayloadTypes.string.isRequired,
 			body: ActionCreator.PayloadTypes.object,
 			query: ActionCreator.PayloadTypes.object,
 			params: ActionCreator.PayloadTypes.object
@@ -91,7 +90,7 @@ export default class APIActionCreator extends ActionCreator {
 		);
 
 		invariant(
-			typeof description.route === 'string',
+			typeof description.route === 'string' || description.route,
 			'The method `%s` could not be created on `%s`; ' +
 			'`route` must be a `string`, like "/example/:example"',
 			name,
