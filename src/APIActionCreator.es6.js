@@ -16,7 +16,7 @@
 
 var dispatcher = require('./dispatcherInstance.es6');
 var invariant = require('invariant');
-var implore = require('../lib/implore.es6');
+var send = require('../lib/implore.es6');
 var debug = require('./debug.es6');
 var ActionCreator = require('./ActionCreator.es6');
 
@@ -140,7 +140,7 @@ export default class APIActionCreator extends ActionCreator {
 				dispatcher.dispatch(action);
 			}
 
-			implore(request)
+			send(request)
 				.then(result => {
 					var {response, request} = result;
 					var success = successTest(response);
