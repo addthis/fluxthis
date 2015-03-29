@@ -128,6 +128,7 @@ export default class APIActionCreator extends ActionCreator {
 
 			this.validatePayload(name, request, payloadType);
 
+			// Setup pending action.
 			action = {
 				source: actionSource,
 				type: pendingActionType,
@@ -140,22 +141,21 @@ export default class APIActionCreator extends ActionCreator {
 				dispatcher.dispatch(action);
 			}
 
+
+
 			send(request)
 				.then(result => {
 					var {response, request} = result;
 					var success = successTest(response);
-					var action;
 
-					// These methods allow the user to process
-					// the request and modify it how they please
-					// or dispatch more actions.
 					if (success && handleSuccess) {
 						handleSuccess.call(this, request, response);
 					}
-					else if (handleFailure) {
+					else if (!success && handleFailure) {
 						handleFailure.call(this, request, response);
 					}
 
+					// Setup action for success/failure
 					action = {
 						source: actionSource,
 						type: success ? successActionType : failureActionType,
@@ -165,10 +165,9 @@ export default class APIActionCreator extends ActionCreator {
 						}
 					};
 
-					// Finally, lets dispatch the action if the user
-					// specified the required conditionals.
-					if ((success && successActionType) ||
-						(!success && failureActionType)) {
+					// If we reach the end and we have an action
+					// type, then that means we need to dispatch.
+					if (action.type) {
 						dispatcher.dispatch(action);
 					}
 				});
