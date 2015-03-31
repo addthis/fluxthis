@@ -16,7 +16,7 @@
 
 var dispatcher = require('./dispatcherInstance.es6');
 var invariant = require('invariant');
-var implore = require('../lib/implore');
+var send = require('../lib/implore.es6');
 var debug = require('./debug.es6');
 var ActionCreator = require('./ActionCreator.es6');
 
@@ -27,7 +27,8 @@ export default class APIActionCreator extends ActionCreator {
 	 * Fallback when no successTest is provided. Given a response, check to
 	 * make sure we got a code back in the 200s range
 	 *
-	 * @param {XMLHTTPResponse} response
+	 * @param {XMLHTTPResponse} response\
+	 * @param {number} response.status
 	 * @return {boolean}
 	 */
 	static defaultSuccessTest (response) {
@@ -35,22 +36,6 @@ export default class APIActionCreator extends ActionCreator {
 		response.status &&
 		response.status >= 200 &&
 		response.status < 300;
-	}
-
-	/**
-	 * Given a route string, get the expected argument names from it
-	 *
-	 * @param {string} route - a route e.g. '/abc/:def/ghi/:hi'
-	 * @return {string[]} - list of url param names e.g. ['def','hi']
-	 */
-	static getURLParamsFromRoute (route) {
-		var match;
-		var regexp = /\/:([^:\/]+)/g;
-		var args = [];
-		while((match = regexp.exec(route)) !== null) {
-			args.push(match);
-		}
-		return args;
 	}
 
 	constructor (options) {
@@ -64,11 +49,15 @@ export default class APIActionCreator extends ActionCreator {
 		var successActionType = description.success;
 		var failureActionType = description.failure;
 		var pendingActionType = description.pending;
+
+		// successTest can come from the top level object
+		// or each function can use their own successTest.
+		// The default is response code 2xx.
 		var successTest = description.successTest ||
 			this.successTest ||
 			APIActionCreator.defaultSuccessTest;
+
 		var payloadType = ActionCreator.PayloadTypes.shape({
-			route: ActionCreator.PayloadTypes.string.isRequired,
 			body: ActionCreator.PayloadTypes.object,
 			query: ActionCreator.PayloadTypes.object,
 			params: ActionCreator.PayloadTypes.object
@@ -101,7 +90,7 @@ export default class APIActionCreator extends ActionCreator {
 		);
 
 		invariant(
-			typeof description.route === 'string',
+			typeof description.route === 'string' || description.route,
 			'The method `%s` could not be created on `%s`; ' +
 			'`route` must be a `string`, like "/example/:example"',
 			name,
@@ -116,11 +105,20 @@ export default class APIActionCreator extends ActionCreator {
 			this
 		);
 
-		this[name] = function (request, ...args) {
+		this[name] = (...args) => {
 			var action;
+			var request;
 
-			if(createRequest) {
-				request = createRequest.apply(this, arguments);
+			invariant(
+				createRequest || args.length === 0,
+				`${this.toString()}'s ${name} action received ` +
+				'arguments without a `createRequest` method. You must ' +
+				'provide a `createRequest` method so you can format ' +
+				'these arguments in the request.'
+			);
+
+			if (createRequest) {
+				request = createRequest.apply(this, args);
 			}
 
 			request = Object.assign({
@@ -130,6 +128,7 @@ export default class APIActionCreator extends ActionCreator {
 
 			this.validatePayload(name, request, payloadType);
 
+			// Setup pending action.
 			action = {
 				source: actionSource,
 				type: pendingActionType,
@@ -138,41 +137,44 @@ export default class APIActionCreator extends ActionCreator {
 
 			debug.logActionCreator(this, name, request, ...args);
 
-			if(description.pending) {
+			if (description.pending) {
 				dispatcher.dispatch(action);
 			}
 
-			implore(request, function (req, res) {
-				var success = successTest(res);
-				var action;
 
-				if(success) {
-					if(handleSuccess) {
-						handleSuccess.call(this, req, res);
+
+			send(request)
+				.then(result => {
+					var {response, request} = result;
+					var success = successTest(response);
+
+					// These methods allow the user to process
+					// the request and modify it how they please
+					// or dispatch more actions.
+					if (success && handleSuccess) {
+						handleSuccess.call(this, request, response);
 					}
-				}
-				else {
-					if(handleFailure) {
-						handleFailure.call(this, req, res);
+					else if (handleFailure) {
+						handleFailure.call(this, request, response);
 					}
-				}
 
-				action = {
-					source: actionSource,
-					type: success ? successActionType : failureActionType,
-					payload: {
-						request: req,
-						response: res
+					// Setup action for success/failure
+					action = {
+						source: actionSource,
+						type: success ? successActionType : failureActionType,
+						payload: {
+							request,
+							response
+						}
+					};
+
+					// If we reach the end and we have an action
+					// type, then that means we need to dispatch.
+					if (action.type) {
+						dispatcher.dispatch(action);
 					}
-				};
-
-				if((success && successActionType) ||
-					(!success && failureActionType)) {
-					dispatcher.dispatch(action);
-				}
-
-			});
-		}.bind(this);
+				});
+		};
 	}
 
 	toString () {

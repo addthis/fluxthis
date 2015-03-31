@@ -79,6 +79,8 @@ describe('APIActionCreators', function () {
 
     it('should transform a request with createRequest', function (done) {
         var query = {};
+		var clonedQuery = {};
+
         var aac = new APIActionCreator({
             actionSource: 'apiSource4',
 			displayName: 'api4',
@@ -89,14 +91,18 @@ describe('APIActionCreators', function () {
                 createRequest: function (a, b) {
                     query.a = a;
                     query.b = b;
+
+					// setup cloned query for equality
+					clonedQuery.a = a;
+					clonedQuery.b = b;
                     return {
                         query: query
                     };
                 },
                 handleSuccess: function (req, res) {
                     try {
-                        req.query.should.eql(query);
-                        res.body.query.should.eql(query);
+                        req.query.should.eql(clonedQuery);
+                        res.body.query.should.eql(clonedQuery);
                         done();
                     }
                     catch(err) {
@@ -109,8 +115,23 @@ describe('APIActionCreators', function () {
             }
         });
 
-        aac.doThing('hi','mom');
+        aac.doThing('hi', 'mom');
     });
+
+	it('should throw an error for passing args without create request', function () {
+		(function () {
+			var aac = new APIActionCreator({
+				actionSource: 'apiSource55',
+				displayName: 'api55',
+				doThing: {
+					route: '/mirror',
+					method: 'POST',
+					pending: 'TEST_' + Math.random()
+				}
+			});
+			aac.doThing('hi', 'mom');
+		}).should.throw();
+	});
 
     it('should throw errors when route is missing', function () {
         (function () {
@@ -209,7 +230,7 @@ describe('APIActionCreators', function () {
                 }
             });
 
-            aac.doBrokenThing('hi','mom');
+            aac.doBrokenThing();
         });
     });
 
