@@ -22,7 +22,7 @@ var invariant = require('invariant');
 
 var RE_REQUIRED_PROP = /Required prop `(.*?)`/;
 
-var RE_WARNING_EXPECTED = /expected `(.*?)`/;
+var RE_WARNING_EXPECTED = /expected (.*`(.*?)`)/;
 var RE_WARNING_FOUND = /type `(.*?)`/;
 
 var IN_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -175,7 +175,7 @@ class ActionCreator {
 	 *	against.
 	 */
 	validatePayload (name, payload, payloadType) {
-		var err = payloadType({payload: payload}, 'payload', 'NAME', 'prop');
+		var err = payloadType({payload: payload}, 'payload', name, 'prop');
 		var expected;
 		var found;
 		var required;
@@ -185,6 +185,7 @@ class ActionCreator {
 
 			required = message.match(RE_REQUIRED_PROP);
 			expected = message.match(RE_WARNING_EXPECTED);
+			found = message.match(RE_WARNING_FOUND);
 
 			// If the message is that it's missing a required prop
 			if (required) {
@@ -192,12 +193,19 @@ class ActionCreator {
 					'the required prop `' + required[1] + '`.';
 			}
 			// Else we found a prop of one type when we expected another
-			else if (expected) {
+			else if (expected && found) {
 				expected = expected[1];
-				found = message.match(RE_WARNING_FOUND)[1];
+				found = message.match(RE_WARNING_FOUND);
+
 				err.message = this + ' ' + name + ' was provided ' +
-				'an invalid payload. Expected `' + expected + '`, got `' +
-				found + '`.';
+				'an invalid payload. Expected ' + expected + ', got `' +
+				found[1] + '`.';
+			}
+			// This is used for more complex payload checking
+			// like instanceOf, etc.
+			else if (expected) {
+				err.message = this + ' ' + name + ' was provided ' +
+				'an invalid payload. Expected ' + expected + '.';
 			}
 
 			throw err;
