@@ -33,7 +33,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 'use strict';
 
 var invariant = require('invariant');
-var debug = require('./debug.es6');
 
 var _lastID = 1;
 var _prefix = 'ID_';
@@ -290,7 +289,7 @@ function invokeCallback (id) {
  * @internal
  */
 function startDispatching (action) {
-	debug.logDispatch(action);
+	require('./debug.es6').logDispatch(action);
 
 	for (var id in this[CALLBACKS]) {
 		this[IS_PENDING][id] = false;
