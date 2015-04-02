@@ -38,6 +38,9 @@ var _lastID = 1;
 var _prefix = 'ID_';
 
 var CALLBACKS = Symbol();
+var LEGACY_STORES = Symbol();
+var STORE_ACTIONS = Symbol();
+
 var IS_PENDING = Symbol();
 var IS_HANDLED = Symbol();
 var IS_DISPATCHING = Symbol();
@@ -49,6 +52,9 @@ export default class Dispatcher {
 		this[CALLBACKS] = {};
 		this[IS_PENDING] = {};
 		this[IS_HANDLED] = {};
+		this[STORE_ACTIONS] = new Map();
+		this[LEGACY_STORES] = [];
+
 		this[IS_DISPATCHING] = false;
 		this[PENDING_ACTION] = null;
 		this[LAST_ACTION] = null;
@@ -59,11 +65,34 @@ export default class Dispatcher {
 	 * a token that can be used with `waitFor()`.
 	 *
 	 * @param {function} callback
+	 * @param {object} actions
 	 * @return {string}
 	 */
-	register (callback) {
+	register (callback, actions) {
 		var id = _prefix + _lastID++;
 		this[CALLBACKS][id] = callback;
+
+		// If we are a FluxThis store, then we can optimize
+		// dispatches based on calling only stores who
+		// care about a given action.
+		if (actions) {
+			// Iterate over the actions to store them
+			// in a lookup table.
+			for (var key in actions) {
+				if (!this[STORE_ACTIONS].has(key)) {
+					this[STORE_ACTIONS].set(key, []);
+				}
+
+				this[STORE_ACTIONS].get(key).push(id);
+			}
+		}
+		// We have a legacy store so we can't tell which
+		// actions they listen too. So we have to call
+		// them with every action later in dispatch.
+		else {
+			this[LEGACY_STORES].push(id);
+		}
+
 		return id;
 	}
 
@@ -164,13 +193,18 @@ export default class Dispatcher {
 		startDispatching.call(this, action);
 
 		try {
-			for (var id in this[CALLBACKS]) {
-				if (this[IS_PENDING][id]) {
-					continue;
-				}
+			// Get the stores that care about this source and type
+			// so we can optimistically dispatch to just those stores.
+			let sources = this[STORE_ACTIONS].get(action.source);
+			let types = this[STORE_ACTIONS].get(action.type);
 
-				invokeCallback.call(this, id);
-			}
+			dispatchToStores.call(this, sources);
+			dispatchToStores.call(this, types);
+
+			// Since we need to support non-FluxThis stores
+			// we keep track of legacy stores that don't
+			// give us actions to optimize dispatches.
+			dispatchToStores.call(this, this[LEGACY_STORES]);
 		}
 		finally {
 			stopDispatching.call(this);
@@ -209,6 +243,28 @@ export default class Dispatcher {
 }
 
 /**
+ * This method takes an array of store id's and iterates
+ * over them to determine if we should invoke a dispatch
+ * of the action.
+ *
+ * @param Array<String> ids
+ */
+function dispatchToStores(ids) {
+	var id;
+	var storeID;
+
+	for (id in ids) {
+		storeID = ids[id];
+
+		if (this[IS_PENDING][storeID]) {
+			continue;
+		}
+
+		invokeCallback.call(this, storeID);
+	}
+}
+
+/**
  * Call the callback stored with the given id. Also do some internal
  * bookkeeping.
  *
@@ -217,7 +273,10 @@ export default class Dispatcher {
  */
 function invokeCallback (id) {
 	this[IS_PENDING][id] = true;
-	this[CALLBACKS][id](this[PENDING_ACTION]);
+
+	if (this[CALLBACKS][id]) {
+		this[CALLBACKS][id](this[PENDING_ACTION]);
+	}
 	this[IS_HANDLED][id] = true;
 }
 
