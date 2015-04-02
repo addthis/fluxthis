@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 'use strict';
 
 var invariant = require('invariant');
+var debug = require('./debug.es6');
 
 var _lastID = 1;
 var _prefix = 'ID_';
@@ -52,6 +53,8 @@ export default class Dispatcher {
 		this[CALLBACKS] = {};
 		this[IS_PENDING] = {};
 		this[IS_HANDLED] = {};
+		// Using a Map for this allows us to support
+		// ConstantCollections as keys.
 		this[STORE_ACTIONS] = new Map();
 		this[LEGACY_STORES] = [];
 
@@ -287,7 +290,7 @@ function invokeCallback (id) {
  * @internal
  */
 function startDispatching (action) {
-	require('./debug.es6').logDispatch(action);
+	debug.logDispatch(action);
 
 	for (var id in this[CALLBACKS]) {
 		this[IS_PENDING][id] = false;
