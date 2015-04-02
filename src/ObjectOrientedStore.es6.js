@@ -212,7 +212,11 @@ export default class ObjectOrientedStore extends Store {
 						};
 					}
 
-					store.dispatchToken = dispatcher.register(dispatchFunction);
+					// Register the store with the Dispatcher
+					store.dispatchToken = dispatcher.register(
+						dispatchFunction,
+						actions
+					);
 				}
 			}
 		});
