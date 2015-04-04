@@ -43,13 +43,12 @@ describe('Constant Collections', function () {
 
     it('should provide constants with good toString methods', function () {
         var CC = new ConstantCollection('HI');
-        CC.HI.toString().should.equal(CC.id + '_HI');
+        CC.HI.toString().should.equal('HI_#' + CC.id);
     });
 
-    it('should provide constants which can be used as keys in objects', function () {
-        var CC = new ConstantCollection('HI');
-        var obj = {};
-        obj[CC.HI] = 'test';
-        Should(obj[CC.id + '_HI']).equal('test');
-    });
+    it('should provide constants with unique strings when they share keys', function () {
+        var CC1 = new ConstantCollection('HI');
+        var CC2 = new ConstantCollection('HI');
+        CC1.HI.toString().should.not.equal(CC2.HI.toString());
+    })
 });

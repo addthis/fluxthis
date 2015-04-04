@@ -50,6 +50,6 @@ class Constant {
 		this.collection = collection;
 	}
 	toString() {
-		return `${this.collection.id}_${this.name}`;
+		return `${this.name}_#${this.collection.id}`;
 	}
 }
