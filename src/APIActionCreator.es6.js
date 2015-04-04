@@ -14,11 +14,11 @@
 
 'use strict';
 
-var dispatcher = require('./dispatcherInstance.es6');
-var invariant = require('invariant');
-var send = require('../lib/implore.es6');
-var debug = require('./debug.es6');
-var ActionCreator = require('./ActionCreator.es6');
+const dispatcher = require('./dispatcherInstance.es6');
+const invariant = require('invariant');
+const send = require('../lib/implore.es6');
+const debug = require('./debug.es6');
+const ActionCreator = require('./ActionCreator.es6');
 
 
 export default class APIActionCreator extends ActionCreator {
@@ -27,43 +27,55 @@ export default class APIActionCreator extends ActionCreator {
 	 * Fallback when no successTest is provided. Given a response, check to
 	 * make sure we got a code back in the 200s range
 	 *
-	 * @param {XMLHTTPResponse} response\
+	 * @param {XMLHTTPResponse} response
 	 * @param {number} response.status
 	 * @return {boolean}
 	 */
 	static defaultSuccessTest (response) {
 		return response &&
-		response.status &&
-		response.status >= 200 &&
-		response.status < 300;
+			response.status &&
+			response.status >= 200 &&
+			response.status < 300;
 	}
 
 	constructor (options) {
 		super(options, {successTest: 1});
 	}
 
-	createPublicMethod (name, description) {
-		var createRequest = description.createRequest;
-		var handleSuccess = description.handleSuccess;
-		var handleFailure = description.handleFailure;
-		var successActionType = description.success;
-		var failureActionType = description.failure;
-		var pendingActionType = description.pending;
+	/**
+	 *
+	 * @param name
+	 * @param {object} options
+	 * @param {string} options.route
+	 * @param {string} options.method
+	 * @param {string} options.success
+	 * @param {string} options.failure
+	 * @param {string} options.pending
+	 * @param {Function} options.createRequest
+	 * @param {Function} options.handleSuccess
+	 * @param {Function} options.handleFailure
+	 * @param {Function} options.successTest
+	 */
+	createPublicMethod (name, options) {
+		const {route, method} = options;
+		const {createRequest, handleSuccess, handleFailure} = options;
+		const {success: successActionType,
+			failure: failureActionType,
+			pending: pendingActionType} = options;
 
 		// successTest can come from the top level object
 		// or each function can use their own successTest.
 		// The default is response code 2xx.
-		var successTest = description.successTest ||
-			this.successTest ||
+		const successTest = options.successTest || this.successTest ||
 			APIActionCreator.defaultSuccessTest;
 
-		var payloadType = ActionCreator.PayloadTypes.shape({
+		const payloadType = ActionCreator.PayloadTypes.shape({
 			body: ActionCreator.PayloadTypes.object,
 			query: ActionCreator.PayloadTypes.object,
 			params: ActionCreator.PayloadTypes.object
 		}).isRequired;
 
-		var actionSource = this.actionSource;
+		const actionSource = this.actionSource;
 
 		invariant(
 			successTest instanceof Function,
@@ -90,7 +102,7 @@ export default class APIActionCreator extends ActionCreator {
 		);
 
 		invariant(
-			typeof description.route === 'string' || description.route,
+			typeof route === 'string' || route,
 			'The method `%s` could not be created on `%s`; ' +
 			'`route` must be a `string`, like "/example/:example"',
 			name,
@@ -98,7 +110,7 @@ export default class APIActionCreator extends ActionCreator {
 		);
 
 		invariant(
-			typeof description.method === 'string',
+			typeof method === 'string' || method,
 			'The method `%s` could not be created on `%s`; ' +
 			'`method` must be a `string`, like "GET"',
 			name,
@@ -106,8 +118,8 @@ export default class APIActionCreator extends ActionCreator {
 		);
 
 		this[name] = (...args) => {
-			var action;
-			var request;
+			let action;
+			let request;
 
 			invariant(
 				createRequest || args.length === 0,
@@ -117,44 +129,43 @@ export default class APIActionCreator extends ActionCreator {
 				'these arguments in the request.'
 			);
 
+			// If the user wants to create their own request
+			// with body, query and/or params, then lets
+			// do that first.
 			if (createRequest) {
 				request = createRequest.apply(this, args);
 			}
 
 			request = Object.assign({
-				method: description.method,
-				route: description.route
+				method,
+				route
 			}, request);
 
 			this.validatePayload(name, request, payloadType);
 
-			// Setup pending action.
-			action = {
-				source: actionSource,
-				type: pendingActionType,
-				payload: request
-			};
-
 			debug.logActionCreator(this, name, request, ...args);
 
-			if (description.pending) {
-				dispatcher.dispatch(action);
+			// If the user wants to dispatch a pending action
+			// then we do that here.
+			if (pendingActionType) {
+				dispatcher.dispatch({
+					source: actionSource,
+					type: pendingActionType,
+					payload: request
+				});
 			}
 
-
-
 			send(request)
-				.then(result => {
-					var {response, request} = result;
-					var success = successTest(response);
+				.then((result) => {
+					const {response, request} = result;
+					const success = successTest(response);
 
 					// These methods allow the user to process
 					// the request and modify it how they please
 					// or dispatch more actions.
 					if (success && handleSuccess) {
 						handleSuccess.call(this, request, response);
-					}
-					else if (handleFailure) {
+					} else if (handleFailure) {
 						handleFailure.call(this, request, response);
 					}
 

@@ -14,12 +14,12 @@
 
 'use strict';
 
-var dispatcher = require('./dispatcherInstance.es6');
-var invariant = require('invariant');
-var each = require('../lib/each');
+const dispatcher = require('./dispatcherInstance.es6');
+const invariant = require('invariant');
+const each = require('../lib/each');
 
-var IN_PRODUCTION = process.env.NODE_ENV === 'production';
-var FLUX_DEBUG_DEFAULTS = {
+const IN_PRODUCTION = process.env.NODE_ENV === 'production';
+const FLUX_DEBUG_DEFAULTS = {
 	all: false,
 	types: [],
 	sources: [],
@@ -29,7 +29,7 @@ var FLUX_DEBUG_DEFAULTS = {
 	unusedTimeout: 3000
 };
 
-var styles = {
+const styles = {
 	plain: 'color: #000000',
 	view: 'color: #3827ef', //dark blue
 	dispatcher: 'color: #6940a0', //purple
@@ -37,14 +37,14 @@ var styles = {
 	actionCreator: 'color: #eb6e84' //salmon
 };
 
-var consoleGroup = console.group ?
+const consoleGroup = console.group ?
 	console.group.bind(console) :
 	function (...args) {
 		//can't use bind here because IE9 issues
 		console.log(...args);
 	};
 
-var consoleGroupEnd = console.groupEnd ?
+const consoleGroupEnd = console.groupEnd ?
 	console.groupEnd.bind(console) :
 	function (){};
 
@@ -58,8 +58,8 @@ var consoleGroupEnd = console.groupEnd ?
 class FluxDebugger {
 
 	static shouldLog (dispalyName) {
-		var settings = FluxDebugger.getDebugSettings();
-		var action = dispatcher.getRecentDispatch();
+		const settings = FluxDebugger.getDebugSettings();
+		const action = dispatcher.getRecentDispatch();
 
 		return action && (settings.all ||
 			settings.stores.indexOf(this.storeDisplayName) > -1 ||
@@ -69,7 +69,7 @@ class FluxDebugger {
 	}
 
 	static getDebugSettings () {
-		var FLUX_DEBUG = typeof window === 'undefined' ?
+		const FLUX_DEBUG = typeof window === 'undefined' ?
 			{} :
 			window.FLUX_DEBUG;
 
@@ -82,16 +82,13 @@ class FluxDebugger {
 	}
 
 	constructor () {
-		var settings = FluxDebugger.getDebugSettings();
+		const settings = FluxDebugger.getDebugSettings();
 		this.registeredHandlers = {};
 		this.registeredActions = {};
 		this.registeredSources = {};
 		this.registeredTypes = {};
-		this.warned = {
-			getRecentDispatch: false
-		};
 
-		if(settings.unused) {
+		if (settings.unused) {
 			setTimeout(() => {
 				this.warnForUnusedActions();
 			}, settings.unusedTimeout);
@@ -107,7 +104,7 @@ class FluxDebugger {
 	 *  expects some action to have
 	 */
 	registerActionHandler (store, typeOrSource) {
-		if(!this.registeredHandlers[typeOrSource]) {
+		if (!this.registeredHandlers[typeOrSource]) {
 			this.registeredHandlers[typeOrSource] = [];
 		}
 
@@ -120,28 +117,31 @@ class FluxDebugger {
 	 *
 	 * @param {ActionCreator} actionCreator - what is trying to register the
 	 * @param {Action} action - payload is not used, only type/source
+	 * @param {string} action.type
+	 * @param {string} action.source
 	 */
 	registerAction (actionCreator, action) {
-		var existingEntry;
+		let {source, type} = action;
+		let existingEntry;
 
-		if(!this.registeredActions[action.source]) {
-			this.registeredActions[action.source] = {};
-			this.registeredSources[action.source] = actionCreator;
+		if(!this.registeredActions[source]) {
+			this.registeredActions[source] = {};
+			this.registeredSources[source] = actionCreator;
 		}
 
-		existingEntry = this.registeredActions[action.source][action.type];
+		existingEntry = this.registeredActions[source][type];
 
 		invariant(
 			existingEntry === undefined,
 			'An action with source `%s` and type `%s` was already registered ' +
 			'by `%s` and cannot be registered a second time.',
-			action.source,
-			action.type,
+			source,
+			type,
 			existingEntry
 		);
 
-		this.registeredActions[action.source][action.type] = actionCreator;
-		this.registeredTypes[action.type] = actionCreator;
+		this.registeredActions[source][type] = actionCreator;
+		this.registeredTypes[type] = actionCreator;
 	}
 
 	logActionCreator (actionCreator, methodName, ...args) {
@@ -156,8 +156,8 @@ class FluxDebugger {
 	}
 
 	logStore (store, methodName, ...args) {
-		if(!FluxDebugger.shouldLog
-				.call({storeDisplayName: store.displayName})) {
+		const {displayName} = store;
+		if(!FluxDebugger.shouldLog.call({storeDisplayName: displayName})) {
 			return;
 		}
 
@@ -174,12 +174,10 @@ class FluxDebugger {
 	 * @param nextState - optional. defaults to current state
 	 */
 	logView (view, nextProps, nextState) {
-		var str = view.constructor.displayName ?
-			`[Component ${view.constructor.displayName}]` :
-			`[unnamed Component]`;
+		const {displayName} = view.constructor;
+		const str = `[Component ${displayName}]`;
 
-		if (!FluxDebugger
-				.shouldLog.call({viewDisplayName: view.displayName})) {
+		if (!FluxDebugger.shouldLog.call({viewDisplayName: displayName})) {
 			return;
 		}
 
@@ -220,22 +218,22 @@ class FluxDebugger {
 	 * you'll get a warning.
 	 */
 	warnForUnusedActions () {
-		var unregistered = [];
-		var unhandled = [];
+		const unregistered = [];
+		const unhandled = [];
 
-		var registeredSources = Object.keys(this.registeredSources);
-		var registeredTypes = Object.keys(this.registeredTypes);
+		const registeredSources = Object.keys(this.registeredSources);
+		const registeredTypes = Object.keys(this.registeredTypes);
 
 		// Find actions which have handlers in Stores, but which have not been
 		// registered through an ActionCreator
 		each(this.registeredHandlers, (sourceOrType, stores) => {
-			var sourceMatched = registeredSources.indexOf(sourceOrType) > -1;
-			var typeMatched = registeredTypes.indexOf(sourceOrType) > -1;
+			let sourceMatched = registeredSources.indexOf(sourceOrType) > -1;
+			let typeMatched = registeredTypes.indexOf(sourceOrType) > -1;
 
 			if (!sourceMatched && !typeMatched) {
 				unregistered.push({
-					sourceOrType: sourceOrType,
-					stores: stores
+					sourceOrType,
+					stores
 				});
 			}
 		});
@@ -247,9 +245,9 @@ class FluxDebugger {
 				if (!this.registeredHandlers[source] &&
 					!this.registeredHandlers[type]) {
 					unhandled.push({
-						actionCreator: actionCreator,
-						source: source,
-						type: type
+						actionCreator,
+						source,
+						type
 					});
 				}
 			});

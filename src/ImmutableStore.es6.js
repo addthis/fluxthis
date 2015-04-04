@@ -14,10 +14,10 @@
 
 'use strict';
 
-var each = require('../lib/each');
-var invariant = require('invariant');
-var Immutable = require('immutable');
-var ObjectOrientedStore = require('./ObjectOrientedStore.es6');
+const each = require('../lib/each');
+const invariant = require('invariant');
+const Immutable = require('immutable');
+const ObjectOrientedStore = require('./ObjectOrientedStore.es6');
 
 /**
  * A Flux Store which is strict on Immutability
@@ -52,7 +52,7 @@ class ImmutableStore extends ObjectOrientedStore {
 		);
 
 		// Wrap methods with immutability checkers before creating the OOStore
-		var parentOptions = {
+		const parentOptions = {
 			displayName: options.displayName,
 			init: null,
 			public: {},

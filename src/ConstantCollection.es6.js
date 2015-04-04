@@ -14,7 +14,7 @@
 
 'use strict';
 
-var invariant = require('invariant');
+const invariant = require('invariant');
 
 /**
  * Creates an immutable collection of constants which are meant to be passed
@@ -26,7 +26,7 @@ var invariant = require('invariant');
  */
 export default class ConstantCollection {
 	constructor (...names) {
-		names.forEach(name => {
+		names.forEach((name) => {
 
 			invariant(
 				this[name] === undefined,
