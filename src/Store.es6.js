@@ -14,19 +14,19 @@
 
 'use strict';
 
-var dispatcher = require('./dispatcherInstance.es6');
-var invariant = require('invariant');
-var debug = require('./debug.es6');
-var renderedComponentSet = new WeakSet();
+const dispatcher = require('./dispatcherInstance.es6');
+const invariant = require('invariant');
+const debug = require('./debug.es6');
+const renderedComponentSet = new WeakSet();
 
-var IN_PRODUCTION = process.env.NODE_ENV === 'production';
+const IN_PRODUCTION = process.env.NODE_ENV === 'production';
 
-var StoreDisplayNames = new Set();
+const StoreDisplayNames = new Set();
 
 export default class Store {
 	constructor (options) {
-		var store = this;
-		var ViewDisplayNames = new Set();
+		const store = this;
+		const ViewDisplayNames = new Set();
 
 		invariant(
 			options,

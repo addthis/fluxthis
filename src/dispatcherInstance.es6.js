@@ -14,5 +14,5 @@
 
 'use strict';
 
-var Dispatcher = require('./Dispatcher.es6');
+const Dispatcher = require('./Dispatcher.es6');
 module.exports = new Dispatcher();

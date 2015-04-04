@@ -32,20 +32,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 'use strict';
 
-var invariant = require('invariant');
+const invariant = require('invariant');
 
-var _lastID = 1;
-var _prefix = 'ID_';
+let _lastID = 1;
+const _prefix = 'ID_';
 
-var CALLBACKS = Symbol();
-var LEGACY_STORES = Symbol();
-var STORE_ACTIONS = Symbol();
+const CALLBACKS = Symbol();
+const LEGACY_STORES = Symbol();
+const STORE_ACTIONS = Symbol();
 
-var IS_PENDING = Symbol();
-var IS_HANDLED = Symbol();
-var IS_DISPATCHING = Symbol();
-var PENDING_ACTION = Symbol();
-var LAST_ACTION = Symbol();
+const IS_PENDING = Symbol();
+const IS_HANDLED = Symbol();
+const IS_DISPATCHING = Symbol();
+const PENDING_ACTION = Symbol();
+const LAST_ACTION = Symbol();
 
 export default class Dispatcher {
 	constructor () {
@@ -71,7 +71,7 @@ export default class Dispatcher {
 	 * @return {string}
 	 */
 	register (callback, actions) {
-		var id = _prefix + _lastID++;
+		const id = _prefix + _lastID++;
 		this[CALLBACKS][id] = callback;
 
 		// If we are a FluxThis store, then we can optimize
@@ -80,9 +80,10 @@ export default class Dispatcher {
 		if (actions) {
 			// Iterate over the actions to store them
 			// in a lookup table.
-			actions.forEach((handler, action) => {
-				if (!this[STORE_ACTIONS].has(action)) {
-					this[STORE_ACTIONS].set(action, []);
+
+			for (let key in actions) {
+				if (!this[STORE_ACTIONS].has(key)) {
+					this[STORE_ACTIONS].set(key, []);
 				}
 
 				this[STORE_ACTIONS].get(action).push(id);
@@ -131,8 +132,8 @@ export default class Dispatcher {
 			ids = [ids];
 		}
 
-		for (var i = 0; i < ids.length; i++) {
-			var id = ids[i];
+		for (let i = 0; i < ids.length; i++) {
+			const id = ids[i];
 
 			if (this[IS_PENDING][id]) {
 				invariant(
@@ -162,7 +163,7 @@ export default class Dispatcher {
 	 * @param {object} action
 	 */
 	dispatch (action) {
-		var serializedAction;
+		let {type, source} = action;
 
 		invariant(
 			!this[IS_DISPATCHING],
@@ -171,15 +172,17 @@ export default class Dispatcher {
 		);
 
 		invariant(
-			action.type !== undefined && action.type !== null,
+			type,
 			'Attempted to dispatch an action with unrecognizable type `%s`',
-			action.type
+			type
 		);
 
 		// make the object immutable if we're in production. Otherwise, check
 		// to see if the object has changed. The check is not very efficient,
 		// but will at least throw errors when things change, like freeze would
 		// do for us in strict mode
+		let serializedAction;
+
 		if (process.env.NODE_ENV !== 'production') {
 			try {
 				serializedAction = JSON.stringify(action);
@@ -197,8 +200,8 @@ export default class Dispatcher {
 		try {
 			// Get the stores that care about this source and type
 			// so we can optimistically dispatch to just those stores.
-			let sources = this[STORE_ACTIONS].get(action.source);
-			let types = this[STORE_ACTIONS].get(action.type);
+			let sources = this[STORE_ACTIONS].get(source);
+			let types = this[STORE_ACTIONS].get(type);
 
 			dispatchToStores.call(this, sources);
 			dispatchToStores.call(this, types);
@@ -218,8 +221,8 @@ export default class Dispatcher {
 					`An action dispatched by the FluxThis dispatcher was
 					mutated. This is bad. Please check the handlers for
 					%s %s.`,
-					action.source,
-					action.type
+					source,
+					type
 				);
 			}
 		}
@@ -252,11 +255,9 @@ export default class Dispatcher {
  * @param Array<String> ids
  */
 function dispatchToStores(ids) {
-	var id;
-	var storeID;
 
-	for (id in ids) {
-		storeID = ids[id];
+	for (let id in ids) {
+		let storeID = ids[id];
 
 		if (this[IS_PENDING][storeID]) {
 			continue;
@@ -291,7 +292,7 @@ function invokeCallback (id) {
 function startDispatching (action) {
 	require('./debug.es6').logDispatch(action);
 
-	for (var id in this[CALLBACKS]) {
+	for (let id in this[CALLBACKS]) {
 		this[IS_PENDING][id] = false;
 		this[IS_HANDLED][id] = false;
 	}
