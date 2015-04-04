@@ -102,7 +102,7 @@ export default class APIActionCreator extends ActionCreator {
 		);
 
 		invariant(
-			typeof route === 'string' || route,
+			typeof route === 'string',
 			'The method `%s` could not be created on `%s`; ' +
 			'`route` must be a `string`, like "/example/:example"',
 			name,
@@ -110,7 +110,7 @@ export default class APIActionCreator extends ActionCreator {
 		);
 
 		invariant(
-			typeof method === 'string' || method,
+			typeof method === 'string',
 			'The method `%s` could not be created on `%s`; ' +
 			'`method` must be a `string`, like "GET"',
 			name,
