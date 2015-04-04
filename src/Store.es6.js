@@ -110,8 +110,8 @@ export default class Store {
 			 * store when the component is going to unmount.
 			 */
 			componentWillUnmount () {
-				renderedComponentSet.remove(this);
-				ViewDisplayNames.remove(this.displayName);
+				renderedComponentSet.delete(this);
+				ViewDisplayNames.delete(this.displayName);
 				store.__removeChangeListener(this.__fluxChangeListener);
 			},
 
