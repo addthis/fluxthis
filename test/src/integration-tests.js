@@ -141,7 +141,7 @@ describe('Integration', function () {
 			viewConfig.mixins = [store.mixin, store2.mixin];
 		});
 
-		it.only('should not throw errors', function () {
+		it('should not throw errors', function () {
 			(function () {
 				var viewClass = React.createClass(viewConfig);
 				var test = React.createElement(viewClass);
