@@ -63,6 +63,24 @@ describe('ObjectOrientedStore', function () {
 		Should.exist(store.dispatchToken);
 	});
 
+	it('should throw an error when the same action is defined twice', function () {
+		(function () {
+			new Store({
+				displayName: 'oo-twice-action',
+				init: function(){
+					this.bindActions(
+						'TYPE', this.test,
+						'TYPE', this.test
+					);
+				},
+				public:{},
+				private:{
+					test: function() {}
+				}
+			});
+		}).should.throw();
+	});
+
 	describe('during init', function () {
 		var config;
 		beforeEach(function () {
