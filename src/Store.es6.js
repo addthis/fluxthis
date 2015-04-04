@@ -24,9 +24,32 @@ var IN_PRODUCTION = process.env.NODE_ENV === 'production';
 var StoreDisplayNames = new Set();
 
 export default class Store {
-	constructor () {
+	constructor (options) {
 		var store = this;
 		var ViewDisplayNames = new Set();
+
+		invariant(
+			options,
+			'Cannot create FluxThis Stores without arguments'
+		);
+
+		invariant(
+			options.init,
+			'FluxThis Stores requires an `init` function'
+		);
+
+		invariant(
+			options.displayName,
+			'FluxThis Stores requires a `displayName` to assist you with debugging'
+		);
+
+		invariant(
+			options.public,
+			'ObjectOrientedStore requires `public` functions'
+		);
+
+		this.displayName = options.displayName;
+
 
 		// Ensure we have unique display names to assist with debugging.
 		if (!IN_PRODUCTION) {

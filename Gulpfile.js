@@ -44,7 +44,7 @@ gulp.task('mocha-test', function () {
     return stream;
 });
 
-gulp.task('build-test', function (callback) {
+gulp.task('build-test', function () {
     testWebpackConfig.plugins = testWebpackConfig.plugins.concat(
         new webpack.DefinePlugin({
             'process.env': {
@@ -66,13 +66,13 @@ gulp.task('test', function(callback) {
         callback);
 });
 
-gulp.task('build-dev', function (callback) {
+gulp.task('build-dev', function () {
     return gulp.src(webpackConfig.entry.FluxThis)
         .pipe(gulpWebpack(webpackConfig))
         .pipe(gulp.dest(webpackConfig.output.path));
 });
 
-gulp.task('build-prod', function (callback) {
+gulp.task('build-prod', function () {
     // Make minified file for production.
     webpackConfig.output.filename = 'FluxThis.min.js';
 
