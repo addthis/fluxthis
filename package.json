@@ -1,6 +1,6 @@
 {
   "name": "fluxthis",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "AddThis Flux Framework",
   "main": "build/FluxThis.js",
   "directories": {
