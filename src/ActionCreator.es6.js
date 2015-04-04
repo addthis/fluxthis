@@ -14,20 +14,20 @@
 
 'use strict';
 
-var dispatcher = require('./dispatcherInstance.es6');
-var debug = require('./debug.es6');
-var each = require('../lib/each');
-var PropTypes = require('react/lib/ReactPropTypes');
-var invariant = require('invariant');
+const dispatcher = require('./dispatcherInstance.es6');
+const debug = require('./debug.es6');
+const each = require('../lib/each');
+const PropTypes = require('react/lib/ReactPropTypes');
+const invariant = require('invariant');
 
-var RE_REQUIRED_PROP = /Required prop `(.*?)`/;
+const RE_REQUIRED_PROP = /Required prop `(.*?)`/;
 
-var RE_WARNING_EXPECTED = /expected (.*`(.*?)`)/;
-var RE_WARNING_FOUND = /type `(.*?)`/;
+const RE_WARNING_EXPECTED = /expected (.*`(.*?)`)/;
+const RE_WARNING_FOUND = /type `(.*?)`/;
 
-var IN_PRODUCTION = process.env.NODE_ENV === 'production';
-var DisplayNames = new Set();
-var ActionSources = new Set();
+const IN_PRODUCTION = process.env.NODE_ENV === 'production';
+const DisplayNames = new Set();
+const ActionSources = new Set();
 
 /**
  * @typedef {object} ApiDescription
@@ -56,11 +56,11 @@ class ActionCreator {
 	 *  or 0, where 1 indicates the key should not be interpretted as a public
 	 *  function
 	 */
-	constructor (options, moreReservedKeys) {
-		var reservedKeys = Object.assign({
+	constructor (options, moreReservedKeys={}) {
+		let reservedKeys = Object.assign({
 			actionSource: 1,
 			displayName: 1
-		}, moreReservedKeys || {});
+		}, moreReservedKeys);
 
 		invariant(
 			options instanceof Object,
@@ -117,13 +117,11 @@ class ActionCreator {
 	 *	create
 	 */
 	createPublicMethod (name, description) {
-		var createPayload = description.createPayload;
-		var payloadType = description.payloadType;
-		var actionType = description.actionType;
-		var actionSource = this.actionSource;
+		let {createPayload, payloadType, actionType: type} = description;
+		let source = this.actionSource;
 
 		invariant(
-			actionType !== undefined,
+			type !== undefined,
 			'The method `%s` could not be created on `%s`; ' +
 			'`actionType` must be provided',
 			name,
@@ -138,32 +136,24 @@ class ActionCreator {
 			this
 		);
 
-		this[name] = function (payload, ...args) {
-			var action;
-			if(createPayload) {
+		this[name] = (payload, ...args) => {
+			if (createPayload) {
 				payload = createPayload.apply(this, arguments);
 			}
 
-			if(payloadType) {
+			if (payloadType) {
 				this.validatePayload(name, payload, payloadType);
 			}
 
-			action = {
-				source: actionSource,
-				type: actionType,
-				payload: payload
-			};
+			let action = {source, type, payload};
 
 			debug.logActionCreator(this, name, payload, ...args);
 
 			dispatcher.dispatch(action);
-		}.bind(this);
+		};
 
 
-		debug.registerAction(this, {
-			source: actionSource,
-			type: actionType
-		});
+		debug.registerAction(this, {source, type});
 	}
 
 	/**
@@ -175,14 +165,16 @@ class ActionCreator {
 	 *	against.
 	 */
 	validatePayload (name, payload, payloadType) {
-		var err = payloadType({payload: payload}, 'payload', name, 'prop');
-		var expected;
-		var found;
-		var required;
+		let err = payloadType({payload}, 'payload', name, 'prop');
+		let expected;
+		let found;
+		let required;
 
-		if(err) {
-			var message = err.message;
+		if (err) {
+			const message = err.message;
 
+			// Perform some regex checks on messages to determine
+			// which type of error we have.
 			required = message.match(RE_REQUIRED_PROP);
 			expected = message.match(RE_WARNING_EXPECTED);
 			found = message.match(RE_WARNING_FOUND);
@@ -198,14 +190,14 @@ class ActionCreator {
 				found = message.match(RE_WARNING_FOUND);
 
 				err.message = this + ' ' + name + ' was provided ' +
-				'an invalid payload. Expected ' + expected + ', got `' +
-				found[1] + '`.';
+					'an invalid payload. Expected ' + expected + ', got `' +
+					found[1] + '`.';
 			}
 			// This is used for more complex payload checking
 			// like instanceOf, etc.
 			else if (expected) {
 				err.message = this + ' ' + name + ' was provided ' +
-				'an invalid payload. Expected ' + expected + '.';
+					'an invalid payload. Expected ' + expected + '.';
 			}
 
 			throw err;
@@ -219,4 +211,4 @@ class ActionCreator {
 
 ActionCreator.PayloadTypes = PropTypes;
 
-module.exports = ActionCreator;
+export default ActionCreator;

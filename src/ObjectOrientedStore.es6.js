@@ -14,13 +14,13 @@
 
 'use strict';
 
-var dispatcher = require('./dispatcherInstance.es6');
-var Store = require('./Store.es6');
-var debug = require('./debug.es6');
-var each = require('../lib/each');
-var invariant = require('invariant');
+const dispatcher = require('./dispatcherInstance.es6');
+const Store = require('./Store.es6');
+const debug = require('./debug.es6');
+const each = require('../lib/each');
+const invariant = require('invariant');
 
-var CHANGE_LISTENERS = Symbol();
+const CHANGE_LISTENERS = Symbol();
 
 /**
  * A Flux Store which allows for public/private methods and attributes
@@ -41,12 +41,12 @@ export default class ObjectOrientedStore extends Store {
 	constructor (options) {
 		super(options);
 
-		var store = this;
-		var changeEventPending = false;
-		var publicMethods;
-		var privateMethods;
-		var privateMembers;
-		var bindActionsWasCalled = false;
+		const store = this;
+		let changeEventPending = false;
+		let publicMethods;
+		let privateMethods;
+		let privateMembers;
+		let bindActionsWasCalled = false;
 
 		this.dispatchToken = null;
 
@@ -62,10 +62,10 @@ export default class ObjectOrientedStore extends Store {
 				value () {
 					bindActionsWasCalled = true;
 
-					var i = 0;
-					var actions = new Map();
-					var constant;
-					var handler;
+					let i = 0;
+					let actions = new Map();
+					let constant;
+					let handler;
 
 					invariant(
 						arguments.length % 2 === 0,
@@ -108,7 +108,17 @@ export default class ObjectOrientedStore extends Store {
 						i++;
 					}
 
-					var dispatchFunction = function (action) {
+					/**
+					 * This method is what the dispatcher uses whenever
+					 * an action has been dispatched that this store cares
+					 * about. This method will invoke the methods
+					 *
+					 * @param {object} action
+					 * @param {string} action.type
+					 * @param {string} action.source
+					 * @param {string} action.payload
+					 */
+					const dispatchFunction = function (action) {
 						const {source, type, payload} = action;
 
 						if (actions.has(source)) {
@@ -141,7 +151,7 @@ export default class ObjectOrientedStore extends Store {
 							 */
 							mockDispatch() {
 								// Store the current waitFor and reset.
-								var waitFor = store.waitFor;
+								const waitFor = store.waitFor;
 								store.waitFor = function () {};
 								/*
 									Context doesn't matter here since it
@@ -222,7 +232,7 @@ export default class ObjectOrientedStore extends Store {
 			);
 
 			privateMethods[prop] = function (...args) {
-				var returnValue = method.apply(privateMembers, arguments);
+				const returnValue = method.apply(privateMembers, arguments);
 
 				debug.logStore(this, prop, ...args);
 
