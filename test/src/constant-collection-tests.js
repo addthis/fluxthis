@@ -50,5 +50,5 @@ describe('Constant Collections', function () {
         var CC1 = new ConstantCollection('HI');
         var CC2 = new ConstantCollection('HI');
         CC1.HI.toString().should.not.equal(CC2.HI.toString());
-    })
+    });
 });
