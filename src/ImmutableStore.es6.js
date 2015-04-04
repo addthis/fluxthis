@@ -70,12 +70,36 @@ class ImmutableStore extends ObjectOrientedStore {
 
 
 		if (options.init) {
-			parentOptions.init = initOverride(options);
+			parentOptions.init = function () {
+				options.init.call(this);
+
+				each(this, (key, member) => {
+					invariant(
+						ImmutableStore.checkImmutable(member),
+						'non-immutable, non-primitive `%s` was added to an ' +
+						'ImmutableStore during `init`',
+						key
+					);
+				});
+			};
 		}
 
 		if (options.public) {
 			each(options.public, (key, fn) => {
-				parentOptions.public[key] = publicOverride(key, fn);
+				parentOptions.public[key] = function () {
+					var result = fn.apply(this, arguments);
+
+					invariant(
+						ImmutableStore.checkImmutable(result),
+						'public method `%s` attempted to return a ' +
+						'non-immutable, non-primitive value. All accessors ' +
+						'must return immutable or primitive values to ' +
+						'prevent errors from mutation of objects',
+						key
+					);
+
+					return result;
+				};
 			});
 		}
 
@@ -87,52 +111,6 @@ class ImmutableStore extends ObjectOrientedStore {
 	}
 }
 
-/**
- * Returns a wrapper initialize method to impose Immutable
- * restrictions on the Store.
- *
- * @param {object} options
- * @returns {Function}
- */
-function initOverride(options) {
-	return function () {
-		options.init.call(this);
-
-		each(this, (key, member) => {
-			invariant(
-				ImmutableStore.checkImmutable(member),
-				'non-immutable, non-primitive `%s` was added to an ' +
-				'ImmutableStore during `init`',
-				key
-			);
-		});
-	};
-}
-
-/**
- * Returns a wrapper public method to impose Immutable
- * restrictions on the Store.
- *
- * @param {string} key
- * @param {Function} fn
- * @returns {Function}
- */
-function publicOverride(key, fn) {
-	return function () {
-		var result = fn.apply(this, arguments);
-
-		invariant(
-			ImmutableStore.checkImmutable(result),
-			'public method `%s` attempted to return a ' +
-			'non-immutable, non-primitive value. All accessors ' +
-			'must return immutable or primitive values to ' +
-			'prevent errors from mutation of objects',
-			key
-		);
-
-		return result;
-	};
-}
 ImmutableStore.Immutable = Immutable;
 
 export default ImmutableStore;
