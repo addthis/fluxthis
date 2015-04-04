@@ -180,16 +180,16 @@ export default class Dispatcher {
 		// to see if the object has changed. The check is not very efficient,
 		// but will at least throw errors when things change, like freeze would
 		// do for us in strict mode
-		let serializedAction;
+		let serializedPayload;
 
 		if (process.env.NODE_ENV !== 'production') {
 			try {
-				serializedAction = JSON.stringify(action);
+				serializedPayload = JSON.stringify(action.payload);
 			}
 			catch(err) {
 				invariant(
 					!err,
-					'Actions must be simple objects, and must be stringifyable.'
+					'Payloads must be simple objects, and must be stringifyable.'
 				);
 			}
 		}
@@ -216,7 +216,7 @@ export default class Dispatcher {
 			//check for mutations
 			if (process.env.NODE_ENV !== 'production') {
 				invariant(
-					JSON.stringify(action) === serializedAction,
+					JSON.stringify(action.payload) === serializedPayload,
 					`An action dispatched by the FluxThis dispatcher was
 					mutated. This is bad. Please check the handlers for
 					%s %s.`,

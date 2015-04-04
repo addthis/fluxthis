@@ -38,9 +38,7 @@ export default class ConstantCollection {
 			this[name] = new Constant(name, this);
 		});
 
-		if (Object.freeze instanceof Function) {
-			Object.freeze(this);
-		}
+		Object.freeze(this);
 	}
 }
 

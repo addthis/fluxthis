@@ -13,6 +13,8 @@
  */
 
 var ActionCreator = require('../../src/ActionCreator.es6');
+var ConstantCollection = require('../../src/ConstantCollection.es6')
+var Dispatcher = require('../../src/Dispatcher.es6');
 var Store = require('../../src/ImmutableStore.es6');
 
 describe('Integration', function () {
@@ -210,6 +212,22 @@ describe('Integration', function () {
 			});
 			ac.addThing('hi');
 			str.should.equal('abc');
+		});
+	});
+
+	describe('A dispatcher', function () {
+		describe('when dispatching an event with ConstantCollection types', function () {
+			it('should not throw', function () {
+		        var CC = new ConstantCollection('HI');
+		        var dispatcher = new Dispatcher();
+
+		        (function () {
+		        	dispatcher.dispatch({
+		        		type: CC.HI,
+		        		payload: 'derp'
+		        	});
+		        }).should.not.throw();
+			});
 		});
 	});
 });
