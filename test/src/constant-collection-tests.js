@@ -45,4 +45,11 @@ describe('Constant Collections', function () {
         var CC = new ConstantCollection('HI');
         CC.HI.toString().should.equal(CC.id + '_HI');
     });
+
+    it('should provide constants which can be used as keys in objects', function () {
+        var CC = new ConstantCollection('HI');
+        var obj = {};
+        obj[CC.HI] = 'test';
+        Should(obj[CC.id + '_HI']).equal('test');
+    });
 });
