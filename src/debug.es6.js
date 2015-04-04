@@ -83,10 +83,10 @@ class FluxDebugger {
 
 	constructor () {
 		const settings = FluxDebugger.getDebugSettings();
-		this.registeredHandlers = {};
-		this.registeredActions = {};
-		this.registeredSources = {};
-		this.registeredTypes = {};
+		this.registeredHandlers = new Map();
+		this.registeredActions = new Map();
+		this.registeredSources = new Map();
+		this.registeredTypes = new Map();
 
 		if (settings.unused) {
 			setTimeout(() => {
@@ -104,11 +104,11 @@ class FluxDebugger {
 	 *  expects some action to have
 	 */
 	registerActionHandler (store, typeOrSource) {
-		if (!this.registeredHandlers[typeOrSource]) {
-			this.registeredHandlers[typeOrSource] = [];
+		if (!this.registeredHandlers.has(typeOrSource)) {
+			this.registeredHandlers.set(typeOrSource, []);
 		}
 
-		this.registeredHandlers[typeOrSource].push(store);
+		this.registeredHandlers.get(typeOrSource).push(store);
 	}
 
 	/**
@@ -124,24 +124,13 @@ class FluxDebugger {
 		let {source, type} = action;
 		let existingEntry;
 
-		if(!this.registeredActions[source]) {
-			this.registeredActions[source] = {};
-			this.registeredSources[source] = actionCreator;
+		if(!this.registeredActions.has(source)) {
+			this.registeredActions.set(source, new Map());
+			this.registeredSources.set(source, actionCreator);
 		}
 
-		existingEntry = this.registeredActions[source][type];
-
-		invariant(
-			existingEntry === undefined,
-			'An action with source `%s` and type `%s` was already registered ' +
-			'by `%s` and cannot be registered a second time.',
-			source,
-			type,
-			existingEntry
-		);
-
-		this.registeredActions[source][type] = actionCreator;
-		this.registeredTypes[type] = actionCreator;
+		this.registeredActions.get(source).set(type, actionCreator);
+		this.registeredTypes.set(type, actionCreator);
 	}
 
 	logActionCreator (actionCreator, methodName, ...args) {
@@ -221,14 +210,11 @@ class FluxDebugger {
 		const unregistered = [];
 		const unhandled = [];
 
-		const registeredSources = Object.keys(this.registeredSources);
-		const registeredTypes = Object.keys(this.registeredTypes);
-
 		// Find actions which have handlers in Stores, but which have not been
 		// registered through an ActionCreator
-		each(this.registeredHandlers, (sourceOrType, stores) => {
-			let sourceMatched = registeredSources.indexOf(sourceOrType) > -1;
-			let typeMatched = registeredTypes.indexOf(sourceOrType) > -1;
+		this.registeredHandlers.forEach((stores, sourceOrType) => {
+			let sourceMatched = this.registeredSources.has(sourceOrType);
+			let typeMatched = this.registeredTypes.has(sourceOrType);
 
 			if (!sourceMatched && !typeMatched) {
 				unregistered.push({
@@ -240,10 +226,10 @@ class FluxDebugger {
 
 		// Find actions registered through ActionCreators which are not handled
 		// by Stores
-		each(this.registeredActions, (source, actionsByType) => {
+		this.registeredActions.forEach((actionsByType, source) => {
 			each(actionsByType, (type, actionCreator) => {
-				if (!this.registeredHandlers[source] &&
-					!this.registeredHandlers[type]) {
+				if (!this.registeredHandlers.has(source) &&
+					!this.registeredHandlers.has(type)) {
 					unhandled.push({
 						actionCreator,
 						source,
