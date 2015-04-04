@@ -26,8 +26,9 @@ const invariant = require('invariant');
  */
 export default class ConstantCollection {
 	constructor (...names) {
-		names.forEach((name) => {
 
+		this.id = Math.random().toString(36).substring(2);
+		names.forEach((name) => {
 			invariant(
 				this[name] === undefined,
 				'The constant `%s` already exists in this collection',
@@ -47,5 +48,8 @@ class Constant {
 	constructor (name, collection) {
 		this.name = name;
 		this.collection = collection;
+	}
+	toString() {
+		return `${this.name}_#${this.collection.id}`;
 	}
 }

@@ -40,4 +40,15 @@ describe('Constant Collections', function () {
             Should(Object.isFrozen(CC)).equal(true);
         }
     });
+
+    it('should provide constants with good toString methods', function () {
+        var CC = new ConstantCollection('HI');
+        CC.HI.toString().should.equal('HI_#' + CC.id);
+    });
+
+    it('should provide constants with unique strings when they share keys', function () {
+        var CC1 = new ConstantCollection('HI');
+        var CC2 = new ConstantCollection('HI');
+        CC1.HI.toString().should.not.equal(CC2.HI.toString());
+    })
 });
