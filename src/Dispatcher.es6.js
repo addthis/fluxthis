@@ -66,8 +66,8 @@ export default class Dispatcher {
 	 * Registers a callback to be invoked with every dispatched action. Returns
 	 * a token that can be used with `waitFor()`.
 	 *
-	 * @param {function} callback
-	 * @param {object} actions
+	 * @param {Function} callback
+	 * @param {Map} actions
 	 * @return {string}
 	 */
 	register (callback, actions) {
@@ -80,13 +80,13 @@ export default class Dispatcher {
 		if (actions) {
 			// Iterate over the actions to store them
 			// in a lookup table.
-			for (let key in actions) {
-				if (!this[STORE_ACTIONS].has(key)) {
-					this[STORE_ACTIONS].set(key, []);
+			actions.forEach((handler, action) => {
+				if (!this[STORE_ACTIONS].has(action)) {
+					this[STORE_ACTIONS].set(action, []);
 				}
 
-				this[STORE_ACTIONS].get(key).push(id);
-			}
+				this[STORE_ACTIONS].get(action).push(id);
+			});
 		}
 		// We have a legacy store so we can't tell which
 		// actions they listen too. So we have to call
