@@ -39,6 +39,8 @@ export default class ObjectOrientedStore extends Store {
 	 *	debugging
 	 */
 	constructor (options) {
+		super(options);
+
 		var store = this;
 		var changeEventPending = false;
 		var publicMethods;
@@ -46,32 +48,11 @@ export default class ObjectOrientedStore extends Store {
 		var privateMembers;
 		var bindActionsWasCalled = false;
 
-		invariant(
-			options,
-			'Cannot create ObjectOrientedStore without arguments'
-		);
-
-		invariant(
-			options.init,
-			'ObjectOrientedStore requires an `init` function'
-		);
-
-		invariant(
-			options.displayName,
-			'ObjectOrientedStore requires a `displayName` to assist you with debugging'
-		);
-
-		invariant(
-			options.public,
-			'ObjectOrientedStore requires `public` functions'
-		);
-
-		this.displayName = options.displayName;
 		this.dispatchToken = null;
+
 		this[CHANGE_LISTENERS] = new Set();
 
 		// This must be below displayName for displayName uniqueness checks
-		super();
 
 		publicMethods = Object.assign(this, options.public);
 
