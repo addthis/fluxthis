@@ -19,6 +19,9 @@ var invariant = require('invariant');
 var Immutable = require('immutable');
 var ObjectOrientedStore = require('./ObjectOrientedStore.es6');
 
+const IN_PRODUCTION = process.env.NODE_ENV === 'production';
+const CHECK_IMMUTABILITY = !!process.env.CHECK_IMMUTABILITY;
+
 /**
  * A Flux Store which is strict on Immutability
  */
@@ -46,6 +49,13 @@ class ImmutableStore extends ObjectOrientedStore {
 	 *	debugging
 	 */
 	constructor (options) {
+		// If we are in production, then lets skip adding
+		// the immutability checks for performance sake.
+		if (!CHECK_IMMUTABILITY && IN_PRODUCTION) {
+			super(options);
+			return;
+		}
+
 		invariant(
 			options,
 			'Cannot create FluxThis Stores without arguments'
