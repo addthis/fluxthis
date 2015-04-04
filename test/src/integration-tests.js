@@ -141,11 +141,13 @@ describe('Integration', function () {
 			viewConfig.mixins = [store.mixin, store2.mixin];
 		});
 
-		it('should not throw errors', function () {
+		it.only('should not throw errors', function () {
 			(function () {
 				var viewClass = React.createClass(viewConfig);
 				var test = React.createElement(viewClass);
-				React.render(test, document.createElement('div'));
+				var element = document.createElement('div');
+				React.render(test, element);
+				React.unmountComponentAtNode(element);
 			}).should.not.throw();
 		});
 
