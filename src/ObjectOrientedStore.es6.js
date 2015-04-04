@@ -63,7 +63,7 @@ export default class ObjectOrientedStore extends Store {
 					bindActionsWasCalled = true;
 
 					var i = 0;
-					var actions = {};
+					var actions = new Map();
 					var constant;
 					var handler;
 
@@ -96,20 +96,27 @@ export default class ObjectOrientedStore extends Store {
 							constant
 						);
 
-						actions[constant] = handler;
+						invariant(
+							!actions.has(constant),
+							`${this} - The action ${constant} has already ` +
+							'been defined in this store.'
+						);
+
+						actions.set(constant, handler);
+
 						debug.registerActionHandler(this, constant);
 						i++;
 					}
 
 					var dispatchFunction = function (action) {
-						var sourceHandler = actions[action.source];
-						var typeHandler = actions[action.type];
+						const {source, type, payload} = action;
 
-						if (sourceHandler) {
-							sourceHandler.call(store, action.payload);
+						if (actions.has(source)) {
+							actions.get(source).call(store, payload);
 						}
-						if (typeHandler) {
-							typeHandler.call(store, action.payload);
+
+						if (actions.has(type)) {
+							actions.get(type).call(store, payload);
 						}
 					};
 
