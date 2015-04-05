@@ -27,7 +27,7 @@ const RE_WARNING_FOUND = /type `(.*?)`/;
 
 const IN_PRODUCTION = process.env.NODE_ENV === 'production';
 const DisplayNames = new Set();
-const ActionSources = new Set();
+const ActionSources = new Map();
 
 /**
  * @typedef {object} ApiDescription
@@ -84,7 +84,7 @@ class ActionCreator {
 			`ActionCreator - Your actionSource of ` +
 			`${options.actionSource} is not unique.`
 		);
-		ActionSources.add(options.actionSource);
+		ActionSources.set(options.actionSource, new Set());
 
 		// Lets make sure we have unique display names
 		invariant(
@@ -136,6 +136,19 @@ class ActionCreator {
 			this
 		);
 
+		// Now lets make sure we haven't already registered this
+		// action for the current source.
+		const actions = ActionSources.get(source);
+
+		invariant(
+			!actions.has(type),
+			`${this} - already has an action with type ${type} already ` +
+			'registered.'
+		);
+
+		// Add the new type to the Set so we can keep checking for uniqueness.
+		actions.add(type);
+
 		this[name] = (payload, ...args) => {
 			if (createPayload) {
 				payload = createPayload.apply(this, arguments);
@@ -151,7 +164,6 @@ class ActionCreator {
 
 			dispatcher.dispatch(action);
 		};
-
 
 		debug.registerAction(this, {source, type});
 	}

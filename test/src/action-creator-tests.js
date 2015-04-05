@@ -13,6 +13,7 @@
  */
 
 var ActionCreator = require('../../src/ActionCreator.es6');
+var ConstantCollection = require('../../src/ConstantCollection.es6');
 
 describe('ActionCreators', function () {
 
@@ -155,6 +156,50 @@ describe('ActionCreators', function () {
 
 		ac.doThing();
 	});
+
+	it('should not throw an error for having constant collections', function () {
+
+		var ACTION_TYPES =  new ConstantCollection(
+			'ADD_COLOR',
+			'REMOVE_COLOR'
+		);
+
+		(function () {
+			var ac = new ActionCreator({
+				displayName: 'CCtest',
+				actionSource: 'CC_TEST',
+				addColor: {
+					actionType: ACTION_TYPES.ADD_COLOR
+				},
+				removeColor: {
+					actionType: ACTION_TYPES.REMOVE_COLOR
+				}
+			});
+		}).should.not.throw();
+
+	});
+
+	it('should throw an error for having duplicate constant collections as types', function () {
+
+		var ACTION_TYPES =  new ConstantCollection(
+			'ADD_COLOR',
+			'REMOVE_COLOR'
+		);
+
+		(function () {
+			var ac = new ActionCreator({
+				displayName: 'CCtest',
+				actionSource: 'CC_TEST',
+				addColor: {
+					actionType: ACTION_TYPES.ADD_COLOR
+				},
+				removeColor: {
+					actionType: ACTION_TYPES.ADD_COLOR
+				}
+			});
+		}).should.throw();
+	});
+
 
 	it('should warn correctly when payload types don\'t match', function () {
 		var ac = new ActionCreator({
