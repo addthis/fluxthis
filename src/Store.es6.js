@@ -111,7 +111,7 @@ export default class Store {
 			 */
 			componentWillUnmount () {
 				renderedComponentSet.delete(this);
-				ViewDisplayNames.delete(this.displayName);
+				ViewDisplayNames.delete(this.constructor.displayName);
 				store.__removeChangeListener(this.__fluxChangeListener);
 			},
 
