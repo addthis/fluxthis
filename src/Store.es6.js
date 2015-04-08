@@ -98,7 +98,9 @@ export default class Store {
 
 				if (!this.__fluxChangeListener) {
 					this.__fluxChangeListener = () => {
-						this.setState(this.getStateFromStores());
+						if (this.isMounted()) {
+							this.setState(this.getStateFromStores());
+						}
 					};
 				}
 

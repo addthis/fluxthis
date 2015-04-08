@@ -242,7 +242,7 @@ export default class ObjectOrientedStore extends Store {
 				if(!changeEventPending) {
 					setTimeout(() => {
 						changeEventPending = false;
-						store[CHANGE_LISTENERS].forEach(fn => fn.call(this));
+						store[CHANGE_LISTENERS].forEach(fn => fn());
 					});
 
 					changeEventPending = true;
