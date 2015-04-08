@@ -151,7 +151,7 @@ class ActionCreator {
 
 		this[name] = (payload, ...args) => {
 			if (createPayload) {
-				payload = createPayload.apply(this, arguments);
+				payload = createPayload.apply(this, [payload, ...args]);
 			}
 
 			if (payloadType) {
