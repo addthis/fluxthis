@@ -20,8 +20,6 @@ const debug = require('./debug.es6');
 const each = require('../lib/each');
 const invariant = require('invariant');
 
-const CHANGE_LISTENERS = Symbol();
-
 /**
  * A Flux Store which allows for public/private methods and attributes
  */
@@ -42,7 +40,6 @@ export default class ObjectOrientedStore extends Store {
 		super(options);
 
 		const store = this;
-		let changeEventPending = false;
 		let publicMethods;
 		let privateMethods;
 		let privateMembers;
@@ -50,7 +47,7 @@ export default class ObjectOrientedStore extends Store {
 
 		this.dispatchToken = null;
 
-		this[CHANGE_LISTENERS] = new Set();
+
 
 		// This must be below displayName for displayName uniqueness checks
 
@@ -236,17 +233,11 @@ export default class ObjectOrientedStore extends Store {
 
 				debug.logStore(this, prop, ...args);
 
-				// Notify all listening views that we've potentially changed
-				// due to a private fn modifying our state, but only after this
-				// tick (so we can batch these events)
-				if(!changeEventPending) {
-					setTimeout(() => {
-						changeEventPending = false;
-						store[CHANGE_LISTENERS].forEach(fn => fn());
-					});
-
-					changeEventPending = true;
-				}
+				// Because React batches setState asynchronously, we
+				// can call set state multiple times and React
+				// will batch or updates so we
+				// only update the Controller View once.
+				store.__emitChanges();
 
 				return returnValue;
 			};
@@ -282,25 +273,5 @@ export default class ObjectOrientedStore extends Store {
 
 	toString () {
 		return `[ObjectOrientedStore ${this.displayName}]`;
-	}
-
-	/**
-	 * Add a function to this store's list of change listeners
-	 *
-	 * @private
-	 * @param {function} fn
-	 */
-	__addChangeListener (fn) {
-		this[CHANGE_LISTENERS].add(fn);
-	}
-
-	/**
-	 * Remove a function from this store's list of change listeners
-	 *
-	 * @private
-	 * @param {function} fn
-	 */
-	__removeChangeListener (fn) {
-		this[CHANGE_LISTENERS].delete(fn);
 	}
 }

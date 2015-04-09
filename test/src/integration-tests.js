@@ -220,15 +220,15 @@ describe('Integration', function () {
 	describe('A dispatcher', function () {
 		describe('when dispatching an event with ConstantCollection types', function () {
 			it('should not throw', function () {
-		        var CC = new ConstantCollection('HI');
-		        var dispatcher = new Dispatcher();
+				var CC = new ConstantCollection('HI');
+				var dispatcher = new Dispatcher();
 
-		        (function () {
-		        	dispatcher.dispatch({
-		        		type: CC.HI,
-		        		payload: 'derp'
-		        	});
-		        }).should.not.throw();
+				(function () {
+					dispatcher.dispatch({
+						type: CC.HI,
+						payload: 'derp'
+					});
+				}).should.not.throw();
 			});
 		});
 	});

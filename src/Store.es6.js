@@ -23,6 +23,8 @@ const IN_PRODUCTION = process.env.NODE_ENV === 'production';
 
 const StoreDisplayNames = new Set();
 
+const CHANGE_LISTENERS = Symbol();
+
 export default class Store {
 	constructor (options) {
 		const store = this;
@@ -48,6 +50,7 @@ export default class Store {
 			'ObjectOrientedStore requires `public` functions'
 		);
 
+		this[CHANGE_LISTENERS] = new Set();
 		this.displayName = options.displayName;
 
 
@@ -146,5 +149,39 @@ export default class Store {
 
 	toString () {
 		return `[Store ${this.displayName}]`;
+	}
+
+	/**
+	 * Add a function to this store's list of change listeners
+	 *
+	 * @private
+	 * @param {function} fn
+	 */
+	__addChangeListener (fn) {
+		this[CHANGE_LISTENERS].add(fn);
+	}
+
+	/**
+	 * Remove a function from this store's list of change listeners
+	 *
+	 * @private
+	 * @param {function} fn
+	 */
+	__removeChangeListener (fn) {
+		this[CHANGE_LISTENERS].delete(fn);
+	}
+
+	/**
+	 * Call all the listener functions that have been
+	 * registered with this store.
+	 *
+	 * Due to how React's batching works with setState,
+	 * we can safely assume that React will batch
+	 * multiple calls in the same tick appropriately.
+	 *
+	 * @private
+	 */
+	__emitChanges() {
+		this[CHANGE_LISTENERS].forEach(fn => fn());
 	}
 }
