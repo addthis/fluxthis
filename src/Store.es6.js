@@ -17,6 +17,7 @@
 const dispatcher = require('./dispatcherInstance.es6');
 const invariant = require('invariant');
 const debug = require('./debug.es6');
+const deprecated = require('../lib/deprecated.es6');
 const renderedComponentSet = new WeakSet();
 
 const IN_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -107,7 +108,7 @@ export default class Store {
 					};
 				}
 
-				store.__addChangeListener(this.__fluxChangeListener);
+				store.addChangeListener(this.__fluxChangeListener);
 			},
 
 			/**
@@ -117,7 +118,7 @@ export default class Store {
 			componentWillUnmount () {
 				renderedComponentSet.delete(this);
 				ViewDisplayNames.delete(this.constructor.displayName);
-				store.__removeChangeListener(this.__fluxChangeListener);
+				store.removeChangeListener(this.__fluxChangeListener);
 			},
 
 			getInitialState () {
@@ -154,21 +155,29 @@ export default class Store {
 	/**
 	 * Add a function to this store's list of change listeners
 	 *
-	 * @private
-	 * @param {function} fn
+	 * @param {fction} fn
 	 */
-	__addChangeListener (fn) {
+	addChangeListener (fn) {
 		this[CHANGE_LISTENERS].add(fn);
 	}
 
 	/**
 	 * Remove a function from this store's list of change listeners
 	 *
-	 * @private
 	 * @param {function} fn
 	 */
-	__removeChangeListener (fn) {
+	removeChangeListener (fn) {
 		this[CHANGE_LISTENERS].delete(fn);
+	}
+
+	__removeChangeListener(fn) {
+		deprecated(this, '__removeChangeListener', 'removeChangeListener');
+		this.removeChangeListener(fn);
+	}
+
+	__addChangeListener(fn) {
+		deprecated(this, '__addChangeListener', 'addChangeListener');
+		this.addChangeListener(fn);
 	}
 
 	/**

@@ -27,4 +27,5 @@ require('./immutable-store-tests');
 require('./object-oriented-store-tests');
 require('./integration-tests');
 require('./constant-collection-tests');
+require('./store-tests');
 
