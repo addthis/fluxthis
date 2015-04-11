@@ -20,8 +20,6 @@ const debug = require('./debug.es6');
 const deprecated = require('../lib/deprecated.es6');
 const renderedComponentSet = new WeakSet();
 
-const IN_PRODUCTION = process.env.NODE_ENV === 'production';
-
 const StoreDisplayNames = new Set();
 
 const CHANGE_LISTENERS = Symbol();
@@ -56,14 +54,13 @@ export default class Store {
 
 
 		// Ensure we have unique display names to assist with debugging.
-		if (!IN_PRODUCTION) {
-			invariant(
-				!StoreDisplayNames.has(this.displayName),
-				`Store: Your displayName of ${this.displayName} is` +
-					'not unique.'
-			);
-			StoreDisplayNames.add(this.displayName);
-		}
+		invariant(
+			!StoreDisplayNames.has(this.displayName),
+			`Store: Your displayName of ${this.displayName} is` +
+				'not unique.'
+		);
+
+		StoreDisplayNames.add(this.displayName);
 
 		// Expose the mixin for the Store.
 		this.mixin = {
