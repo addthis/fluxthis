@@ -55,7 +55,7 @@ export default class Dispatcher {
 		// Using a Map for this allows us to support
 		// ConstantCollections as keys.
 		this[STORE_ACTIONS] = new Map();
-		this[LEGACY_STORES] = [];
+		this[LEGACY_STORES] = new Set();
 
 		this[IS_DISPATCHING] = false;
 		this[PENDING_ACTION] = null;
@@ -82,17 +82,17 @@ export default class Dispatcher {
 			// in a lookup table.
 			actions.forEach((handler, action) => {
 				if (!this[STORE_ACTIONS].has(action)) {
-					this[STORE_ACTIONS].set(action, []);
+					this[STORE_ACTIONS].set(action, new Set());
 				}
 
-				this[STORE_ACTIONS].get(action).push(id);
+				this[STORE_ACTIONS].get(action).add(id);
 			});
 		}
 		// We have a legacy store so we can't tell which
 		// actions they listen too. So we have to call
 		// them with every action later in dispatch.
 		else {
-			this[LEGACY_STORES].push(id);
+			this[LEGACY_STORES].add(id);
 		}
 
 		return id;
@@ -110,7 +110,21 @@ export default class Dispatcher {
             'registered callback.',
 			id
 		);
+
+		// Remove the registered callback for the given ID
 		delete this[CALLBACKS][id];
+
+		// If we have a legacy store then we can simply delete
+		// it from the set.
+		if (this[LEGACY_STORES].has(id)) {
+			this[LEGACY_STORES].delete(id);
+		}
+		// Else, we have a FluxThis store, so we need to iterate
+		// over all the registered actions and delete the store
+		// from each.
+		else {
+			this[STORE_ACTIONS].forEach((ids) => ids.delete(id));
+		}
 	}
 
 
@@ -119,7 +133,7 @@ export default class Dispatcher {
      * continuing execution of the current callback. This method
      * should only be used by a callback in response to a dispatched action.
 	 *
-	 * @param {array<string>} ids
+	 * @param {Array<string>} ids
 	 */
 	waitFor (ids) {
 		invariant(
@@ -131,8 +145,7 @@ export default class Dispatcher {
 			ids = [ids];
 		}
 
-		for (let i = 0; i < ids.length; i++) {
-			const id = ids[i];
+		for (let id of ids) {
 
 			if (this[IS_PENDING][id]) {
 				invariant(
@@ -251,19 +264,16 @@ export default class Dispatcher {
  * over them to determine if we should invoke a dispatch
  * of the action.
  *
- * @param Array<String> ids
+ * @param {Set} ids
  */
-function dispatchToStores(ids) {
-
-	for (let id in ids) {
-		let storeID = ids[id];
-
+function dispatchToStores(ids = new Set()) {
+	ids.forEach((storeID) => {
 		if (this[IS_PENDING][storeID]) {
-			continue;
+			return true;
 		}
 
 		invokeCallback.call(this, storeID);
-	}
+	});
 }
 
 /**
@@ -275,10 +285,7 @@ function dispatchToStores(ids) {
  */
 function invokeCallback (id) {
 	this[IS_PENDING][id] = true;
-
-	if (this[CALLBACKS][id]) {
-		this[CALLBACKS][id](this[PENDING_ACTION]);
-	}
+	this[CALLBACKS][id](this[PENDING_ACTION]);
 	this[IS_HANDLED][id] = true;
 }
 
