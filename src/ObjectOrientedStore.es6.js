@@ -19,6 +19,7 @@ const Store = require('./Store.es6');
 const debug = require('./debug.es6');
 const each = require('../lib/each');
 const invariant = require('invariant');
+const testUtils = require('./StoreTestUtils.es6');
 
 /**
  * A Flux Store which allows for public/private methods and attributes
@@ -39,15 +40,13 @@ export default class ObjectOrientedStore extends Store {
 	constructor (options) {
 		super(options);
 
-		const store = this;
 		let publicMethods;
 		let privateMethods;
 		let privateMembers;
-		let bindActionsWasCalled = false;
+		let bindActionsWasCalled;
 
+		const store = this;
 		this.dispatchToken = null;
-
-
 
 		// This must be below displayName for displayName uniqueness checks
 
@@ -59,10 +58,10 @@ export default class ObjectOrientedStore extends Store {
 				value () {
 					bindActionsWasCalled = true;
 
-					let i = 0;
 					let actions = new Map();
 					let constant;
 					let handler;
+					let i = 0;
 
 					invariant(
 						arguments.length % 2 === 0,
@@ -133,78 +132,13 @@ export default class ObjectOrientedStore extends Store {
 					 *
 					 */
 					if (process.env.NODE_ENV !== 'production') {
-						// This map is used to store mocked public methods
-						// to be reset later.
-						let originalPublicMethods = new Map();
-
-						store.TestUtils = {
-							/**
-							 * This method mocks the dispatcher, so that you
-							 * can call this method with the same
-							 * payload you would pass to dispatch
-							 * and only call this stores methods.
-							 *
-							 * ** Wait fors are ignored **
-							 */
-							mockDispatch() {
-								// Store the current waitFor and reset.
-								const waitFor = store.waitFor;
-								store.waitFor = function () {};
-								/*
-									Context doesn't matter here since it
-									always has the store's context
-								 */
-								dispatchFunction.apply(null, arguments);
-								// Put the waitFor back
-								store.waitFor = waitFor;
-							},
-
-							/**
-							 * Mock a public method and retain the
-							 * `this` context of the store which
-							 * has access to private variables
-							 * if you need them.
-							 *
-							 * @param object
-							 */
-							mockPublicMethods(object) {
-								each(object, (key, func) => {
-									if (publicMethods[key]) {
-										originalPublicMethods.set(key, publicMethods[key]);
-										publicMethods[key] = func.bind(store);
-									} else {
-										throw new Error(`You are trying to mock a public method that
-											'does not exist! (${key})`);
-									}
-								});
-							},
-
-							/**
-							 *  Reset only the mocked public methods.
-							 *
-							 */
-							resetMockedPublicMethods() {
-								originalPublicMethods.forEach((func, key) => {
-									publicMethods[key] = func;
-								});
-							},
-
-							/**
-							 * Reset a store back to a clean state by clearing
-							 * out it's private members, and reinitializing it.
-							 */
-							reset() {
-								dispatcher.unregister(store.dispatchToken);
-								each(privateMembers, key => {
-									delete privateMembers[key];
-								});
-
-								options.init.call(privateMembers);
-
-								// This must be reset AFTER calling init.
-								this.resetMockedPublicMethods();
-							}
-						};
+						store.TestUtils = testUtils.call(
+							store,
+							options.init,
+							dispatchFunction,
+							publicMethods,
+							privateMembers
+						);
 					}
 
 					// Register the store with the Dispatcher
