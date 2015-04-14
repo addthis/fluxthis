@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 'use strict';
 
 const invariant = require('invariant');
-const warning = require('react/lib/warning');
+const warning = require('warning');
 
 let _lastID = 1;
 const _prefix = 'ID_';
