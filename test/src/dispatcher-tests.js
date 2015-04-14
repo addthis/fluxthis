@@ -118,12 +118,25 @@ describe('Dispatcher', function () {
 
     it('should throw an error when a dispatched action is mutated', function () {
         (function () {
-            dispatcher.register(function (payload) {
-                payload.bye = 'bad!';
+            dispatcher.register(function (action) {
+                action.payload.bye = 'bad!';
             });
 
-            dispatcher.dispatch({payload: 'hi'});
-        }).should.throw();
+            dispatcher.dispatch({payload: {hi: 'sup'}, type: Math.random()});
+        }).should.throw(/mutate/);
+    });
+
+    it('should not throw an error when a dispatched payload is not stringifiable', function () {
+        var payload = {};
+        var a = {};
+        var b = {};
+        a.b = b;
+        b.a = a;
+        payload.a = a;
+        payload.b = b;
+        (function() {
+            dispatcher.dispatch({payload: payload, type: Math.random()});
+        }).should.not.throw();
     });
 
 });
