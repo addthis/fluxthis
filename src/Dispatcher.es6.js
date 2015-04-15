@@ -33,6 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 'use strict';
 
 const invariant = require('invariant');
+const warning = require('warning');
 
 let _lastID = 1;
 const _prefix = 'ID_';
@@ -200,10 +201,16 @@ export default class Dispatcher {
 				serializedPayload = JSON.stringify(action.payload);
 			}
 			catch(err) {
-				invariant(
+				warning(
 					!err,
-					'Payloads must be simple objects, and must be stringifyable.'
+					'Your payload could not be stringified, so checks ' +
+					'against mutations will not work for this payload. Where ' +
+					'possible, use simple, stringifiable payloads.'
 				);
+
+				// when the payload is stringified after dispatch, we expect the
+				// same error message
+				serializedPayload = err.message;
 			}
 		}
 
@@ -224,12 +231,19 @@ export default class Dispatcher {
 			dispatchToStores.call(this, this[LEGACY_STORES]);
 		}
 		finally {
-			stopDispatching.call(this);
+			let newSerializedPayload;
+
+			try {
+				newSerializedPayload = JSON.stringify(action.payload);
+			}
+			catch(err) {
+				newSerializedPayload = err.message;
+			}
 
 			//check for mutations
 			if (process.env.NODE_ENV !== 'production') {
 				invariant(
-					JSON.stringify(action.payload) === serializedPayload,
+					newSerializedPayload === serializedPayload,
 					`An action dispatched by the FluxThis dispatcher was
 					mutated. This is bad. Please check the handlers for
 					%s %s.`,
@@ -237,6 +251,8 @@ export default class Dispatcher {
 					type
 				);
 			}
+
+			stopDispatching.call(this);
 		}
 	}
 
