@@ -25,7 +25,6 @@ const RE_REQUIRED_PROP = /Required prop `(.*?)`/;
 const RE_WARNING_EXPECTED = /expected (.*`(.*?)`)/;
 const RE_WARNING_FOUND = /type `(.*?)`/;
 
-const IN_PRODUCTION = process.env.NODE_ENV === 'production';
 const DisplayNames = new Set();
 const ActionSources = new Map();
 
@@ -56,7 +55,7 @@ class ActionCreator {
 	 *  or 0, where 1 indicates the key should not be interpretted as a public
 	 *  function
 	 */
-	constructor (options, moreReservedKeys={}) {
+	constructor(options, moreReservedKeys={}) {
 		let reservedKeys = Object.assign({
 			actionSource: 1,
 			displayName: 1
@@ -116,7 +115,7 @@ class ActionCreator {
 	 * @param {string} description.actionType
 	 *	create
 	 */
-	createPublicMethod (name, description) {
+	createPublicMethod(name, description) {
 		let {createPayload, payloadType, actionType: type} = description;
 		let source = this.actionSource;
 
@@ -176,7 +175,7 @@ class ActionCreator {
 	 * @param {PayloadType} payloadType - a react proptype to validate `payload`
 	 *	against.
 	 */
-	validatePayload (name, payload, payloadType) {
+	validatePayload(name, payload, payloadType) {
 		let err = payloadType({payload}, 'payload', name, 'prop');
 		let expected;
 		let found;
@@ -216,7 +215,7 @@ class ActionCreator {
 		}
 	}
 
-	toString () {
+	toString() {
 		return `[ActionCreator ${this.displayName}]`;
 	}
 }

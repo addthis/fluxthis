@@ -15,7 +15,6 @@
 'use strict';
 
 const dispatcher = require('./dispatcherInstance.es6');
-const invariant = require('invariant');
 const each = require('../lib/each');
 
 const IN_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -39,14 +38,14 @@ const styles = {
 
 const consoleGroup = console.group ?
 	console.group.bind(console) :
-	function (...args) {
+	function log(...args) {
 		//can't use bind here because IE9 issues
 		console.log(...args);
 	};
 
 const consoleGroupEnd = console.groupEnd ?
 	console.groupEnd.bind(console) :
-	function (){};
+	function noop(){};
 
 /**
  * @typedef {object} Action
@@ -57,7 +56,7 @@ const consoleGroupEnd = console.groupEnd ?
 
 class FluxDebugger {
 
-	static shouldLog (dispalyName) {
+	static shouldLog() {
 		const settings = FluxDebugger.getDebugSettings();
 		const action = dispatcher.getRecentDispatch();
 
@@ -68,7 +67,7 @@ class FluxDebugger {
 			settings.sources.indexOf(action.source) > -1);
 	}
 
-	static getDebugSettings () {
+	static getDebugSettings() {
 		const FLUX_DEBUG = typeof window === 'undefined' ?
 			{} :
 			window.FLUX_DEBUG;
@@ -81,7 +80,7 @@ class FluxDebugger {
 		);
 	}
 
-	constructor () {
+	constructor() {
 		const settings = FluxDebugger.getDebugSettings();
 		this.registeredHandlers = new Map();
 		this.registeredActions = new Map();
@@ -103,7 +102,7 @@ class FluxDebugger {
 	 * @param {Constant} typeOrSource - an action type or source that a handler
 	 *  expects some action to have
 	 */
-	registerActionHandler (store, typeOrSource) {
+	registerActionHandler(store, typeOrSource) {
 		if (!this.registeredHandlers.has(typeOrSource)) {
 			this.registeredHandlers.set(typeOrSource, []);
 		}
@@ -120,11 +119,10 @@ class FluxDebugger {
 	 * @param {string} action.type
 	 * @param {string} action.source
 	 */
-	registerAction (actionCreator, action) {
+	registerAction(actionCreator, action) {
 		let {source, type} = action;
-		let existingEntry;
 
-		if(!this.registeredActions.has(source)) {
+		if (!this.registeredActions.has(source)) {
 			this.registeredActions.set(source, new Map());
 			this.registeredSources.set(source, actionCreator);
 		}
@@ -133,8 +131,8 @@ class FluxDebugger {
 		this.registeredTypes.set(type, actionCreator);
 	}
 
-	logActionCreator (actionCreator, methodName, ...args) {
-		if(!FluxDebugger.shouldLog()) {
+	logActionCreator(actionCreator, methodName, ...args) {
+		if (!FluxDebugger.shouldLog()) {
 			return;
 		}
 		consoleGroupEnd();
@@ -144,9 +142,9 @@ class FluxDebugger {
 		consoleGroupEnd();
 	}
 
-	logStore (store, methodName, ...args) {
+	logStore(store, methodName, ...args) {
 		const {displayName} = store;
-		if(!FluxDebugger.shouldLog.call({storeDisplayName: displayName})) {
+		if (!FluxDebugger.shouldLog.call({storeDisplayName: displayName})) {
 			return;
 		}
 
@@ -162,7 +160,7 @@ class FluxDebugger {
 	 * @param {object} nextProps - optional. defaults to current props
 	 * @param nextState - optional. defaults to current state
 	 */
-	logView (view, nextProps, nextState) {
+	logView(view, nextProps, nextState) {
 		const {displayName} = view.constructor;
 		const str = `[Component ${displayName}]`;
 
@@ -185,9 +183,9 @@ class FluxDebugger {
 		consoleGroupEnd();
 	}
 
-	logDispatch (action) {
+	logDispatch(action) {
 		consoleGroupEnd();
-		if(!FluxDebugger.shouldLog()) {
+		if (!FluxDebugger.shouldLog()) {
 			return;
 		}
 		consoleGroup(
@@ -206,7 +204,7 @@ class FluxDebugger {
 	 * is set up to handle actions which do not exist in any action creator),
 	 * you'll get a warning.
 	 */
-	warnForUnusedActions () {
+	warnForUnusedActions() {
 		const unregistered = [];
 		const unhandled = [];
 

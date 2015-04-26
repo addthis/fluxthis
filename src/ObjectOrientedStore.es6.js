@@ -37,7 +37,7 @@ export default class ObjectOrientedStore extends Store {
 	 * @param {string} options.displayName - a human readable name, used for
 	 *	debugging
 	 */
-	constructor (options) {
+	constructor(options) {
 		super(options);
 
 		let publicMethods;
@@ -55,7 +55,7 @@ export default class ObjectOrientedStore extends Store {
 		privateMethods = Object.create(publicMethods, {
 			bindActions: {
 				enumerable: true,
-				value () {
+				value() {
 					bindActionsWasCalled = true;
 
 					let actions = new Map();
@@ -114,7 +114,7 @@ export default class ObjectOrientedStore extends Store {
 					 * @param {string} action.source
 					 * @param {string} action.payload
 					 */
-					const dispatchFunction = function (action) {
+					const dispatchFunction = function dispatchFunction(action) {
 						const {source, type, payload} = action;
 
 						if (actions.has(source)) {
@@ -162,7 +162,7 @@ export default class ObjectOrientedStore extends Store {
 				prop
 			);
 
-			privateMethods[prop] = function (...args) {
+			privateMethods[prop] = function privateMethod(...args) {
 				const returnValue = method.apply(privateMembers, arguments);
 
 				debug.logStore(this, prop, ...args);
@@ -185,7 +185,7 @@ export default class ObjectOrientedStore extends Store {
 				prop
 			);
 
-			publicMethods[prop] = function () {
+			publicMethods[prop] = function publicMethod() {
 				return method.apply(privateMembers, arguments);
 			};
 		});
@@ -205,7 +205,7 @@ export default class ObjectOrientedStore extends Store {
 		}
 	}
 
-	toString () {
+	toString() {
 		return `[ObjectOrientedStore ${this.displayName}]`;
 	}
 }

@@ -32,7 +32,7 @@ class ImmutableStore extends ObjectOrientedStore {
 	 * @param {...} item
 	 * @return {boolean}
 	 */
-	static checkImmutable (item) {
+	static checkImmutable(item) {
 		return item instanceof Immutable.Iterable || !(item instanceof Object);
 	}
 
@@ -47,7 +47,7 @@ class ImmutableStore extends ObjectOrientedStore {
 	 * @param {string} options.displayName - a human readable name, used for
 	 *	debugging
 	 */
-	constructor (options) {
+	constructor(options) {
 		// If we are in production, then lets skip adding
 		// the immutability checks for performance sake.
 		if (IN_PRODUCTION) {
@@ -70,7 +70,7 @@ class ImmutableStore extends ObjectOrientedStore {
 
 
 		if (options.init) {
-			parentOptions.init = function () {
+			parentOptions.init = function init() {
 				options.init.call(this);
 
 				each(this, (key, member) => {
@@ -86,8 +86,8 @@ class ImmutableStore extends ObjectOrientedStore {
 
 		if (options.public) {
 			each(options.public, (key, fn) => {
-				parentOptions.public[key] = function () {
-					var result = fn.apply(this, arguments);
+				parentOptions.public[key] = function publicMethod() {
+					let result = fn.apply(this, arguments);
 
 					invariant(
 						ImmutableStore.checkImmutable(result),
@@ -106,7 +106,7 @@ class ImmutableStore extends ObjectOrientedStore {
 		super(parentOptions);
 	}
 
-	toString () {
+	toString() {
 		return `[ImmutableStore ${this.displayName}]`;
 	}
 }
