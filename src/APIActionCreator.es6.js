@@ -31,14 +31,14 @@ export default class APIActionCreator extends ActionCreator {
 	 * @param {number} response.status
 	 * @return {boolean}
 	 */
-	static defaultSuccessTest (response) {
+	static defaultSuccessTest(response) {
 		return response &&
 			response.status &&
 			response.status >= 200 &&
 			response.status < 300;
 	}
 
-	constructor (options) {
+	constructor(options) {
 		super(options, {successTest: 1});
 	}
 
@@ -56,7 +56,7 @@ export default class APIActionCreator extends ActionCreator {
 	 * @param {Function} options.handleFailure
 	 * @param {Function} options.successTest
 	 */
-	createPublicMethod (name, options) {
+	createPublicMethod(name, options) {
 		const {route, method} = options;
 		const {createRequest, handleSuccess, handleFailure} = options;
 		const {success: successActionType,
@@ -188,7 +188,7 @@ export default class APIActionCreator extends ActionCreator {
 		};
 	}
 
-	toString () {
+	toString() {
 		return `[APIActionCreator ${this.displayName}]`;
 	}
 }

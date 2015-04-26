@@ -49,7 +49,7 @@ const PENDING_ACTION = Symbol();
 const LAST_ACTION = Symbol();
 
 export default class Dispatcher {
-	constructor () {
+	constructor() {
 		this[CALLBACKS] = {};
 		this[IS_PENDING] = {};
 		this[IS_HANDLED] = {};
@@ -71,7 +71,7 @@ export default class Dispatcher {
 	 * @param {Map} actions
 	 * @return {string}
 	 */
-	register (callback, actions) {
+	register(callback, actions) {
 		const id = _prefix + _lastID++;
 		this[CALLBACKS][id] = callback;
 
@@ -104,7 +104,7 @@ export default class Dispatcher {
 	 *
 	 * @param {string} id
 	 */
-	unregister (id) {
+	unregister(id) {
 		invariant(
 			this[CALLBACKS][id],
 			'Dispatcher.unregister(...): `%s` does not map to a ' +
@@ -136,7 +136,7 @@ export default class Dispatcher {
 	 *
 	 * @param {Array<string>} ids
 	 */
-	waitFor (ids) {
+	waitFor(ids) {
 		invariant(
 			this[IS_DISPATCHING],
 			'Dispatcher.waitFor(...): Must be invoked while dispatching.'
@@ -175,7 +175,7 @@ export default class Dispatcher {
 	 *
 	 * @param {object} action
 	 */
-	dispatch (action) {
+	dispatch(action) {
 		let {type, source} = action;
 
 		invariant(
@@ -261,7 +261,7 @@ export default class Dispatcher {
 	 *
 	 * @return {boolean}
 	 */
-	isDispatching () {
+	isDispatching() {
 		return this[IS_DISPATCHING];
 	}
 
@@ -270,7 +270,7 @@ export default class Dispatcher {
 	 *
 	 * @return {object} - most recent action
 	 */
-	getRecentDispatch () {
+	getRecentDispatch() {
 		return this[PENDING_ACTION] || this[LAST_ACTION];
 	}
 }
@@ -299,7 +299,7 @@ function dispatchToStores(ids = new Set()) {
  * @param {string} id
  * @internal
  */
-function invokeCallback (id) {
+function invokeCallback(id) {
 	this[IS_PENDING][id] = true;
 	this[CALLBACKS][id](this[PENDING_ACTION]);
 	this[IS_HANDLED][id] = true;
@@ -311,18 +311,19 @@ function invokeCallback (id) {
  * @param {object} action
  * @internal
  */
-function startDispatching (action) {
+function startDispatching(action) {
 	require('./debug.es6').logDispatch(action);
 
-	for (let id in this[CALLBACKS]) {
+	Object.keys(this[CALLBACKS]).forEach((id) => {
 		this[IS_PENDING][id] = false;
 		this[IS_HANDLED][id] = false;
-	}
+	});
+
 	this[PENDING_ACTION] = action;
 	this[IS_DISPATCHING] = true;
 }
 
-function stopDispatching () {
+function stopDispatching() {
 	this[LAST_ACTION] = this[PENDING_ACTION];
 	this[PENDING_ACTION] = null;
 	this[IS_DISPATCHING] = false;

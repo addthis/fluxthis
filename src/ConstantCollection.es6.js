@@ -16,6 +16,16 @@
 
 const invariant = require('invariant');
 
+class Constant {
+	constructor(name, collection) {
+		this.name = name;
+		this.collection = collection;
+	}
+	toString() {
+		return `${this.name}_#${this.collection.id}`;
+	}
+}
+
 /**
  * Creates an immutable collection of constants which are meant to be passed
  * around to your various files.
@@ -25,7 +35,7 @@ const invariant = require('invariant');
  *	group. The strings should be unique.
  */
 export default class ConstantCollection {
-	constructor (...names) {
+	constructor(...names) {
 
 		this.id = Math.random().toString(36).substring(2);
 		names.forEach((name) => {
@@ -39,15 +49,5 @@ export default class ConstantCollection {
 		});
 
 		Object.freeze(this);
-	}
-}
-
-class Constant {
-	constructor (name, collection) {
-		this.name = name;
-		this.collection = collection;
-	}
-	toString() {
-		return `${this.name}_#${this.collection.id}`;
 	}
 }

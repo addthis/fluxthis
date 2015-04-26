@@ -25,7 +25,7 @@ const StoreDisplayNames = new Set();
 const CHANGE_LISTENERS = Symbol();
 
 export default class Store {
-	constructor (options) {
+	constructor(options) {
 		const store = this;
 		const ViewDisplayNames = new Set();
 
@@ -68,8 +68,8 @@ export default class Store {
 			 * Automatically add the change listener for the given
 			 * store when the component is going did mount.
 			 */
-			componentDidMount () {
-				var displayName = this.constructor.displayName;
+			componentDidMount() {
+				const displayName = this.constructor.displayName;
 				invariant(
 					displayName,
 					'Could not successfully add the mixin to your ' +
@@ -112,13 +112,13 @@ export default class Store {
 			 * Automatically remove the change listener for the given
 			 * store when the component is going to unmount.
 			 */
-			componentWillUnmount () {
+			componentWillUnmount() {
 				renderedComponentSet.delete(this);
 				ViewDisplayNames.delete(this.constructor.displayName);
 				store.removeChangeListener(this.__fluxChangeListener);
 			},
 
-			getInitialState () {
+			getInitialState() {
 				// This check ensures that we do not use the mixins
 				// get initial state twice on the same method.
 				// This is the case when a view uses more than 1 FluxThis store.
@@ -135,17 +135,17 @@ export default class Store {
 				}
 			},
 
-			componentWillUpdate (nextProps, nextState) {
+			componentWillUpdate(nextProps, nextState) {
 				debug.logView(this, nextProps, nextState);
 			}
 		};
 	}
 
-	waitFor (...tokens) {
+	waitFor(...tokens) {
 		return dispatcher.waitFor(tokens);
 	}
 
-	toString () {
+	toString() {
 		return `[Store ${this.displayName}]`;
 	}
 
@@ -154,7 +154,7 @@ export default class Store {
 	 *
 	 * @param {fction} fn
 	 */
-	addChangeListener (fn) {
+	addChangeListener(fn) {
 		this[CHANGE_LISTENERS].add(fn);
 	}
 
@@ -163,7 +163,7 @@ export default class Store {
 	 *
 	 * @param {function} fn
 	 */
-	removeChangeListener (fn) {
+	removeChangeListener(fn) {
 		this[CHANGE_LISTENERS].delete(fn);
 	}
 

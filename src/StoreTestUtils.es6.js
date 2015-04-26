@@ -2,7 +2,6 @@
 
 const dispatcher = require('./dispatcherInstance.es6');
 const each = require('../lib/each');
-const invariant = require('invariant');
 
 /**
  * This function provides all the test utilities
@@ -37,7 +36,7 @@ export default function (initializeStore,
 		mockDispatch() {
 			// Store the current waitFor and reset.
 			const waitFor = store.waitFor;
-			store.waitFor = function () {};
+			store.waitFor = () => {};
 			/*
 				Context doesn't matter here since it
 				always has the store's context
