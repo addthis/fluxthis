@@ -16,6 +16,26 @@ var Store = require('../../src/ObjectOrientedStore.es6');
 
 describe('ObjectOrientedStore', function () {
 
+	it('should throw an error when a public function mutates `this`', function () {
+		(function () {
+			var s = new Store({
+				displayName: 'oo1',
+				init: function () {
+					this.x = 0;
+				},
+				public: {
+					setX: function () {
+						this.x = 5;
+					}
+				},
+				private:{}
+			});
+
+			s.setX();
+		}).should.throw('Invariant Violation: Public function oo1.setX ' +
+			'mutated private members. Use a private method instead!');
+	});
+
 	it('should throw an error when passed no arguments', function () {
 		(function () {
 			new Store();
