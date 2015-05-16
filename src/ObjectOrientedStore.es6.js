@@ -186,7 +186,28 @@ export default class ObjectOrientedStore extends Store {
 			);
 
 			publicMethods[prop] = function publicMethod() {
-				return method.apply(privateMembers, arguments);
+				// ensure no mutations happen on `this`
+				let privateMembersCopy = {};
+				if (process.env.NODE_ENV !== 'production') {
+					each(privateMembers, (key, val) => {
+						privateMembersCopy[key] = val;
+					});
+				}
+
+				let result = method.apply(privateMembers, arguments);
+
+				if (process.env.NODE_ENV !== 'production') {
+					each(privateMembers, (key) => {
+						invariant(
+							privateMembersCopy[key] === privateMembers[key],
+							`Public function ${options.displayName}.` +
+							`${prop} mutated private members. Use a private ` +
+							`method instead!`
+						);
+					});
+				}
+
+				return result;
 			};
 		});
 
