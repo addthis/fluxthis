@@ -14,8 +14,6 @@
 
 'use strict';
 
-require('babel/polyfill');
-
 export default {
 	ConstantCollection: require('./ConstantCollection.es6'),
 	ImmutableStore: require('./ImmutableStore.es6'),
