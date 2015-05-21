@@ -107,7 +107,7 @@ export default class ObjectOrientedStore extends Store {
 					/**
 					 * This method is what the dispatcher uses whenever
 					 * an action has been dispatched that this store cares
-					 * about. This method will invoke the methods
+					 * about. This method will invoke the store's methods
 					 *
 					 * @param {object} action
 					 * @param {string} action.type

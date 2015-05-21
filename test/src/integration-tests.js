@@ -18,7 +18,6 @@ var Dispatcher = require('../../src/Dispatcher.es6');
 var Store = require('../../src/ImmutableStore.es6');
 
 describe('Integration', function () {
-	var MY_SOURCE;
 	var ADD_THING;
 	var ADD_THING_2;
 	var ac;
@@ -34,11 +33,10 @@ describe('Integration', function () {
 	beforeEach(function () {
 		ADD_THING = 'ADD_THING_' + Math.random();
 		ADD_THING_2 = 'ADD_THING_2_' + Math.random();
-		MY_SOURCE = 'MY_SOURCE_' + Math.random();
+		SOURCE = 'ACTION_SOURCE_' + Math.random();
 
 		ac = new ActionCreator({
 			displayName: 'apiDisplay_' + String(Math.random()),
-			actionSource: MY_SOURCE,
 			addThing: {
 				actionType: ADD_THING,
 				payloadType: ActionCreator.PayloadTypes.string.isRequired
@@ -49,17 +47,30 @@ describe('Integration', function () {
 			}
 		});
 
+		ac2 = new ActionCreator({
+			displayName: 'ac2_' + Math.random(),
+			actionSource: SOURCE,
+			respondToSource: {
+				actionType: '__' + Math.random()
+			}
+		})
+
 		store = new Store({
 			displayName: String(Math.random()),
 			init: function () {
 				this.things = Store.Immutable.List([1,2,3,4]);
+				this.respondedToSource = false;
 				this.bindActions(
-					ADD_THING, this.addThing
+					ADD_THING, this.addThing,
+					SOURCE, this.respondToSource
 				);
 			},
 			private: {
 				addThing: function (thing) {
 					this.things = this.things.push(thing);
+				},
+				respondToSource: function () {
+					this.respondedToSource = true;
 				}
 			},
 			public: {
@@ -68,6 +79,9 @@ describe('Integration', function () {
 				},
 				getThings: function () {
 					return this.things;
+				},
+				didRespondToSource: function () {
+					return this.respondedToSource;
 				}
 			}
 		});
@@ -117,6 +131,14 @@ describe('Integration', function () {
 		it('should update relevant stores', function () {
 			ac.addThing('hallo');
 			store.hasThing('hallo').should.be.true;
+		});
+	});
+
+	describe('Stores with actionSource handlers', function () {
+		it('should work', function () {
+			store.didRespondToSource().should.be.false;
+			ac2.respondToSource();
+			store.didRespondToSource().should.be.true;
 		});
 	});
 
@@ -176,7 +198,7 @@ describe('Integration', function () {
 			var s = new Store({
 				displayName: 'store1',
 				init: function () {
-					this.bindActions(MY_SOURCE, this.a);
+					this.bindActions(ADD_THING, this.a);
 				},
 				public: {},
 				private: {
@@ -188,7 +210,7 @@ describe('Integration', function () {
 			var s2 = new Store({
 				displayName: 'store2',
 				init: function () {
-					this.bindActions(MY_SOURCE, this.b);
+					this.bindActions(ADD_THING, this.b);
 				},
 				public: {},
 				private: {
@@ -202,7 +224,7 @@ describe('Integration', function () {
 			new Store({
 				displayName: 'store3',
 				init: function () {
-					this.bindActions(MY_SOURCE, this.c);
+					this.bindActions(ADD_THING, this.c);
 				},
 				public: {},
 				private: {
