@@ -102,12 +102,26 @@ class ActionCreator {
 	 * @param {string} name - methods name to create
 	 * @param {ApiDescription} description - specifics about the method to
 	 * @param {Function} description.createPayload
-	 * @param {string} description.payloadType
-	 * @param {string} description.actionType
+	 * @param {PayloadType} description.payload
+	 * @param {string} description.type
 	 *	create
 	 */
 	createPublicMethod(name, description) {
-		let {createPayload, payloadType, actionType: type} = description;
+		let createPayload = description.createPayload;
+		let payloadType = description.payload || description.payloadType;
+		let type = description.type || description.actionType;
+
+		deprecated(
+			description.actionType,
+			'ActionCreator.Action.actionType',
+			'ActionCreator.Action.type'
+		);
+
+		deprecated(
+			description.payloadType,
+			'ActionCreator.Action.payloadType',
+			'ActionCreator.Action.payload'
+		);
 
 		invariant(
 			type !== undefined,
