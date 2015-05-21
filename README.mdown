@@ -34,5 +34,8 @@ It's x.y.z where:
  * z: strive for bug fix only
 
 ### Changes
+ * v2.1.0 (5/21/15)
+    - Deprecated actionSource in Action Creators
+    - Deprecated payloadType & actionType in Action Creators. New keys are payload & type, respectively. 
  * v2.0.0 (5/21/15)
     - Removed the babel global polyfil in favor of runtime alternative. This means that any projects depending on this polyfil need to require it themselves manually.
