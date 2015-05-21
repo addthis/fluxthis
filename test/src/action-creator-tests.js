@@ -22,14 +22,14 @@ describe('ActionCreators', function () {
 			new ActionCreator({
 				displayName: 'acDisplay1',
 				test: {
-					actionType: 'DUPLICATE_TYPE'
+					type: 'DUPLICATE_TYPE'
 				}
 			});
 
 			new ActionCreator({
 				displayName: 'acDisplay2',
 				test: {
-					actionType: 'DUPLICATE_TYPE'
+					type: 'DUPLICATE_TYPE'
 				}
 			});
 		}).should.throw();
@@ -58,7 +58,7 @@ describe('ActionCreators', function () {
 		var ac = new ActionCreator({
 			displayName: 'ac2',
 			doThing: {
-				actionType: 'TEST_' + Math.random()
+				type: 'TEST_' + Math.random()
 			}
 		});
 
@@ -69,7 +69,7 @@ describe('ActionCreators', function () {
 		var ac = new ActionCreator({
 			displayName: 'ac3',
 			doThing: {
-				actionType: 'TEST_' + Math.random(),
+				type: 'TEST_' + Math.random(),
 				createPayload: function () {
 					done();
 				}
@@ -83,7 +83,7 @@ describe('ActionCreators', function () {
 		var ac = new ActionCreator({
 			displayName: 'ac4',
 			doThing: {
-				actionType: 'TEST_' + Math.random()
+				type: 'TEST_' + Math.random()
 			}
 		});
 
@@ -106,7 +106,7 @@ describe('ActionCreators', function () {
 		}).should.not.throw();
 	});
 
-	it('should not allow creation without `actionType`', function () {
+	it('should not allow creation without `type`', function () {
 		(function () {
 			new ActionCreator({
 				displayName: 'ac7',
@@ -122,7 +122,7 @@ describe('ActionCreators', function () {
 			new ActionCreator({
 				displayName: 'ac8',
 				doThing: {
-					actionType: 'TEST_' + Math.random()
+					type: 'TEST_' + Math.random()
 				}
 			});
 		}).should.not.throw();
@@ -132,7 +132,7 @@ describe('ActionCreators', function () {
 		var ac = new ActionCreator({
 			displayName: 'ac9',
 			doThing: {
-				actionType: 'TEST_' + Math.random(),
+				type: 'TEST_' + Math.random(),
 				createPayload: function () {
 					ac.should.equal(this);
 					done();
@@ -154,10 +154,10 @@ describe('ActionCreators', function () {
 			var ac = new ActionCreator({
 				displayName: 'CCtest',
 				addColor: {
-					actionType: ACTION_TYPES.ADD_COLOR
+					type: ACTION_TYPES.ADD_COLOR
 				},
 				removeColor: {
-					actionType: ACTION_TYPES.REMOVE_COLOR
+					type: ACTION_TYPES.REMOVE_COLOR
 				}
 			});
 		}).should.not.throw();
@@ -175,10 +175,10 @@ describe('ActionCreators', function () {
 			var ac = new ActionCreator({
 				displayName: 'CCtest',
 				addColor: {
-					actionType: ACTION_TYPES.ADD_COLOR
+					type: ACTION_TYPES.ADD_COLOR
 				},
 				removeColor: {
-					actionType: ACTION_TYPES.ADD_COLOR
+					type: ACTION_TYPES.ADD_COLOR
 				}
 			});
 		}).should.throw();
@@ -189,7 +189,7 @@ describe('ActionCreators', function () {
 		var ac = new ActionCreator({
 			displayName: 'ac10',
 			doThing: {
-				actionType: 'TEST_' + Math.random(),
+				type: 'TEST_' + Math.random(),
 				payloadType: ActionCreator.PayloadTypes.string
 			}
 		});
@@ -205,7 +205,7 @@ describe('ActionCreators', function () {
 		var ac = new ActionCreator({
 			displayName: 'ac11',
 			doThing: {
-				actionType: 'TEST_' + Math.random(),
+				type: 'TEST_' + Math.random(),
 				payloadType: ActionCreator.PayloadTypes.shape({
 					a: ActionCreator.PayloadTypes.string,
 					b: ActionCreator.PayloadTypes.number

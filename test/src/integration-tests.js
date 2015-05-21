@@ -20,6 +20,7 @@ var Store = require('../../src/ImmutableStore.es6');
 describe('Integration', function () {
 	var ADD_THING;
 	var ADD_THING_2;
+	var ADD_THING_3;
 	var ac;
 	var viewConfig;
 	var store;
@@ -33,17 +34,21 @@ describe('Integration', function () {
 	beforeEach(function () {
 		ADD_THING = 'ADD_THING_' + Math.random();
 		ADD_THING_2 = 'ADD_THING_2_' + Math.random();
+		ADD_THING_3 = 'ADD_THING_3_' + Math.random();
 		SOURCE = 'ACTION_SOURCE_' + Math.random();
 
 		ac = new ActionCreator({
 			displayName: 'apiDisplay_' + String(Math.random()),
 			addThing: {
-				actionType: ADD_THING,
+				type: ADD_THING,
 				payloadType: ActionCreator.PayloadTypes.string.isRequired
 			},
 			addThing2: {
-				actionType: ADD_THING_2,
+				type: ADD_THING_2,
 				payloadType: ActionCreator.PayloadTypes.string.isRequired
+			},
+			addThingWithActionType: {
+				actionType: ADD_THING_3
 			}
 		});
 
@@ -51,7 +56,7 @@ describe('Integration', function () {
 			displayName: 'ac2_' + Math.random(),
 			actionSource: SOURCE,
 			respondToSource: {
-				actionType: '__' + Math.random()
+				type: '__' + Math.random()
 			}
 		})
 
@@ -62,6 +67,7 @@ describe('Integration', function () {
 				this.respondedToSource = false;
 				this.bindActions(
 					ADD_THING, this.addThing,
+					ADD_THING_3, this.addThing,
 					SOURCE, this.respondToSource
 				);
 			},
@@ -127,6 +133,14 @@ describe('Integration', function () {
 		};
 	});
 
+	describe('An action with `actionType`', function () {
+		it('should still work', function () {
+			var rand = Math.random();
+			ac.addThingWithActionType(rand);
+			store.hasThing(rand).should.be.true;
+		});
+	});
+	
 	describe('A created action', function () {
 		it('should update relevant stores', function () {
 			ac.addThing('hallo');
