@@ -19,7 +19,6 @@ describe('APIActionCreators', function () {
 
 	it('should expose methods passed to their constructor', function () {
         var aac = new APIActionCreator({
-            actionSource: 'apiSource1',
 			displayName: 'api1',
             doThing: {
                 method: 'GET',
@@ -39,7 +38,6 @@ describe('APIActionCreators', function () {
 
     it('should call handleSuccess on a successful request', function (done) {
         var aac = new APIActionCreator({
-            actionSource: 'apiSource2',
 			displayName: 'api2',
             doThing: {
                 route: '/mirror',
@@ -59,7 +57,6 @@ describe('APIActionCreators', function () {
 
     it('should call handleFailure on a failed request', function (done) {
         var aac = new APIActionCreator({
-            actionSource: 'apiSource3',
 			displayName: 'api3',
             doThing: {
                 route: '/bad-endpoint',
@@ -82,7 +79,6 @@ describe('APIActionCreators', function () {
 		var clonedQuery = {};
 
         var aac = new APIActionCreator({
-            actionSource: 'apiSource4',
 			displayName: 'api4',
             doThing: {
                 route: '/mirror',
@@ -121,7 +117,6 @@ describe('APIActionCreators', function () {
 	it('should throw an error for passing args without create request', function () {
 		(function () {
 			var aac = new APIActionCreator({
-				actionSource: 'apiSource55',
 				displayName: 'api55',
 				doThing: {
 					route: '/mirror',
@@ -136,7 +131,6 @@ describe('APIActionCreators', function () {
     it('should throw errors when route is missing', function () {
         (function () {
             new APIActionCreator({
-                actionSource: 'apiSource5',
 				displayName: 'api5',
                 doThing: {
                     method: 'POST',
@@ -149,7 +143,6 @@ describe('APIActionCreators', function () {
     it('should throw errors when method is missing', function () {
         (function () {
             new APIActionCreator({
-                actionSource: 'apiSource6',
 				displayName: 'api6',
                 doThing: {
                     route: '/dog',
@@ -173,7 +166,6 @@ describe('APIActionCreators', function () {
             failure = 'FAILURE_' + Math.random();
             query = {};
             aac = new APIActionCreator({
-                actionSource: 'apiSource_' + String(Math.random()),
 				displayName: String(Math.random()),
                 doThing: {
                     route: '/cat',

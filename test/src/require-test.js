@@ -30,16 +30,14 @@ describe('Require Built FluxThis package', function () {
 
 	it('should have ActionCreator', function () {
 		var AC = new FluxThis.ActionCreator({
-			displayName: 'requireTestAC',
-			actionSource: 'requireTestACSource'
+			displayName: 'requireTestAC'
 		});
 		AC.should.be.an.instanceOf(FluxThis.ActionCreator);
 	});
 
 	it('should have APIActionCreator', function () {
 		var AC = new FluxThis.APIActionCreator({
-			displayName: 'requireTestAPI',
-			actionSource: 'requireTestACDisplay'
+			displayName: 'requireTestAPI'
 		});
 		AC.should.be.an.instanceOf(FluxThis.APIActionCreator);
 	});

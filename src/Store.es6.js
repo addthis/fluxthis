@@ -168,12 +168,12 @@ export default class Store {
 	}
 
 	__removeChangeListener(fn) {
-		deprecated(this, '__removeChangeListener', 'removeChangeListener');
+		deprecated(true, 'Store.__removeChangeListener', 'Store.removeChangeListener');
 		this.removeChangeListener(fn);
 	}
 
 	__addChangeListener(fn) {
-		deprecated(this, '__addChangeListener', 'addChangeListener');
+		deprecated(true, 'Store.__addChangeListener', 'Store.addChangeListener');
 		this.addChangeListener(fn);
 	}
 
