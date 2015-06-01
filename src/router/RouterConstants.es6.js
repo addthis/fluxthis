@@ -14,13 +14,17 @@
 
 'use strict';
 
-export default {
-	ConstantCollection: require('./ConstantCollection.es6'),
-	ImmutableStore: require('./ImmutableStore.es6'),
-	ObjectOrientedStore: require('./ObjectOrientedStore.es6'),
-	ActionCreator: require('./ActionCreator.es6'),
-	APIActionCreator: require('./APIActionCreator.es6'),
-	dispatcher: require('./dispatcherInstance.es6'),
-	Router: require('./Router.es6'),
-	RouterStore: require('./RouterStore.es6')
-};
+const ConstantCollection = require('../ConstantCollection.es6');
+
+export default new ConstantCollection(
+	'ROUTER_USE_ACTION',
+	'ROUTER_SETUP_ALL_ROUTE_ACTION',
+	'ROUTER_SETUP_ROUTE_ACTION',
+	'ROUTER_SETUP_ROUTES_ACTION',
+	'ROUTER_SET_REACT_ELEMENT',
+	'ROUTER_START',
+	'ROUTE_CHANGE',
+	'ROUTE_REDIRECT',
+	'ROUTE_NAVIGATE',
+	'SET_DEFAULT_ROUTE'
+);

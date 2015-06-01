@@ -111,7 +111,7 @@ describe('ActionCreators', function () {
 			new ActionCreator({
 				displayName: 'ac7',
 				doThing: {
-					payloadType: ActionCreator.PayloadTypes.string
+					payload: ActionCreator.PayloadTypes.string
 				}
 			});
 		}).should.throw();
@@ -190,7 +190,7 @@ describe('ActionCreators', function () {
 			displayName: 'ac10',
 			doThing: {
 				type: 'TEST_' + Math.random(),
-				payloadType: ActionCreator.PayloadTypes.string
+				payload: ActionCreator.PayloadTypes.string
 			}
 		});
 
@@ -206,7 +206,7 @@ describe('ActionCreators', function () {
 			displayName: 'ac11',
 			doThing: {
 				type: 'TEST_' + Math.random(),
-				payloadType: ActionCreator.PayloadTypes.shape({
+				payload: ActionCreator.PayloadTypes.shape({
 					a: ActionCreator.PayloadTypes.string,
 					b: ActionCreator.PayloadTypes.number
 				})

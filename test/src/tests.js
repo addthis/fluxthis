@@ -28,4 +28,5 @@ require('./object-oriented-store-tests');
 require('./integration-tests');
 require('./constant-collection-tests');
 require('./store-tests');
-
+require('./router-store-spec.es6.js');
+require('./route-spec.es6.js');
