@@ -24,6 +24,7 @@ AddThis.
 * [Dispatcher & Migration](http://fluxthis.io/#/docs/dispatcher)
 * [Debugging](http://fluxthis.io/#/docs/debugging)
 * [Testing](http://fluxthis.io/#/docs/testing)
+* [Router - Experimental](http://fluxthis.io/#/docs/router)
 
 ### Versioning
 
@@ -34,6 +35,8 @@ It's x.y.z where:
  * z: strive for bug fix only
 
 ### Changes
+ * v2.2.0 (6/2/15)
+    - Incorporated fluxthis es6 generator router expirmental feature
  * v2.1.0 (5/21/15)
     - Deprecated actionSource in Action Creators
     - Deprecated payloadType & actionType in Action Creators. New keys are payload & type, respectively. 
