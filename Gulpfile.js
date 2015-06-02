@@ -56,6 +56,7 @@ gulp.task('build-test', function () {
         .pipe(gulpWebpack(testWebpackConfig))
         .pipe(gulp.dest(testWebpackConfig.output.path));
 });
+
 gulp.task('test', function(callback) {
     runSequence('lint',
 		'build-dev',
@@ -103,7 +104,7 @@ gulp.task('watch', function () {
 
 gulp.task('clean', function () {
     return gulp.src(['build/*', 'test/build/*'])
-        .pipe(clean())
+        .pipe(clean());
 });
 
 gulp.task('lint', function () {

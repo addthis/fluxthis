@@ -41,14 +41,14 @@ describe('Integration', function () {
 			displayName: 'apiDisplay_' + String(Math.random()),
 			addThing: {
 				type: ADD_THING,
-				payloadType: ActionCreator.PayloadTypes.string.isRequired
+				payload: ActionCreator.PayloadTypes.string.isRequired
 			},
 			addThing2: {
 				type: ADD_THING_2,
-				payloadType: ActionCreator.PayloadTypes.string.isRequired
+				payload: ActionCreator.PayloadTypes.string.isRequired
 			},
 			addThingWithActionType: {
-				actionType: ADD_THING_3
+				type: ADD_THING_3
 			}
 		});
 
