@@ -3,6 +3,16 @@
   "version": "2.2.1",
   "description": "AddThis Flux Framework",
   "main": "build/FluxThis.js",
+  "license": "Apache-2.0",
+  "homepage": "https://fluxthis.io",
+  "author": {
+    "name": "Jake Scott",
+    "email": "jscott@addthis.com"
+  },
+  "contributors": [{
+    "name": "Josh Horwitz",
+    "email": "horwitz@addthis.com"
+  }],
   "directories": {
     "install": "gulp build-dev",
     "test": "babel-node test.js"
@@ -16,11 +26,10 @@
   },
   "keywords": [
     "Flux",
+    "fluxthis",
     "React",
     "AddThis"
   ],
-  "author": "Jake Scott",
-  "license": "Apache-2.0",
   "devDependencies": {
     "babel-eslint": "^3.0.1",
     "babel-loader": "^5.1.3",
