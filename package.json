@@ -20,7 +20,7 @@
     "AddThis"
   ],
   "author": "Jake Scott",
-  "license": "Apache v2.0",
+  "license": "Apache-2.0",
   "devDependencies": {
     "babel-eslint": "^3.0.1",
     "babel-loader": "^5.1.3",
