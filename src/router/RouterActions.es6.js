@@ -4,7 +4,7 @@ const ActionCreator = require('../ActionCreator.es6');
 const Constants = require('./RouterConstants.es6');
 
 export default new ActionCreator({
-	displayName: 'ROUTER',
+	displayName: Constants.ROUTER_SOURCE,
 
 	use: {
 		type: Constants.ROUTER_USE_ACTION,

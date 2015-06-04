@@ -17,6 +17,7 @@
 const invariant = require('invariant');
 const Immutable = require('immutable');
 const ObjectOrientedStore = require('./ObjectOrientedStore.es6.js');
+const debug = require('./debug.es6');
 
 const Route = require('./router/Route.es6');
 const Constants = require('./router/RouterConstants.es6');
@@ -27,7 +28,7 @@ const replaceHash = require('../lib/router/replaceHash.es6');
 const getPath = require('../lib/router/getPath.es6');
 
 const RouterStore = new ObjectOrientedStore({
-	displayName: 'FluxThisRouter',
+	displayName: 'FluxThisRouterStore',
 	init() {
 		/**
 		 * current Route object that is set on each middleware execution
@@ -103,14 +104,6 @@ const RouterStore = new ObjectOrientedStore({
 		}
 	},
 	private: {
-		getRouteContext() {
-			return {
-				getPath: this.getPath,
-				getPathParams: this.getPathParams,
-				getQueryParams: this.getQueryParams,
-				redirectTo: RouterActions.redirectTo
-			};
-		},
 		/**
 		 * Starts the router. This should be called once
 		 * all the middleware and routes have been defined.
@@ -194,9 +187,11 @@ const RouterStore = new ObjectOrientedStore({
 		 * @param {Function}  generator function to be added.
 		 */
 		addMiddleware(func) {
-			const store = this;
 			this.middleware.push(function *middlewareDebugger(next) {
-				yield *func.call(store.getRouteContext(), next);
+				const context = getRouteContext();
+				debug.logRouter(func.name, context, 'before');
+				yield *func.call(context, next);
+				debug.logRouter(func.name, context, 'after');
 			});
 		},
 		/**
@@ -218,8 +213,12 @@ const RouterStore = new ObjectOrientedStore({
 					// that option exists during setup.
 					document.title = route.options.title || document.title;
 
+					const routeContext = getRouteContext();
 					const handler = store.currentRoute.handler;
-					yield *handler.call(store.getRouteContext(), next);
+
+					debug.logRouter(handler.name, routeContext, 'route start');
+					yield *handler.call(routeContext, next);
+					debug.logRouter(handler.name, routeContext, 'route end');
 				} else {
 					yield *next;
 				}
@@ -240,6 +239,15 @@ function setupRouterMiddleware(context) {
 		yield *next;
 
 		// Todo figure out some check for 404s... maybe just follow koa.
+	};
+}
+
+function getRouteContext() {
+	return {
+		getPath: RouterStore.getPath,
+		getPathParams: RouterStore.getPathParams,
+		getQueryParams: RouterStore.getQueryParams,
+		redirectTo: RouterActions.redirectTo
 	};
 }
 
