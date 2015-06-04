@@ -16,10 +16,12 @@
 
 const dispatcher = require('./dispatcherInstance.es6');
 const each = require('../lib/each');
+const RouterConstants = require('./router/RouterConstants.es6');
 
 const IN_PRODUCTION = process.env.NODE_ENV === 'production';
 const FLUX_DEBUG_DEFAULTS = {
 	all: false,
+	router: false,
 	types: [],
 	sources: [],
 	stores: [],
@@ -33,7 +35,8 @@ const styles = {
 	view: 'color: #3827ef', //dark blue
 	dispatcher: 'color: #6940a0', //purple
 	store: 'color: #4db848', //muted green
-	actionCreator: 'color: #eb6e84' //salmon
+	actionCreator: 'color: #eb6e84', //salmon
+	router: 'color: #ff5c3e' //orange
 };
 
 const consoleGroup = console.group ?
@@ -60,17 +63,33 @@ class FluxDebugger {
 		const settings = FluxDebugger.getDebugSettings();
 		const action = dispatcher.getRecentDispatch();
 
-		return action && (settings.all ||
-			settings.stores.indexOf(this.storeDisplayName) > -1 ||
+		if (!action) {
+			return false;
+		}
+
+		if (settings.all) {
+			return true;
+		}
+
+		if (this.storeDisplayName === 'FluxThisRouterStore' ||
+			action.source === RouterConstants.ROUTER_SOURCE) {
+			return !!settings.router;
+		}
+
+		return settings.stores.indexOf(this.storeDisplayName) > -1 ||
 			settings.controllerViews.indexOf(this.viewDisplayName) > -1 ||
 			settings.types.indexOf(action.type) > -1 ||
-			settings.sources.indexOf(action.source) > -1);
+			settings.sources.indexOf(action.source) > -1;
 	}
 
 	static getDebugSettings() {
-		const FLUX_DEBUG = typeof window === 'undefined' ?
+		let FLUX_DEBUG = typeof window === 'undefined' ?
 			{} :
 			window.FLUX_DEBUG;
+
+		if (window.FLUX_DEBUG === true) {
+			FLUX_DEBUG = {all: 1};
+		}
 
 		return Object.assign(
 			{},
@@ -194,6 +213,23 @@ class FluxDebugger {
 			action.source,
 			action.type,
 			action.payload
+		);
+	}
+
+	logRouter(functionName, context, optionalMessage='') {
+		consoleGroupEnd();
+		if (!FluxDebugger.shouldLog()) {
+			return;
+		}
+
+		consoleGroup(
+			'%c%s | %s | %o | %o | %s',
+			styles.router,
+			functionName,
+			context.getPath(),
+			context.getPathParams().toJS(),
+			context.getQueryParams().toJS(),
+			optionalMessage
 		);
 	}
 

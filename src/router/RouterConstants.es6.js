@@ -17,6 +17,7 @@
 const ConstantCollection = require('../ConstantCollection.es6');
 
 export default new ConstantCollection(
+	'ROUTER_SOURCE',
 	'ROUTER_USE_ACTION',
 	'ROUTER_SETUP_ALL_ROUTE_ACTION',
 	'ROUTER_SETUP_ROUTE_ACTION',
