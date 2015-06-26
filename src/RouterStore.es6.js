@@ -247,7 +247,8 @@ function getRouteContext() {
 		getPath: RouterStore.getPath,
 		getPathParams: RouterStore.getPathParams,
 		getQueryParams: RouterStore.getQueryParams,
-		redirectTo: RouterActions.redirectTo
+		redirectTo: RouterActions.redirectTo,
+		setReactElement: RouterActions.setReactElement
 	};
 }
 

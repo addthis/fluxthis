@@ -59,9 +59,11 @@ class Router {
 
     start() {
         invariant(
-            started === true,
+            started === false,
             'You can only start the router once'
         );
+
+        started = true;
 
         invariant(
             this[REGISTERED] === true,
