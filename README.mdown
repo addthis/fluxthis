@@ -35,6 +35,8 @@ It's x.y.z where:
  * z: strive for bug fix only
 
 ### Changes
+ * V2.2.2 (7/5/15) 
+    - Fixed registering actions/types in the API Action Creator & Action Creator.
  * v2.2.1 (6/3/15)
     - Added support for request headers in the API Action Creator createRequest method
  * v2.2.0 (6/2/15)
