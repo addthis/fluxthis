@@ -149,7 +149,7 @@ class ActionCreator {
 		// Add the new type to the Set so we can keep checking for uniqueness.
 		ActionTypes.add(type);
 
-		let actionSource = this.actionSource;
+		let actionSource = this.actionSource || this.displayName;
 
 		this[name] = (payload, ...args) => {
 			if (createPayload) {
@@ -171,7 +171,7 @@ class ActionCreator {
 			dispatcher.dispatch(action);
 		};
 
-		debug.registerAction(this, {type});
+		debug.registerAction(this, {type, source: actionSource});
 	}
 
 	/**

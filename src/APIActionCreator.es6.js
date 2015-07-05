@@ -75,7 +75,7 @@ export default class APIActionCreator extends ActionCreator {
 			params: ActionCreator.PayloadTypes.object
 		}).isRequired;
 
-		const actionSource = this.actionSource;
+		const actionSource = this.actionSource || this.displayName;
 
 		invariant(
 			successTest instanceof Function,
@@ -116,6 +116,18 @@ export default class APIActionCreator extends ActionCreator {
 			name,
 			this
 		);
+
+		if (pendingActionType) {
+			debug.registerAction(this, {type: pendingActionType, source: actionSource});
+		}
+
+		if (successActionType) {
+			debug.registerAction(this, {type: successActionType, source: actionSource});
+		}
+
+		if (failureActionType) {
+			debug.registerAction(this, {type: failureActionType, source: actionSource});
+		}
 
 		this[name] = (...args) => {
 			let action;
