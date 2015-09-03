@@ -13,6 +13,7 @@
  */
 
 // THIS MUST BE FIRST. It loads the babel/polyfill
+require('babel/polyfill');
 require('./require-test');
 
 window.FluxThis = {
