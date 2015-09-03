@@ -94,8 +94,10 @@ export default class ObjectOrientedStore extends Store {
 
 						invariant(
 							!actions.has(constant),
-							`${this} - The action ${constant} has already ` +
-							'been defined in this store.'
+							`%s - The action %s has already ` +
+							'been defined in this store.',
+							this.toString(),
+							constant.toString()
 						);
 
 						actions.set(constant, handler);

@@ -101,6 +101,23 @@ describe('ObjectOrientedStore', function () {
 		}).should.throw();
 	});
 
+	it('should not throw an error when a symbol is used for an action type', function () {
+		(function () {
+			new Store({
+				displayName: 'oo-symbol-action',
+				init: function(){
+					this.bindActions(
+						Symbol('hi'), this.test
+					);
+				},
+				public:{},
+				private:{
+					test: function() {}
+				}
+			});
+		}).should.not.throw();
+	});
+
 	describe('during init', function () {
 		var config;
 		beforeEach(function () {
