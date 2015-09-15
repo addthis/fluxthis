@@ -142,8 +142,10 @@ class ActionCreator {
 		// Now lets make sure we haven't already registered aciton type
 		invariant(
 			!ActionTypes.has(type),
-			`${this} - already has an action with type ${type} already ` +
-			'registered.'
+			`%s - already has an action with type %s already ` +
+			'registered.',
+			this.toString(),
+			type.toString()
 		);
 
 		// Add the new type to the Set so we can keep checking for uniqueness.
