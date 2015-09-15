@@ -27,7 +27,6 @@ const CHANGE_LISTENERS = Symbol();
 export default class Store {
 	constructor(options) {
 		const store = this;
-		const ViewDisplayNames = new Set();
 
 		invariant(
 			options,
@@ -79,16 +78,6 @@ export default class Store {
 				);
 
 				invariant(
-					!ViewDisplayNames.has(displayName),
-					`Error: ${store.toString()} already has a ` +
-					'controller view registered with the display name ' +
-					`of ${displayName}. Please make sure ` +
-					'display names are unique.'
-				);
-
-				ViewDisplayNames.add(displayName);
-
-				invariant(
 					this.getStateFromStores instanceof Function,
 					'`%s` must define `getStateFromStores` in order to use ' +
 					'the FluxThis mixin.',
@@ -114,7 +103,6 @@ export default class Store {
 			 */
 			componentWillUnmount() {
 				renderedComponentSet.delete(this);
-				ViewDisplayNames.delete(this.constructor.displayName);
 				store.removeChangeListener(this.__fluxChangeListener);
 			},
 
