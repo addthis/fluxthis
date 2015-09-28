@@ -78,8 +78,8 @@ export default class ObjectOrientedStore extends Store {
 							constant !== undefined && constant !== null,
 							'An unrecognizable action type or source, `%s`, ' +
 							'was passed to the `bindActions` method of `%s`',
-							constant,
-							this
+							constant.toString(),
+							this.toString()
 						);
 
 						invariant(
@@ -88,8 +88,8 @@ export default class ObjectOrientedStore extends Store {
 							'passed to the `bindActions` method of `%s` to ' +
 							'handle `%s`',
 							handler,
-							this,
-							constant
+							this.toString(),
+							constant.toString()
 						);
 
 						invariant(
