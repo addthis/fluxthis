@@ -35,9 +35,11 @@ It's x.y.z where:
  * z: strive for bug fix only
 
 ### Changes
- * V2.2.3 (7/5/15) 
+ * v2.3.1 (11/2/15)
+    - Moved react to peer dependencies, and ensured compatability with react 0.14
+ * v2.2.3 (7/5/15) 
     - Fixed registering actions/types in the API Action Creator & Action Creator.
- * V2.2.2 (6/26/15) 
+ * v2.2.2 (6/26/15) 
     - Fixed bugs in router
  * v2.2.1 (6/3/15)
     - Added support for request headers in the API Action Creator createRequest method
