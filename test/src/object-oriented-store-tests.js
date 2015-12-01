@@ -32,8 +32,7 @@ describe('ObjectOrientedStore', function () {
 			});
 
 			s.setX();
-		}).should.throw('Invariant Violation: Public function oo1.setX ' +
-			'mutated private members. Use a private method instead!');
+		}).should.throw('Public function oo1.setX mutated private members. Use a private method instead!');
 	});
 
 	it('should throw an error when passed no arguments', function () {

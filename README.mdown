@@ -35,6 +35,8 @@ It's x.y.z where:
  * z: strive for bug fix only
 
 ### Changes
+ * v2.4.0 (12/1/15)
+    - [#100](https://github.com/addthis/fluxthis/issues/100) - support content type json w/ charset
  * v2.3.1 (11/2/15)
     - Moved react to peer dependencies, and ensured compatability with react 0.14
  * v2.2.3 (7/5/15) 
