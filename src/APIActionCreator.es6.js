@@ -130,8 +130,6 @@ export default class APIActionCreator extends ActionCreator {
 		}
 
 		this[name] = (...args) => {
-			let action;
-			let request;
 
 			invariant(
 				createRequest || args.length === 0,
@@ -144,6 +142,7 @@ export default class APIActionCreator extends ActionCreator {
 			// If the user wants to create their own request
 			// with body, query and/or params, then lets
 			// do that first.
+			let request;
 			if (createRequest) {
 				request = createRequest.apply(this, args);
 			}
@@ -182,7 +181,7 @@ export default class APIActionCreator extends ActionCreator {
 					}
 
 					// Setup action for success/failure
-					action = {
+					const action = {
 						source: actionSource,
 						type: success ? successActionType : failureActionType,
 						payload: {
