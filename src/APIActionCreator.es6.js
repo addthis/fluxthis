@@ -57,7 +57,7 @@ export default class APIActionCreator extends ActionCreator {
 	 * @param {Function} options.successTest
 	 */
 	createPublicMethod(name, options) {
-		const {route, method} = options;
+		const {route, method, withCredentials} = options;
 		const {createRequest, handleSuccess, handleFailure} = options;
 		const {success: successActionType,
 			failure: failureActionType,
@@ -117,6 +117,11 @@ export default class APIActionCreator extends ActionCreator {
 			this
 		);
 
+		invariant(
+			withCredentials === undefined || typeof withCredentials === 'boolean',
+			'`withCredentials` must be boolean'
+		);
+
 		if (pendingActionType) {
 			debug.registerAction(this, {type: pendingActionType, source: actionSource});
 		}
@@ -150,7 +155,8 @@ export default class APIActionCreator extends ActionCreator {
 
 			request = Object.assign({
 				method,
-				route
+				route,
+				withCredentials
 			}, request);
 
 			this.validatePayload(name, request, payloadType);
