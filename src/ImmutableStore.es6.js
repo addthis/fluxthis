@@ -33,7 +33,8 @@ class ImmutableStore extends ObjectOrientedStore {
 	 * @return {boolean}
 	 */
 	static checkImmutable(item) {
-		return item instanceof Immutable.Iterable || !(item instanceof Object);
+		// http://stackoverflow.com/questions/31907470/how-to-check-if-object-is-immutable
+		return Immutable.Iterable.isIterable(item) || !(item instanceof Object);
 	}
 
     /**
