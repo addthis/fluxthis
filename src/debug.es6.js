@@ -87,7 +87,7 @@ class FluxDebugger {
 			{} :
 			window.FLUX_DEBUG;
 
-		if (window.FLUX_DEBUG === true) {
+		if (FLUX_DEBUG === true) {
 			FLUX_DEBUG = {all: 1};
 		}
 
