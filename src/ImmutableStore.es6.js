@@ -14,7 +14,7 @@
 
 'use strict';
 
-const each = require('../lib/each');
+const each = require('../lib/each.es6');
 const invariant = require('invariant');
 const Immutable = require('immutable');
 const ObjectOrientedStore = require('./ObjectOrientedStore.es6');

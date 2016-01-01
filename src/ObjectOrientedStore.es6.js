@@ -17,7 +17,7 @@
 const dispatcher = require('./dispatcherInstance.es6');
 const Store = require('./Store.es6');
 const debug = require('./debug.es6');
-const each = require('../lib/each');
+const each = require('../lib/each.es6');
 const invariant = require('invariant');
 const testUtils = require('./StoreTestUtils.es6');
 

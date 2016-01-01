@@ -16,7 +16,7 @@
 
 const dispatcher = require('./dispatcherInstance.es6');
 const debug = require('./debug.es6');
-const each = require('../lib/each');
+const each = require('../lib/each.es6');
 const PropTypes = require('react/lib/ReactPropTypes');
 const deprecated = require('../lib/deprecated.es6');
 const invariant = require('invariant');

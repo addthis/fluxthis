@@ -58,7 +58,7 @@ describe('Integration', function () {
 			respondToSource: {
 				type: '__' + Math.random()
 			}
-		})
+		});
 
 		store = new Store({
 			displayName: String(Math.random()),

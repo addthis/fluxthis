@@ -1,7 +1,7 @@
 'use strict';
 
 const dispatcher = require('./dispatcherInstance.es6');
-const each = require('../lib/each');
+const each = require('../lib/each.es6');
 
 /**
  * This function provides all the test utilities
