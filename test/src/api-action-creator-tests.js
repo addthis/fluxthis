@@ -36,6 +36,21 @@ describe('APIActionCreators', function () {
         Should.exist(aac.doOtherThing);
     });
 
+    it('should be given a request object after being called', function () {
+        var aac = new APIActionCreator({
+            displayName: 'api45',
+            doThing: {
+                route: '/mirror',
+                method: 'POST',
+                pending: 'TEST_' + Math.random()
+            }
+        });
+
+        var request = aac.doThing();
+        Should.exist(request);
+        Should.exist(request.abort);
+    });
+
     it('should call handleSuccess on a successful request', function (done) {
         var aac = new APIActionCreator({
 			displayName: 'api2',
@@ -72,6 +87,28 @@ describe('APIActionCreators', function () {
         });
 
         aac.doThing();
+    });
+
+    it('should call handleAbort on a aborted request', function (done) {
+        var aac = new APIActionCreator({
+            displayName: 'api55',
+            doThing: {
+                route: '/long-time',
+                method: 'POST',
+                handleSuccess: function () {
+                    done(new Error('handleSuccess was called'));
+                },
+                handleFailure: function () {
+                    done(new Error('handleFailure was called'));
+                },
+                handleAbort: function () {
+                    done();
+                }
+            }
+        });
+
+        var r = aac.doThing();
+        r.abort();
     });
 
     it('should transform a request with createRequest', function (done) {
@@ -157,6 +194,7 @@ describe('APIActionCreators', function () {
         var pending;
         var success;
         var failure;
+        var abort;
         var query;
         var aac;
 
@@ -164,6 +202,8 @@ describe('APIActionCreators', function () {
             pending = 'PENDING_' + Math.random();
             success = 'SUCCESS_' + Math.random();
             failure = 'FAILURE_' + Math.random();
+            abort = 'ABORT_' + Math.random();
+
             query = {};
             aac = new APIActionCreator({
 				displayName: String(Math.random()),
@@ -184,6 +224,11 @@ describe('APIActionCreators', function () {
                     route: '/bad',
                     method: 'GET',
                     failure: failure
+                },
+                doAbortThing: {
+                    route: '/long-time',
+                    method: 'POST',
+                    abort: abort
                 }
             });
         });
@@ -223,6 +268,19 @@ describe('APIActionCreators', function () {
             });
 
             aac.doBrokenThing();
+        });
+
+
+        it('should dispatch the abort action after failing with the call', function (done) {
+
+            token = dispatcher.register(function (action) {
+                if(action.type === abort) {
+                    done();
+                }
+            });
+
+            var r = aac.doAbortThing();
+            r.abort();
         });
     });
 

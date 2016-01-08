@@ -15,7 +15,7 @@
 'use strict';
 
 const dispatcher = require('./dispatcherInstance.es6');
-const each = require('../lib/each');
+const each = require('../lib/each.es6');
 const RouterConstants = require('./router/RouterConstants.es6');
 
 const IN_PRODUCTION = process.env.NODE_ENV === 'production';

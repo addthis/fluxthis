@@ -43,6 +43,22 @@ app.post('/dog', function (req, res) {
     res.end(message);
 });
 
+app.post('/long-time', function (req, res) {
+    setTimeout(function() {
+        var message = JSON.stringify({
+            cat: 'purr'
+        });
+
+        res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Content-Size': message.length
+        });
+
+        res.end(message);
+    }, 300);
+
+});
+
 app.post('/mirror/:param1/:param2', bodyParser.json(), mirror);
 app.post('/mirror', bodyParser.json(), mirror);
 app.use(express.static('./'));

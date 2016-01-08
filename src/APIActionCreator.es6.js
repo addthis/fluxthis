@@ -20,7 +20,6 @@ const send = require('../lib/implore.es6');
 const debug = require('./debug.es6');
 const ActionCreator = require('./ActionCreator.es6');
 
-
 export default class APIActionCreator extends ActionCreator {
 
 	/**
@@ -51,17 +50,20 @@ export default class APIActionCreator extends ActionCreator {
 	 * @param {string} options.success
 	 * @param {string} options.failure
 	 * @param {string} options.pending
+	 * @param {string} options.abort
 	 * @param {Function} options.createRequest
 	 * @param {Function} options.handleSuccess
 	 * @param {Function} options.handleFailure
+	 * @param {Function} options.handleAbort
 	 * @param {Function} options.successTest
 	 */
 	createPublicMethod(name, options) {
 		const {route, method} = options;
-		const {createRequest, handleSuccess, handleFailure} = options;
+		const {createRequest, handleSuccess, handleFailure, handleAbort} = options;
 		const {success: successActionType,
 			failure: failureActionType,
-			pending: pendingActionType} = options;
+			pending: pendingActionType,
+			abort: abortActionType} = options;
 
 		// successTest can come from the top level object
 		// or each function can use their own successTest.
@@ -129,8 +131,11 @@ export default class APIActionCreator extends ActionCreator {
 			debug.registerAction(this, {type: failureActionType, source: actionSource});
 		}
 
-		this[name] = (...args) => {
+		if (abortActionType) {
+			debug.registerAction(this, {type: abortActionType, source: actionSource});
+		}
 
+		this[name] = (...args) => {
 			invariant(
 				createRequest || args.length === 0,
 				`${this.toString()}'s ${name} action received ` +
@@ -166,36 +171,46 @@ export default class APIActionCreator extends ActionCreator {
 				});
 			}
 
-			send(request)
-				.then((result) => {
-					const {response, request} = result;
-					const success = successTest(response);
+			return send(request, (result) => {
+				const {response, request} = result;
+				const success = successTest(response);
+				const isAborted = !!response.fluxthisAborted;
 
-					// These methods allow the user to process
-					// the request and modify it how they please
-					// or dispatch more actions.
-					if (success && handleSuccess) {
-						handleSuccess.call(this, request, response);
-					} else if (handleFailure) {
-						handleFailure.call(this, request, response);
-					}
+				// These methods allow the user to process
+				// the request and modify it how they please
+				// or dispatch more actions.
+				if (success && handleSuccess) {
+					handleSuccess.call(this, request, response);
+				} else if (isAborted && handleAbort) {
+					handleAbort.call(this, request, response);
+				} else if (handleFailure) {
+					handleFailure.call(this, request, response);
+				}
 
-					// Setup action for success/failure
-					const action = {
-						source: actionSource,
-						type: success ? successActionType : failureActionType,
-						payload: {
-							request,
-							response
-						}
-					};
+				let type;
+				if (success && successActionType) {
+					type = successActionType;
+				} else if (isAborted && abortActionType) {
+					type = abortActionType;
+				} else if (failureActionType) {
+					type = failureActionType;
+				}
 
-					// If we reach the end and we have an action
-					// type, then that means we need to dispatch.
-					if (action.type) {
-						dispatcher.dispatch(action);
+				if (!type) {
+					return;
+				}
+
+				// If we reach the end and we have an action
+				// type, then that means we need to dispatch.
+				dispatcher.dispatch({
+					source: actionSource,
+					type,
+					payload: {
+						request,
+						response: isAborted ? undefined : response
 					}
 				});
+			});
 		};
 	}
 
