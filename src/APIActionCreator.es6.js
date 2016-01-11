@@ -34,7 +34,8 @@ export default class APIActionCreator extends ActionCreator {
 		return response &&
 			response.status &&
 			response.status >= 200 &&
-			response.status < 300;
+			response.status < 300 &&
+			!response.error;
 	}
 
 	constructor(options) {

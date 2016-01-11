@@ -59,6 +59,17 @@ app.post('/long-time', function (req, res) {
 
 });
 
+app.get('/invalid-json', function (req, res) {
+    const message = 'hello world';
+
+    res.writeHead(200, {
+        'Content-Type': 'application/json',
+        'Content-Size': message.length
+    });
+
+    res.end(message);
+});
+
 app.post('/mirror/:param1/:param2', bodyParser.json(), mirror);
 app.post('/mirror', bodyParser.json(), mirror);
 app.use(express.static('./'));
@@ -73,7 +84,7 @@ function mirror (req, res) {
     });
 
     res.writeHead(200, {
-        'Content-Type': 'application/json',
+        'Content-Type': req.query.contentType || 'application/json',
         'Content-Size': message.length
     });
 
