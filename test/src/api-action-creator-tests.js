@@ -70,6 +70,84 @@ describe('APIActionCreators', function () {
         aac.doThing();
     });
 
+    it('should not parse the body as JSON with a mimetype of "text/plain"', function (done) {
+        var aac = new APIActionCreator({
+            displayName: 'api' + Math.random(),
+            doThing: {
+                route: '/mirror',
+                method: 'POST',
+                createRequest: function () {
+                    return {
+                        query: {
+                            contentType: 'text/plain'
+                        }
+                    };
+                },
+                handleSuccess: function (req, res) {
+                    res.body.should.be.type('string');
+                    done();
+                },
+                handleFailure: function (req, res) {
+                    done(req.error || res.error || new Error('Request failed'));
+                }
+            }
+        });
+
+        aac.doThing();
+    });
+
+    it('should the body as JSON with a mimetype of "application/json"', function (done) {
+        var aac = new APIActionCreator({
+            displayName: 'api' + Math.random(),
+            doThing: {
+                route: '/mirror',
+                method: 'POST',
+                createRequest: function () {
+                    return {
+                        query: {
+                            contentType: 'application/json'
+                        }
+                    };
+                },
+                handleSuccess: function (req, res) {
+                    res.body.should.be.type('object');
+                    done();
+                },
+                handleFailure: function (req, res) {
+                    done(req.error || res.error || new Error('Request failed'));
+                }
+            }
+        });
+
+        aac.doThing();
+    });
+
+    it('should the body as JSON with a mimetype of "application/json; charset=utf-8"', function (done) {
+        var aac = new APIActionCreator({
+            displayName: 'api' + Math.random(),
+            doThing: {
+                route: '/mirror',
+                method: 'POST',
+                createRequest: function () {
+                    return {
+                        query: {
+                            contentType: 'application/json; charset=utf-8'
+                        }
+                    };
+                },
+                handleSuccess: function (req, res) {
+                    res.body.should.be.type('object');
+                    done();
+                },
+                handleFailure: function (req, res) {
+                    done(req.error || res.error || new Error('Request failed'));
+                }
+            }
+        });
+
+        aac.doThing();
+    });
+
     it('should call handleFailure on a failed request', function (done) {
         var aac = new APIActionCreator({
 			displayName: 'api3',
@@ -77,6 +155,24 @@ describe('APIActionCreators', function () {
                 route: '/bad-endpoint',
                 method: 'POST',
                 pending: 'TEST_' + Math.random(),
+                handleSuccess: function () {
+                    done(new Error('handleSuccess was called'));
+                },
+                handleFailure: function () {
+                    done();
+                }
+            }
+        });
+
+        aac.doThing();
+    });
+
+    it('should call handleFailure when the application type is json but the payload is not valid JSON', function (done) {
+        var aac = new APIActionCreator({
+            displayName: 'api' + Math.random(),
+            doThing: {
+                route: '/invalid-json',
+                method: 'GET',
                 handleSuccess: function () {
                     done(new Error('handleSuccess was called'));
                 },
