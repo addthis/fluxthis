@@ -96,7 +96,7 @@ describe('APIActionCreators', function () {
         aac.doThing();
     });
 
-    it('should the body as JSON with a mimetype of "application/json"', function (done) {
+    it('should parse the body as JSON with a mimetype of "application/json"', function (done) {
         var aac = new APIActionCreator({
             displayName: 'api' + Math.random(),
             doThing: {
@@ -122,7 +122,7 @@ describe('APIActionCreators', function () {
         aac.doThing();
     });
 
-    it('should the body as JSON with a mimetype of "application/json; charset=utf-8"', function (done) {
+    it('should parse the body as JSON with a mimetype of "application/json; charset=utf-8"', function (done) {
         var aac = new APIActionCreator({
             displayName: 'api' + Math.random(),
             doThing: {
@@ -176,7 +176,9 @@ describe('APIActionCreators', function () {
                 handleSuccess: function () {
                     done(new Error('handleSuccess was called'));
                 },
-                handleFailure: function () {
+                handleFailure: function (req, res) {
+                    res.body.should.equal('hello world');
+                    res.error.should.be.instanceOf(Error);
                     done();
                 }
             }
