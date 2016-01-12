@@ -1,4 +1,4 @@
-# FluxThis [![NPM version](http://img.shields.io/npm/v/fluxthis.svg)](https://www.npmjs.com/package/fluxthis) [![Build Status](https://travis-ci.org/addthis/fluxthis.svg?branch=master)](https://travis-ci.org/addthis/fluxthis) 
+# FluxThis [![NPM version](http://img.shields.io/npm/v/fluxthis.svg)](https://www.npmjs.com/package/fluxthis) [![Build Status](https://travis-ci.org/addthis/fluxthis.svg?branch=master)](https://travis-ci.org/addthis/fluxthis)
 
 
 The super-opinionated, yell-at-you-for-everything, immutable Flux framework by
@@ -35,13 +35,16 @@ It's x.y.z where:
 ### Changes
  * v2.5.0 (TBD)
     - [#106](https://github.com/addthis/fluxthis/pull/106) - Added abort support to APIActionCreator
+    - [#103](https://github.com/addthis/fluxthis/issues/113) -- Trigger error event for malformed JSON. Thanks @AlanFoster
+    - [#105](https://github.com/addthis/fluxthis/issues/105) - Fixed is immutable check for ImmutableStore
  * v2.4.0 (12/1/15)
     - [#100](https://github.com/addthis/fluxthis/issues/100) - support content type json w/ charset
+    - [#110](https://github.com/addthis/fluxthis/pull/110) - Fixed windowless environment check for window object
  * v2.3.1 (11/2/15)
     - Moved react to peer dependencies, and ensured compatability with react 0.14
- * v2.2.3 (7/5/15) 
+ * v2.2.3 (7/5/15)
     - Fixed registering actions/types in the API Action Creator & Action Creator.
- * v2.2.2 (6/26/15) 
+ * v2.2.2 (6/26/15)
     - Fixed bugs in router
  * v2.2.1 (6/3/15)
     - Added support for request headers in the API Action Creator createRequest method
@@ -49,6 +52,6 @@ It's x.y.z where:
     - Incorporated fluxthis es6 generator router expirmental feature
  * v2.1.0 (5/21/15)
     - Deprecated actionSource in Action Creators
-    - Deprecated payloadType & actionType in Action Creators. New keys are payload & type, respectively. 
+    - Deprecated payloadType & actionType in Action Creators. New keys are payload & type, respectively.
  * v2.0.0 (5/21/15)
     - Removed the babel global polyfil in favor of runtime alternative. This means that any projects depending on this polyfil need to require it themselves manually.
