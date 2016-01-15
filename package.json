@@ -53,6 +53,7 @@
     "phantomjs": "^1.9.17",
     "run-sequence": "^1.1.0",
     "should": "^6.0.1",
+    "uglify-save-license": "^0.4.1",
     "webpack": "^1.8.9"
   },
   "dependencies": {

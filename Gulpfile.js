@@ -25,6 +25,7 @@ var webpack = require('webpack');
 var gulpWebpack = require('gulp-webpack');
 var webpackConfig = require('./webpack.config');
 var testWebpackConfig = require('./test/webpack.config');
+var saveLicense = require('uglify-save-license');
 
 var tag = require('./bin/tag');
 var runSequence = require('run-sequence');
@@ -84,9 +85,10 @@ gulp.task('build-prod', function () {
             }
         }),
         new webpack.optimize.UglifyJsPlugin({
-           compress: {
-               warnings: false
-           }
+            comments: saveLicense,
+            compress: {
+                warnings: false
+            }
         })
     );
 
