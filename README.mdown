@@ -33,6 +33,8 @@ It's x.y.z where:
  * z: strive for bug fix only
 
 ### Changes
+ * TBD
+    - Added extra check to keep licenses for built minified files. 
  * v2.5.0 (1/12/16)
     - [#106](https://github.com/addthis/fluxthis/pull/106) - Added abort support to APIActionCreator
     - [#103](https://github.com/addthis/fluxthis/issues/113) -- Trigger error event for malformed JSON. Thanks @AlanFoster
