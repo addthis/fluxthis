@@ -155,7 +155,7 @@ export default class ObjectOrientedStore extends Store {
 		privateMembers = Object.create(privateMethods);
 
 		// Create private methods
-		each(options.private, (prop, method) => {
+		each(options.private || { }, (prop, method) => {
 			invariant(
 				method instanceof Function,
 				'private member `%s` is not a function. Non-function private ' +
