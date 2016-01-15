@@ -81,7 +81,7 @@ describe('Dispatcher', function () {
     it('should return a token from register', function () {
         var cb = function () {};
         var token = dispatcher.register(cb);
-        token.should.be.a.string;
+        token.should.be.type('string');
     });
 
     it('should order things correctly with waitfor', function () {
