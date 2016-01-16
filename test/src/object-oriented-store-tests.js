@@ -61,6 +61,16 @@ describe('ObjectOrientedStore', function () {
 		}).should.throw();
 	});
 
+	it('should create when passed display name, public, and init', function () {
+		(function () {
+			new Store({
+				displayName: 'oo' + Math.random(),
+				init: function(){},
+				public:{}
+			});
+		}).should.not.throw();
+	});
+
 	it('should create when passed display name, private, public, and init', function () {
 		(function () {
 			new Store({
