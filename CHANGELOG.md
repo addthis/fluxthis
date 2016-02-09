@@ -23,7 +23,7 @@
 
 ## v2.3.1 (11/2/15)
 
- - Moved react to peer dependencies, and ensured compatability with react 0.14
+ - Moved react to peer dependencies, and ensured comparability with react 0.14
 
 ## v2.2.3 (7/5/15)
 
@@ -39,7 +39,7 @@
 
 ## v2.2.0 (6/2/15)
 
- - Incorporated fluxthis es6 generator router expirmental feature
+ - Incorporated fluxthis es6 generator router experimental feature
 
 ## v2.1.0 (5/21/15)
 
@@ -48,4 +48,4 @@
 
 ## v2.0.0 (5/21/15)
 
- - Removed the babel global polyfil in favor of runtime alternative. This means that any projects depending on this polyfil need to require it themselves manually.
+ - Removed the babel global polyfill in favor of runtime alternative. This means that any projects depending on this polyfill need to require it themselves manually.
