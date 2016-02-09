@@ -2,8 +2,8 @@
 ## v2.5.2 (2/9/16)
 
  - [#120](https://github.com/addthis/fluxthis/pull/120) - Fixed setting Content-Type Header
- - Allow for string body types in the APIActionCreator.
- - Fixed deprecated message for `contentType` in the APIActionCreator.
+ - [#120](https://github.com/addthis/fluxthis/pull/120) - Allow for string body types in the APIActionCreator.
+ - [#120](https://github.com/addthis/fluxthis/pull/120) - Fixed deprecated message for `contentType` in the APIActionCreator.
 
 ## v2.5.1 (1/14/16)
 
