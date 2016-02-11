@@ -37,7 +37,7 @@ class ImmutableStore extends ObjectOrientedStore {
 		return Immutable.Iterable.isIterable(item) || !(item instanceof Object);
 	}
 
-    /**
+	/**
 	 * @param {object} options
 	 * @param {function} options.init - this fn should set up initial state and
 	 *	also be used to call `bindActions`
@@ -66,7 +66,7 @@ class ImmutableStore extends ObjectOrientedStore {
 			displayName: options.displayName,
 			init: null,
 			public: {},
-			private: options.private
+			private: {}
 		};
 
 
@@ -85,6 +85,25 @@ class ImmutableStore extends ObjectOrientedStore {
 			};
 		}
 
+		if (options.private) {
+			each(options.private, (key, fn) => {
+				parentOptions.private[key] = function privateMethod() {
+					let result = fn.apply(this, arguments);
+
+					each(this, (key, member) => {
+						invariant(
+							ImmutableStore.checkImmutable(member),
+							'non-immutable, non-primitive `%s` was added to an ' +
+							'ImmutableStore private method `%s`',
+							key,
+							fn.name
+						);
+					});
+
+					return result;
+				};
+			});
+		}
 		if (options.public) {
 			each(options.public, (key, fn) => {
 				parentOptions.public[key] = function publicMethod() {
@@ -98,6 +117,16 @@ class ImmutableStore extends ObjectOrientedStore {
 						'prevent errors from mutation of objects',
 						key
 					);
+
+					each(this, (key, member) => {
+						invariant(
+							ImmutableStore.checkImmutable(member),
+							'non-immutable, non-primitive `%s` was added to an ' +
+							'ImmutableStore public method `%s`',
+							key,
+							fn.name
+						);
+					});
 
 					return result;
 				};

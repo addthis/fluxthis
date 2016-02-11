@@ -101,7 +101,7 @@ describe('ImmutableStore', function () {
 				displayName: String(Math.random()),
 				init: function () {
 					this.thing = privateAttribute;
-					this.bindActions();
+					this.bindActions('set_thing', this.setThing);
 				},
 				private: {
 					setThing: function (thing) {
@@ -116,6 +116,16 @@ describe('ImmutableStore', function () {
 			};
 		});
 
+
+		it('should throw an error when setting attribute to non-immutable object', function () {
+			var s = new Store(config);
+			(function () {
+				s.TestUtils.mockDispatch({
+					type: 'set_thing',
+					payload: {}
+				});
+			}).should.throw();
+		});
 
 		describe('when an accessor returns a non-immutable', function () {
 			it('should throw an error', function () {
