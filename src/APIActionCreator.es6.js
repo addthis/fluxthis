@@ -196,7 +196,7 @@ export default class APIActionCreator extends ActionCreator {
 					type = successActionType;
 				} else if (isAborted && abortActionType) {
 					type = abortActionType;
-				} else if (failureActionType) {
+				} else if (!success && failureActionType) {
 					type = failureActionType;
 				}
 

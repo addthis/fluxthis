@@ -318,6 +318,18 @@ describe('APIActionCreators', function () {
                         };
                     }
                 },
+                doThingFailureTest: {
+                    route: '/cat',
+                    method: 'GET',
+                    failure: failure,
+                    createRequest: function (a, b) {
+                        query.a = a;
+                        query.b = b;
+                        return {
+                            query: query
+                        };
+                    }
+                },
                 doBrokenThing: {
                     route: '/bad',
                     method: 'GET',
@@ -327,12 +339,24 @@ describe('APIActionCreators', function () {
                     route: '/long-time',
                     method: 'POST',
                     abort: abort
-                }
+                },
+
             });
         });
 
         afterEach(function () {
             dispatcher.unregister(token);
+        });
+
+        it('should not send the failure type when success response without success type', function (done) {
+            // https://github.com/addthis/fluxthis/issues/121
+            token = dispatcher.register(function (action) {
+                done(new Error('an action should not have been dispatched'));
+            });
+
+
+            aac.doThingFailureTest();
+            setTimeout(done, 1500);
         });
 
         it('should dispatch the pending action when making the call', function (done) {

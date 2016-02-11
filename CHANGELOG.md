@@ -1,3 +1,6 @@
+## v2.5.3 (2/10/16)
+
+- [#121](https://github.com/addthis/fluxthis/issues/121) - Fixes dispatching failure type on success response in API.
 
 ## v2.5.2 (2/9/16)
 
