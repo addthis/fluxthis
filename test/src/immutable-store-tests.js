@@ -92,6 +92,32 @@ describe('ImmutableStore', function () {
 
 	});
 
+	it('should throw an error if non-function set on public', function () {
+		(function () {
+			new Store({
+				init: function() {
+
+				},
+				public: {
+					foo: 'bar'
+				}
+			});
+		}).should.throw();
+	});
+
+	it('should throw an error if non-function set on private', function () {
+		(function () {
+			new Store({
+				init: function() {
+
+				},
+				private: {
+					foo: 'bar'
+				}
+			});
+		}).should.throw();
+	});
+
 	describe('after init', function () {
 		var config;
 		var privateAttribute = '1234abc';

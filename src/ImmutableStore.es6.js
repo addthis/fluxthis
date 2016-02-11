@@ -87,6 +87,13 @@ class ImmutableStore extends ObjectOrientedStore {
 
 		if (options.private) {
 			each(options.private, (key, fn) => {
+				invariant(
+					typeof fn === 'function',
+					'Only functions can be added to the private config object' +
+					'on stores. Please check the type of `%s`',
+					key
+				);
+
 				parentOptions.private[key] = function privateMethod() {
 					let result = fn.apply(this, arguments);
 
@@ -106,6 +113,14 @@ class ImmutableStore extends ObjectOrientedStore {
 		}
 		if (options.public) {
 			each(options.public, (key, fn) => {
+
+				invariant(
+					typeof fn === 'function',
+					'Only functions can be added to the public config object' +
+					'on stores. Please check the type of `%s`',
+					key
+				);
+
 				parentOptions.public[key] = function publicMethod() {
 					let result = fn.apply(this, arguments);
 
