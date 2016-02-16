@@ -21,11 +21,16 @@ function mergeMixin(reactComponent, storeMixin) {
 	});
 }
 
-export default function storeDecorator(Store) {
+/**
+ *
+ * @param Store
+ * @return {Function}
+ */
+export default function storeListener(Store) {
 	invariant(
 		Store && typeof Store.mixin === 'object',
 		'Please make sure you passed a FluxThis Store into the store' +
-		'decorator annotation.'
+		'listener decorator.'
 	);
 
 	return (Component) => {
