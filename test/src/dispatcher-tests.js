@@ -78,6 +78,16 @@ describe('Dispatcher', function () {
         called.should.equal(2);
     });
 
+    it('should call emitChanges', function (done) {
+        dispatcher.register(function() {
+
+        }, null, function () {
+            done();
+        });
+
+        dispatcher.dispatch({type: 'a'});
+    });
+
     it('should return a token from register', function () {
         var cb = function () {};
         var token = dispatcher.register(cb);

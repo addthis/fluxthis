@@ -146,7 +146,8 @@ export default class ObjectOrientedStore extends Store {
 					// Register the store with the Dispatcher
 					store.dispatchToken = dispatcher.register(
 						dispatchFunction,
-						actions
+						actions,
+						store.__emitChanges.bind(store)
 					);
 				}
 			}
@@ -168,12 +169,6 @@ export default class ObjectOrientedStore extends Store {
 				const returnValue = method.apply(privateMembers, arguments);
 
 				debug.logStore(this, prop, ...args);
-
-				// Because React batches setState asynchronously, we
-				// can call set state multiple times and React
-				// will batch or updates so we
-				// only update the Controller View once.
-				store.__emitChanges();
 
 				return returnValue;
 			};
