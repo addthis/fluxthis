@@ -1,5 +1,7 @@
-## v2.6.0 (TBD)
+## v2.6.0 (2/16/16)
 
+- [#126](https://github.com/addthis/fluxthis/pull/126) - Fixed emitChanges until after dispatch. Potential huge performance increase in react 14+
+- [#128](https://github.com/addthis/fluxthis/pull/128) - Tweaked decorator syntax to support a list of stores
 - [#124](https://github.com/addthis/fluxthis/pull/124) - Added es6 class support for stores using decorator. 
 
 ## v2.5.4 (2/10/16)
