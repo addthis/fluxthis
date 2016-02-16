@@ -59,8 +59,9 @@ gulp.task('build-test', function () {
 });
 
 gulp.task('test', function(callback) {
-    runSequence('lint',
-		'build-dev',
+    runSequence('clean',
+        'lint',
+        'build-dev',
         'build-test',
         'test-server-start',
         'mocha-test',

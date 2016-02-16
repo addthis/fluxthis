@@ -18,6 +18,7 @@ export default {
 	ConstantCollection: require('./ConstantCollection.es6'),
 	ImmutableStore: require('./ImmutableStore.es6'),
 	ObjectOrientedStore: require('./ObjectOrientedStore.es6'),
+	StoreDecorator: require('./StoreDecorator.es6'),
 	ActionCreator: require('./ActionCreator.es6'),
 	APIActionCreator: require('./APIActionCreator.es6'),
 	dispatcher: require('./dispatcherInstance.es6'),

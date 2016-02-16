@@ -99,7 +99,14 @@ export default class Store {
 
 				if (!this.__fluxChangeListener) {
 					this.__fluxChangeListener = () => {
-						if (this.isMounted()) {
+						// This isMounted check keeps backwards comparability
+						// with < React 14 due to how those versions
+						// handled batching calls async.
+						if (this.isMounted) {
+							if (this.isMounted()) {
+								this.setState(this.getStateFromStores());
+							}
+						} else {
 							this.setState(this.getStateFromStores());
 						}
 					};
@@ -122,7 +129,7 @@ export default class Store {
 				// This check ensures that we do not use the mixins
 				// get initial state twice on the same method.
 				// This is the case when a view uses more than 1 FluxThis store.
-				if (!this.state && !renderedComponentSet.has(this)) {
+				if (!renderedComponentSet.has(this)) {
 					renderedComponentSet.add(this);
 
 					// the initialState props is used to create state
