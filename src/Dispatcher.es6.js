@@ -47,16 +47,19 @@ const IS_HANDLED = Symbol();
 const IS_DISPATCHING = Symbol();
 const PENDING_ACTION = Symbol();
 const LAST_ACTION = Symbol();
+const EMIT_CHANGE_CALLBACK = Symbol();
 
 export default class Dispatcher {
 	constructor() {
 		this[CALLBACKS] = {};
 		this[IS_PENDING] = {};
 		this[IS_HANDLED] = {};
+
 		// Using a Map for this allows us to support
 		// ConstantCollections as keys.
 		this[STORE_ACTIONS] = new Map();
 		this[LEGACY_STORES] = new Set();
+		this[EMIT_CHANGE_CALLBACK] = new Map();
 
 		this[IS_DISPATCHING] = false;
 		this[PENDING_ACTION] = null;
@@ -71,9 +74,10 @@ export default class Dispatcher {
 	 * @param {Map} actions
 	 * @return {string}
 	 */
-	register(callback, actions) {
+	register(callback, actions, emitChanges = ()=>{}) {
 		const id = _prefix + _lastID++;
 		this[CALLBACKS][id] = callback;
+		this[EMIT_CHANGE_CALLBACK].set(id, emitChanges);
 
 		// If we are a FluxThis store, then we can optimize
 		// dispatches based on calling only stores who
@@ -114,6 +118,7 @@ export default class Dispatcher {
 
 		// Remove the registered callback for the given ID
 		delete this[CALLBACKS][id];
+		this[EMIT_CHANGE_CALLBACK].delete(id);
 
 		// If we have a legacy store then we can simply delete
 		// it from the set.
@@ -302,6 +307,7 @@ function dispatchToStores(ids = new Set()) {
 function invokeCallback(id) {
 	this[IS_PENDING][id] = true;
 	this[CALLBACKS][id](this[PENDING_ACTION]);
+	this[EMIT_CHANGE_CALLBACK].get(id)();
 	this[IS_HANDLED][id] = true;
 }
 
