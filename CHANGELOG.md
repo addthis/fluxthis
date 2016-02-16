@@ -1,3 +1,7 @@
+## v2.6.0 (TBD)
+
+- [#124](https://github.com/addthis/fluxthis/pull/124) - Added es6 class support for stores using decorator. 
+
 ## v2.5.4 (2/10/16)
 
 - [#121](https://github.com/addthis/fluxthis/issues/121) - Fixes dispatching failure type on success response in API.
