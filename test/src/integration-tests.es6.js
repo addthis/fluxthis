@@ -13,9 +13,10 @@
  */
 
 var ActionCreator = require('../../src/ActionCreator.es6');
-var ConstantCollection = require('../../src/ConstantCollection.es6')
+var ConstantCollection = require('../../src/ConstantCollection.es6');
 var Dispatcher = require('../../src/Dispatcher.es6');
 var Store = require('../../src/ImmutableStore.es6');
+var StoreDecorator = require('../../src/StoreDecorator.es6');
 
 describe('Integration', function () {
 	var ADD_THING;
@@ -203,6 +204,128 @@ describe('Integration', function () {
 			setTimeout(function () {
 				ac.addThing2('hallo2');
 			});
+		});
+	});
+
+	describe('a store with decorator should work', function () {
+		it('should call life cycle methods', function (done) {
+			var ac = new ActionCreator({
+				displayName: 'DecoratorAC',
+				update: {
+					type: 'DECORATOR_UPDATE'
+				}
+			});
+
+			var s = new Store({
+				displayName: 'decoratorStore',
+				init() {
+					this.test = 'pass';
+					this.bindActions('DECORATOR_UPDATE', this.update);
+				},
+				public: {
+					get() {
+						return this.test;
+					}
+				},
+				private: {
+					update() {
+						this.test = 'updated';
+					}
+				}
+			});
+
+			var s2 = new Store({
+				displayName: 'decoratorStore2',
+				init() {
+					this.test = 'pass2';
+					this.bindActions('DECORATOR_UPDATE', this.update);
+				},
+				public: {
+					get() {
+						return this.test;
+					}
+				},
+				private: {
+					update() {
+						this.test = 'updated2';
+					}
+				}
+			});
+
+			var counter = 0;
+
+			@StoreDecorator(s)
+			@StoreDecorator(s2)
+			class TestComponent extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						initial: 'true'
+					};
+				}
+
+				getStateFromStores() {
+					return {
+						test: s.get(),
+						test2: s2.get()
+					};
+				}
+
+				componentDidMount() {
+					if (this.state.test !== 'pass') {
+						throw 'test was not set as pass for initial mount';
+					}
+
+					if (this.state.test2 !== 'pass2') {
+						throw 'test2 was not set as updated2 for update';
+					}
+
+					if (this.state.initial !== 'true') {
+						throw 'initial state wasnt set correctly';
+					}
+
+					++counter;
+				}
+
+				componentWillUpdate() {
+					++counter;
+				}
+
+				componentDidUpdate() {
+					if (counter === 2 && this.state.test !== 'updated') {
+						throw 'test was not set as updated for update';
+					}
+
+					if (counter === 4 && this.state.test2 !== 'updated2') {
+						throw 'test2 was not set as updated2 for update';
+					}
+
+					if (this.state.initial !== 'true') {
+						throw 'initial state wasnt still set after update';
+					}
+
+					++counter;
+				}
+
+				componentWillUnmount() {
+					if (counter === 5) {
+						return done();
+					}
+
+					throw 'lifecycle methods were not called';
+				}
+
+				render() {
+					return <div>yay decorators</div>;
+				}
+			}
+
+			TestComponent.displayName = 'DecoratorComponent';
+
+			const div = document.createElement('div');
+			React.render(React.createElement(TestComponent), div);
+			ac.update();
+			React.unmountComponentAtNode(div);
 		});
 	});
 
