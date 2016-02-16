@@ -16,7 +16,7 @@ var ActionCreator = require('../../src/ActionCreator.es6');
 var ConstantCollection = require('../../src/ConstantCollection.es6');
 var Dispatcher = require('../../src/Dispatcher.es6');
 var Store = require('../../src/ImmutableStore.es6');
-var StoreDecorator = require('../../src/StoreListener.es6.js');
+var storeListener = require('../../src/StoreListener.es6.js');
 
 describe('Integration', function () {
 	var ADD_THING;
@@ -254,8 +254,7 @@ describe('Integration', function () {
 
 			var counter = 0;
 
-			@StoreDecorator(s)
-			@StoreDecorator(s2)
+			@storeListener(s, s2)
 			class TestComponent extends React.Component {
 				constructor(props) {
 					super(props);
@@ -327,7 +326,127 @@ describe('Integration', function () {
 			ac.update();
 			React.unmountComponentAtNode(div);
 		});
+
+		it('should call life cycle methods with non-decorator support', function (done) {
+			var ac = new ActionCreator({
+				displayName: 'DecoratorAC10',
+				update: {
+					type: 'DECORATOR_UPDATE1'
+				}
+			});
+
+			var s = new Store({
+				displayName: 'decoratorStore10',
+				init() {
+					this.test = 'pass';
+					this.bindActions('DECORATOR_UPDATE1', this.update);
+				},
+				public: {
+					get() {
+						return this.test;
+					}
+				},
+				private: {
+					update() {
+						this.test = 'updated';
+					}
+				}
+			});
+
+			var s2 = new Store({
+				displayName: 'decoratorStore11',
+				init() {
+					this.test = 'pass2';
+					this.bindActions('DECORATOR_UPDATE1', this.update);
+				},
+				public: {
+					get() {
+						return this.test;
+					}
+				},
+				private: {
+					update() {
+						this.test = 'updated2';
+					}
+				}
+			});
+
+			var counter = 0;
+
+			class TestComponent extends React.Component {
+				constructor(props) {
+					super(props);
+					this.state = {
+						initial: 'true'
+					};
+				}
+
+				getStateFromStores() {
+					return {
+						test: s.get(),
+						test2: s2.get()
+					};
+				}
+
+				componentDidMount() {
+					if (this.state.test !== 'pass') {
+						throw 'test was not set as pass for initial mount';
+					}
+
+					if (this.state.test2 !== 'pass2') {
+						throw 'test2 was not set as updated2 for update';
+					}
+
+					if (this.state.initial !== 'true') {
+						throw 'initial state wasnt set correctly';
+					}
+
+					++counter;
+				}
+
+				componentWillUpdate() {
+					++counter;
+				}
+
+				componentDidUpdate() {
+					if (counter === 2 && this.state.test !== 'updated') {
+						throw 'test was not set as updated for update';
+					}
+
+					if (counter === 4 && this.state.test2 !== 'updated2') {
+						throw 'test2 was not set as updated2 for update';
+					}
+
+					if (this.state.initial !== 'true') {
+						throw 'initial state wasnt still set after update';
+					}
+
+					++counter;
+				}
+
+				componentWillUnmount() {
+					if (counter === 5) {
+						return done();
+					}
+
+					throw 'lifecycle methods were not called';
+				}
+
+				render() {
+					return <div>yay decorators</div>;
+				}
+			}
+
+			TestComponent.displayName = 'DecoratorComponent';
+
+			const component = storeListener(s, s2)(TestComponent);
+			const div = document.createElement('div');
+			React.render(React.createElement(component), div);
+			ac.update();
+			React.unmountComponentAtNode(div);
+		});
 	});
+
 
 	describe('a store which waits for other stores', function () {
 		it('should wait for other stores', function () {
