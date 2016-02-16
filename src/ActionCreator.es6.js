@@ -139,7 +139,7 @@ class ActionCreator {
 			this
 		);
 
-		// Now lets make sure we haven't already registered aciton type
+		// Now lets make sure we haven't already registered action type
 		invariant(
 			!ActionTypes.has(type),
 			`${this} - already has an action with type ${type} already ` +
