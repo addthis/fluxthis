@@ -1,3 +1,7 @@
+## v2.6.1 (2/17/16)
+
+- [#129](https://github.com/addthis/fluxthis/pull/129) Removed isMounted check since anti-pattern and should not be a problem with recent dispatcher change
+
 ## v2.6.0 (2/16/16)
 
 - [#126](https://github.com/addthis/fluxthis/pull/126) - Fixed emitChanges until after dispatch. Potential huge performance increase in react 14+
