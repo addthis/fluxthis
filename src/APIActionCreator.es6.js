@@ -158,7 +158,8 @@ export default class APIActionCreator extends ActionCreator {
 
 			request = Object.assign({
 				method,
-				route
+				route,
+                                args
 			}, request);
 
 			this.validatePayload(name, request, payloadType);
