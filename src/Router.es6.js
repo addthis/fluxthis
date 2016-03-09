@@ -71,7 +71,7 @@ class Router {
         );
 
         new RouteListenerView({defaultRoute}).start();
-        RouterActions.start();
+        RouterActions.start(defaultRoute);
     }
 }
 

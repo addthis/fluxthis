@@ -60,7 +60,8 @@ export default new ActionCreator({
 	},
 
 	start: {
-		type: Constants.ROUTER_START
+		type: Constants.ROUTER_START,
+		payload: ActionCreator.PayloadTypes.string.isRequired
 	},
 
 	changeRoute: {
