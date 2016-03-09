@@ -53,6 +53,8 @@ const RouterStore = new ObjectOrientedStore({
 		 */
 		this.middleware = [];
 
+		this.defaultRoute = '/';
+
 		this.bindActions(
 			Constants.ROUTER_USE_ACTION, this.addMiddleware,
 			Constants.ROUTER_SETUP_ALL_ROUTE_ACTION, this.setupAllRoute,
@@ -108,7 +110,8 @@ const RouterStore = new ObjectOrientedStore({
 		 * Starts the router. This should be called once
 		 * all the middleware and routes have been defined.
 		 */
-		startRouter() {
+		startRouter(defaultRoute) {
+			this.defaultRoute = defaultRoute;
 			this.iterateOverMiddleware();
 		},
 		/**
@@ -135,7 +138,6 @@ const RouterStore = new ObjectOrientedStore({
 		 * @param {GeneratorFunction} payload.handler
 		 * @param {object} [payload.options]
 		 * @param {string} [payload.title] - title to set in the browser
-		 * @param {boolean} [payload.default] - default path when 404
 		 */
 		setupRoute(payload) {
 			let {path, handler, options={}} = payload;
@@ -176,7 +178,7 @@ const RouterStore = new ObjectOrientedStore({
 			this.iterateOverMiddleware();
 		},
 		iterateOverMiddleware() {
-			let middleware = [setupRouterMiddleware(this), ...this.middleware];
+			let middleware = [setupRouterMiddleware(this), ...this.middleware, setupNotFoundMiddleware(this)];
 
 			iterateOverGenerator(middleware);
 		},
@@ -233,12 +235,24 @@ const RouterStore = new ObjectOrientedStore({
 	}
 });
 
+function setupNotFoundMiddleware(context) {
+	return function *setupNotFoundMiddleware() {
+		if (context.currentRoute === null) {
+			context.navigateTo(context.defaultRoute);
+		}
+	};
+}
+
 function setupRouterMiddleware(context) {
 	return function *setupRouterMiddleware(next) {
 		context.currentRoute = null;
+
 		yield *next;
 
-		// Todo figure out some check for 404s... maybe just follow koa.
+		if (context.currentRoute === null) {
+			context.currentRoute = context.defaultRoute;
+			context.navigateTo(context.defaultRoute);
+		}
 	};
 }
 
