@@ -1,3 +1,7 @@
+## v2.6.1 (3/9/16)
+
+- [#132](https://github.com/addthis/fluxthis/pull/132) - Fixed default route in router
+
 ## v2.6.0 (2/16/16)
 
 - [#126](https://github.com/addthis/fluxthis/pull/126) - Fixed emitChanges until after dispatch. Potential huge performance increase in react 14+
