@@ -99,16 +99,7 @@ export default class Store {
 
 				if (!this.__fluxChangeListener) {
 					this.__fluxChangeListener = () => {
-						// This isMounted check keeps backwards comparability
-						// with < React 14 due to how those versions
-						// handled batching calls async.
-						if (this.isMounted) {
-							if (this.isMounted()) {
-								this.setState(this.getStateFromStores());
-							}
-						} else {
-							this.setState(this.getStateFromStores());
-						}
+						this.setState(this.getStateFromStores());
 					};
 				}
 
