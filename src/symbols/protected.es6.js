@@ -1,0 +1,14 @@
+export const REGISTER_STORE = Symbol('REGISTER_STORE');
+export const REGISTER_LISTENER = Symbol('REGISTER_LISTENER');
+export const UNREGISTER_LISTENER = Symbol('UNREGISTER_LISTENER');
+export const LISTENERS = Symbol('LISTENERS');
+export const CHILD_STORES = Symbol('CHILD_STORES');
+export const PARENT_STORE = Symbol('PARENT_STORE');
+export const CONTEXT = Symbol('CONTEXT');
+export const CREATOR = Symbol('CREATOR');
+export const DISPATCH = Symbol('DISPATCH');
+export const DISPATCHER = Symbol('DISPATCHER');
+export const HANDLER = Symbol('HANDLER');
+export const HANDLERS = Symbol('HANDLERS');
+export const MUTABLE = Symbol('MUTABLE');
+export const PAYLOAD = Symbol('PAYLOAD');

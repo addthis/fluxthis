@@ -1,34 +1,33 @@
-# FluxThis [![NPM version](http://img.shields.io/npm/v/fluxthis.svg)](https://www.npmjs.com/package/fluxthis) [![Build Status](https://travis-ci.org/addthis/fluxthis.svg?branch=master)](https://travis-ci.org/addthis/fluxthis)
+# FluxThis 2
 
+Massive re-write to give us more fine-grained control over what we throw when, and
+to greatly reduce boilerplate code.
 
-The super-opinionated, yell-at-you-for-everything, immutable Flux framework by
-AddThis.
+## Changes
+The following is a comprehensive list of changes to the API. Check out the [example code](test/test.es6.js) for 
+contrived examples.
 
-## High Level Objectives
+### Store changes
+- `ImmutableStore` has been removed. All stores are Immutable
+- individual accessors on stores can be _explicitly declared mutable_, through the `@mutable` decorator
+- `Immutable` is a peer dependency, instead of a normal dependency
+- accessors do not need to be written in order to access immutable properties of stores
+- accessing a mutable property will throw an error
+- `bindActions` has been removed.  Instead, decorate hanldlers with `@handles(ActionCtr)`
+- `ActionType` is no longer required. Instead, use the constructors of actions themelves
+- `waitFor` has been removed. Instead, declare your dependent stores as 'children' of another store.
+Children will always be updated before their parents.
 
-1. Enforce Flux design patterns
-2. Make debugging extremely easy
-3. Reduce boilerplate and create simple modular apis
-4. Allow individual modules to be used standalone
+### Action changes
+- `ActionCreator` and `APIActionCreator` have been removed
+- `Action` is a class that can be extended to declare actions. Actions can be enacted through
+other actions `act` methods, or through view methods (with the exception of `render`)
+- `this.enact(ActionCtr, arg0, arg1...)` creates actions, when in the context of `Action.act` or a
+non-`render` view method
 
-## Documentation
-
-* Learn [about](http://fluxthis.io/#/docs/about) FluxThis
-* [Installation](http://fluxthis.io/#/docs/installation)
-* [Immutable Stores](http://fluxthis.io/#/docs/immutable-stores)
-* [Non-Immutable Stores](http://fluxthis.io/#/docs/oo-stores)
-* [Controller Views](http://fluxthis.io/#/docs/controller-views)
-* [Action Creators](http://fluxthis.io/#/docs/action-creators)
-* [Dispatcher & Migration](http://fluxthis.io/#/docs/dispatcher)
-* [Debugging](http://fluxthis.io/#/docs/debugging)
-* [Testing](http://fluxthis.io/#/docs/testing)
-* [Router - Experimental](http://fluxthis.io/#/docs/router)
-
-### Versioning
-
-It's x.y.z where:
-
- * x: Something Big Happened
- * y: next release
- * z: strive for bug fix only
+## TODO
+These tasks need to be completed before we can release
+[ ] migrate test cases from fluxthis 1
+[ ] migrate gulpfile / decide if we still want to use gulp vs plain webpack
+[ ] create fluxthis 2 section of docs on fluxthis.io
 

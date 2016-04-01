@@ -1,0 +1,12 @@
+export const CTX_VIEW_GET_STATE_FROM_STORES = Symbol('CTX_VIEW_GET_STATE_FROM_STORES');
+export const CTX_VIEW_RENDER = Symbol('CTX_VIEW_RENDER');
+export const CTX_VIEW_ENACT = Symbol('CTX_VIEW_ENACT');
+
+export const CTX_STORE_ACCESSOR = Symbol('CTX_STORE_ACCESSOR');
+export const CTX_STORE_HANDLER = Symbol('CTX_STORE_HANDLER');
+
+export const CTX_DISPATCHER_DISPATCH = Symbol('CTX_DISPATCHER_DISPATCH');
+
+export const CTX_ACTION_ENACT = Symbol('CTX_ACTION_ENACT');
+
+export const CTX_EMPTY_STACK = Symbol('CTX_EMPTY_STACK');
