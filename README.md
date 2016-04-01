@@ -1,4 +1,4 @@
-# FluxThis 2
+# FluxThis 3.0
 
 Massive re-write to give us more fine-grained control over what we throw when, and
 to greatly reduce boilerplate code.
@@ -27,7 +27,7 @@ non-`render` view method
 
 ## TODO
 These tasks need to be completed before we can release
-[ ] migrate test cases from fluxthis 1
+[ ] migrate test cases from fluxthis 2
 [ ] migrate gulpfile / decide if we still want to use gulp vs plain webpack
-[ ] create fluxthis 2 section of docs on fluxthis.io
+[ ] create fluxthis 3.0 section of docs on fluxthis.io
 
