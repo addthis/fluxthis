@@ -16,7 +16,7 @@ import {
 import {
 	CTX_EMPTY_STACK,
 	CTX_VIEW_RENDER,
-	CTX_ACTION_ENACT,
+	CTX_ACTION_DISPATCH,
 	CTX_VIEW_GET_STATE_FROM_STORES
 } from 'symbols/context';
 
@@ -40,19 +40,19 @@ export default function view(...stores) {
 			setDispatcher(newDispatcher) {
 				this[DISPATCHER] = newDispatcher;
 			},
-			enact(ActionCtor, ...args) {
-				this[CONTEXT].allow('view:enact', CTX_EMPTY_STACK);
-				this[CONTEXT].push(CTX_ACTION_ENACT, () => {
+			dispatch(ActionCtor, ...args) {
+				this[CONTEXT].allow('view:dispatch', CTX_EMPTY_STACK);
+				this[CONTEXT].push(CTX_ACTION_DISPATCH, () => {
 					invariant(
 						ActionCtor.prototype instanceof Action,
-						'The view %s attempted to enact the non-action %s',
+						'The view %s attempted to dispatch the non-action %s',
 						this.displayName || this.constructor.name,
 						ActionCtor.name
 					);
 
 					const action = new ActionCtor();
 					action[CREATOR] = this;
-					action[PAYLOAD] = action.act.apply(action, args);
+					action[PAYLOAD] = action.transform.apply(action, args);
 					this[DISPATCHER][DISPATCH](action);
 				});
 			},

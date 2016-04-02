@@ -2,7 +2,7 @@ import context from 'context/default-context';
 import StoreGraph from 'store/store-graph';
 
 import {
-	CTX_ACTION_ENACT,
+	CTX_ACTION_DISPATCH,
 	CTX_DISPATCHER_DISPATCH
 } from 'symbols/context';
 
@@ -31,7 +31,7 @@ export default class Dispatcher {
 	}
 
 	[DISPATCH](action) {
-		this[CONTEXT].allow('dispatcher:dispatch', CTX_ACTION_ENACT);
+		this[CONTEXT].allow('dispatcher:dispatch', CTX_ACTION_DISPATCH);
 		this[CONTEXT].push(CTX_DISPATCHER_DISPATCH, () => {
 			// Gather a set of each unique listener that needs to fire in order to avoid duplicate
 			// calls

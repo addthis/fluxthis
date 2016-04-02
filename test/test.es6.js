@@ -5,18 +5,18 @@ const {Store, Action, handle, view, mutable} = window.fluxthis;
 
 // Declare a new action
 class MyAction extends Action {
-	// `act` should be overridden, if you want to create actions in another tick, or transform args
+	// `transform` should be overridden, if you want to create actions in another tick, or transform args
 	// into a different-looking payload
-	act(a, b) {
+	transform(a, b) {
 		$.get('asdasd').then(response => {
-			this.enact(OtherAction, response)
+			this.dispatch(OtherAction, response)
 		})
 		return {a, b};
 	}
 }
 
 // Declare an action - short form
-// `act` just returns the first arg passed
+// `transform` just returns the first arg passed
 class MyOtherAction extends Action {}
 
 // To declare a store, extend `Store`
@@ -62,7 +62,7 @@ class MyStore extends Store {
 
 const myStore = new MyStore();
 
-// decorating a view sets up `getStateFromStores`, and `this.enact`
+// decorating a view sets up `getStateFromStores`, and `this.dispatch`
 @view(myStore)
 class MyComponent extends React.Component {
 	constructor() {
@@ -77,11 +77,11 @@ class MyComponent extends React.Component {
 		};
 	}
 	handleClick() {
-		this.enact(MyAction, 'sup', 'dude');
+		this.dispatch(MyAction, 'sup', 'dude');
 	}
 
 	handleButtonClick() {
-		this.enact(MyOtherAction, 'haha');
+		this.dispatch(MyOtherAction, 'haha');
 	}
 
 	render() {
