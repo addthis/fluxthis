@@ -10,6 +10,6 @@ export default function isImmutable(item) {
 		case 'function':
 			return true;
 		default:
-			return item instanceof Iterable;
+			return Iterable.isIterable(item);
 	}
 }
