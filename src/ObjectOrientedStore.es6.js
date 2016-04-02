@@ -27,6 +27,28 @@ const testUtils = require('./StoreTestUtils.es6');
 export default class ObjectOrientedStore extends Store {
 
 	/**
+	 * This method is what the dispatcher uses whenever
+	 * an action has been dispatched that this store cares
+	 * about. This method will invoke the store's methods
+	 *
+	 * @param {object} action
+	 * @param {string} action.type
+	 * @param {string} action.source
+	 * @param {string} action.payload
+	 */
+	static defaultDispatchFunction(store, actions, action) {
+		const {source, type, payload} = action;
+
+		if (actions.has(source)) {
+			actions.get(source).call(store, payload);
+		}
+
+		if (actions.has(type)) {
+			actions.get(type).call(store, payload);
+		}
+	}
+
+	/**
 	 * @param {object} options
 	 * @param {function} options.init - this fn should set up initial state and
 	 *	also be used to call `bindActions`
@@ -106,27 +128,8 @@ export default class ObjectOrientedStore extends Store {
 						i++;
 					}
 
-					/**
-					 * This method is what the dispatcher uses whenever
-					 * an action has been dispatched that this store cares
-					 * about. This method will invoke the store's methods
-					 *
-					 * @param {object} action
-					 * @param {string} action.type
-					 * @param {string} action.source
-					 * @param {string} action.payload
-					 */
-					const dispatchFunction = function dispatchFunction(action) {
-						const {source, type, payload} = action;
-
-						if (actions.has(source)) {
-							actions.get(source).call(store, payload);
-						}
-
-						if (actions.has(type)) {
-							actions.get(type).call(store, payload);
-						}
-					};
+					const dispatchFunction = options.dispatchFunction || ObjectOrientedStore.defaultDispatchFunction;
+					const boundDispatchFunction = dispatchFunction.bind(privateMembers, store, actions);
 
 					/**
 					 * Expose TestUtils only if we are not in the
@@ -137,7 +140,7 @@ export default class ObjectOrientedStore extends Store {
 						store.TestUtils = testUtils.call(
 							store,
 							options.init,
-							dispatchFunction,
+							boundDispatchFunction,
 							publicMethods,
 							privateMembers
 						);
@@ -145,7 +148,7 @@ export default class ObjectOrientedStore extends Store {
 
 					// Register the store with the Dispatcher
 					store.dispatchToken = dispatcher.register(
-						dispatchFunction,
+						boundDispatchFunction,
 						actions,
 						store.__emitChanges.bind(store)
 					);
