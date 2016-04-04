@@ -66,7 +66,8 @@ class ImmutableStore extends ObjectOrientedStore {
 			displayName: options.displayName,
 			init: null,
 			public: {},
-			private: {}
+			private: {},
+			dispatchFunction: options.dispatchFunction
 		};
 
 

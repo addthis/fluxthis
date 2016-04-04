@@ -28,6 +28,18 @@ describe('Require Built FluxThis package', function () {
 		OOStore.should.be.an.instanceOf(FluxThis.ObjectOrientedStore);
 	});
 
+	it('should have ImmutableReducerStore', function () {
+		var Store = new FluxThis.ImmutableReducerStore({
+			displayName: 'requireImmutableReducerStore',
+			init: function () {
+				this.defaultState = 1
+			},
+			public: {},
+			private: {}
+		});
+		Store.should.be.an.instanceOf(FluxThis.ImmutableReducerStore);
+	});
+
 	it('should have ActionCreator', function () {
 		var AC = new FluxThis.ActionCreator({
 			displayName: 'requireTestAC'

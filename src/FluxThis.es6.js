@@ -17,6 +17,7 @@
 export default {
 	ConstantCollection: require('./ConstantCollection.es6'),
 	ImmutableStore: require('./ImmutableStore.es6'),
+	ImmutableReducerStore: require('./ImmutableReducerStore.es6'),
 	ObjectOrientedStore: require('./ObjectOrientedStore.es6'),
 	storeListener: require('./StoreListener.es6.js'),
 	ActionCreator: require('./ActionCreator.es6'),

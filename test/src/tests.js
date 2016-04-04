@@ -25,6 +25,7 @@ require('./dispatcher-tests');
 require('./action-creator-tests');
 require('./api-action-creator-tests');
 require('./immutable-store-tests');
+require('./immutable-reducer-store-tests');
 require('./object-oriented-store-tests');
 require('./integration-tests.es6');
 require('./constant-collection-tests');
