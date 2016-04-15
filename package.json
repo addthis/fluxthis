@@ -51,6 +51,7 @@
     "mocha": "^2.2.4",
     "mocha-phantomjs": "3.5.3",
     "phantomjs": "^1.9.17",
+    "react-dom": ">=0.14.0",
     "run-sequence": "^1.1.0",
     "should": "^6.0.1",
     "uglify-save-license": "^0.4.1",

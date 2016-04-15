@@ -30,6 +30,7 @@ describe('Integration', function () {
 
 	beforeEach(function () {
 		React = require('react');
+        ReactDOM = require('react-dom');
 	});
 
 	beforeEach(function () {
@@ -166,7 +167,7 @@ describe('Integration', function () {
 			var viewClass = React.createClass(viewConfig);
 			var test = React.createElement(viewClass);
 
-			React.render(test, document.createElement('div'));
+			ReactDOM.render(test, document.createElement('div'));
 
 			ac.addThing('hallo');
 		});
@@ -183,8 +184,8 @@ describe('Integration', function () {
 				var viewClass = React.createClass(viewConfig);
 				var test = React.createElement(viewClass);
 				var element = document.createElement('div');
-				React.render(test, element);
-				React.unmountComponentAtNode(element);
+				ReactDOM.render(test, element);
+				ReactDOM.unmountComponentAtNode(element);
 			}).should.not.throw();
 		});
 
@@ -199,7 +200,7 @@ describe('Integration', function () {
 			var viewClass = React.createClass(viewConfig);
 			var test = React.createElement(viewClass);
 
-			React.render(test, document.createElement('div'));
+			ReactDOM.render(test, document.createElement('div'));
 			ac.addThing('hallo');
 			setTimeout(function () {
 				ac.addThing2('hallo2');
@@ -322,9 +323,9 @@ describe('Integration', function () {
 			TestComponent.displayName = 'DecoratorComponent';
 
 			const div = document.createElement('div');
-			React.render(React.createElement(TestComponent), div);
+			ReactDOM.render(React.createElement(TestComponent), div);
 			ac.update();
-			React.unmountComponentAtNode(div);
+			ReactDOM.unmountComponentAtNode(div);
 		});
 
 		it('should call life cycle methods with non-decorator support', function (done) {
@@ -441,9 +442,9 @@ describe('Integration', function () {
 
 			const component = storeListener(s, s2)(TestComponent);
 			const div = document.createElement('div');
-			React.render(React.createElement(component), div);
+			ReactDOM.render(React.createElement(component), div);
 			ac.update();
-			React.unmountComponentAtNode(div);
+			ReactDOM.unmountComponentAtNode(div);
 		});
 	});
 
