@@ -1,6 +1,6 @@
 ## v2.7.0 (4/15/16)
 
-- [#133](https://github.com/addthis/fluxthis/issues/133) - ImmutableReducerStore
+- [#133](https://github.com/addthis/fluxthis/issues/133) - ImmutableReducerStore thanks @AlanFoster
 
 ## v2.6.1 (3/9/16)
 
