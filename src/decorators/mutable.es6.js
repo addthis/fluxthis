@@ -1,4 +1,4 @@
-import {MUTABLE} from 'symbols/protected';
+import {MUTABLE} from '../symbols/protected';
 
 // class method decorator
 export default function mutable (prototype, methodName, descriptor) {

@@ -1,4 +1,4 @@
-import {CHILD_STORES} from 'symbols/protected';
+import {CHILD_STORES} from '../symbols/protected';
 
 const EDGES = Symbol('EDGES');
 const NODES = Symbol('NODES');

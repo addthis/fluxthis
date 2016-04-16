@@ -1,8 +1,7 @@
 var cache = {};
 
 module.exports = [{
-	context: __dirname + '/test',
-    entry: 'test',
+	entry: 'test/test',
     target: 'web',
     output: {
     	filename: 'fluxthis-tests.js',
@@ -19,16 +18,14 @@ module.exports = [{
 	},
 	resolve: {
 		root: [
-			__dirname + '/test',
-			__dirname + '/src'
+			__dirname
 		],
 		extensions: ['', '.es6.js', '.js']
 	},
 	devtool: '#source-map',
 	cache: cache
 }, {
-	context: __dirname + '/src',
-    entry: 'index',
+    entry: 'src/index',
     output: {
         library: 'fluxthis',
         libraryTarget: 'umd',
@@ -46,8 +43,7 @@ module.exports = [{
 	},
 	resolve: {
 		root: [
-			__dirname,
-			__dirname + '/src'
+			__dirname
 		],
 		extensions: ['', '.es6.js', '.js']
 	},

@@ -1,10 +1,10 @@
-import context from 'context/default-context';
-import StoreGraph from 'store/store-graph';
+import context from '../context/default-context';
+import StoreGraph from '../store/store-graph';
 
 import {
 	CTX_ACTION_DISPATCH,
 	CTX_DISPATCHER_DISPATCH
-} from 'symbols/context';
+} from '../symbols/context';
 
 import {
 	DISPATCH,
@@ -14,7 +14,7 @@ import {
 	HANDLERS,
 	PAYLOAD,
 	LISTENERS
-} from 'symbols/protected';
+} from '../symbols/protected';
 
 export default class Dispatcher {
 	constructor() {

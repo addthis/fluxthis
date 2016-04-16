@@ -1,19 +1,19 @@
-import dispatcher from 'dispatcher/default-dispatcher';
-import context from 'context/default-context';
+import dispatcher from '../dispatcher/default-dispatcher';
+import context from '../context/default-context';
 import invariant from 'invariant';
 
 import {
 	CTX_ACTION_DISPATCH,
 	CTX_VIEW_DISPATCH,
 	CTX_EMPTY_STACK
-} from 'symbols/context';
+} from '../symbols/context';
 
 import {
 	CREATOR, 
 	PAYLOAD, 
 	DISPATCHER,
 	CONTEXT
-} from 'symbols/protected';
+} from '../symbols/protected';
 
 export default class Action {
 	constructor() {

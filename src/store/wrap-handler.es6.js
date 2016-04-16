@@ -1,9 +1,9 @@
-import {CONTEXT} from 'symbols/protected';
+import {CONTEXT} from '../symbols/protected';
 
 import {
 	CTX_DISPATCHER_DISPATCH,
 	CTX_STORE_HANDLER
-} from 'symbols/context';
+} from '../symbols/context';
 
 export default function wrapHandler({fn}) {
 	return (...args) => {

@@ -1,12 +1,12 @@
 import {
 	HANDLER,
 	CONTEXT
-} from 'symbols/protected';
+} from '../symbols/protected';
 
 import {
 	CTX_STORE_HANDLER,
 	CTX_DISPATCHER_DISPATCH
-} from 'symbols/context';
+} from '../symbols/context';
 
 
 // class method decorator

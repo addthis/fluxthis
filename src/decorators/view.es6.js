@@ -1,7 +1,7 @@
 import invariant from 'invariant';
-import context from 'context/default-context';
-import dispatcher from 'dispatcher/default-dispatcher';
-import Action from 'action/action';
+import context from '../context/default-context';
+import dispatcher from '../dispatcher/default-dispatcher';
+import Action from '../action/action';
 
 import {
 	CONTEXT,
@@ -11,14 +11,14 @@ import {
 	PAYLOAD,
 	CREATOR,
 	DISPATCH
-} from 'symbols/protected';
+} from '../symbols/protected';
 
 import {
 	CTX_EMPTY_STACK,
 	CTX_VIEW_RENDER,
 	CTX_ACTION_DISPATCH,
 	CTX_VIEW_GET_STATE_FROM_STORES
-} from 'symbols/context';
+} from '../symbols/context';
 
 
 // class method decorator

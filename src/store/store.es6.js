@@ -1,9 +1,9 @@
-import defineHiddenProperties from 'util/define-hidden-properties';
-import dispatcher from 'dispatcher/default-dispatcher';
-import Dispatcher from 'dispatcher/dispatcher';
-import wrapHandler from 'store/wrap-handler';
-import wrapAccessor from 'store/wrap-accessor';
-import context from 'context/default-context';
+import defineHiddenProperties from '../util/define-hidden-properties';
+import dispatcher from '../dispatcher/default-dispatcher';
+import Dispatcher from '../dispatcher/dispatcher';
+import wrapHandler from './wrap-handler';
+import wrapAccessor from './wrap-accessor';
+import context from '../context/default-context';
 import {
 	DISPATCHER,
 	REGISTER_STORE,
@@ -16,13 +16,13 @@ import {
 	CHILD_STORES,
 	PARENT_STORE,
 	CONTEXT
-} from 'symbols/protected';
+} from '../symbols/protected';
 
 import {
 	CTX_VIEW_GET_STATE_FROM_STORES,
 	CTX_STORE_ACCESSOR,
 	CTX_EMPTY_STACK
-} from 'symbols/context';
+} from '../symbols/context';
 
 const STORE = Symbol('STORE');
 const ADOPT_CHILDREN = Symbol('ADOPT_CHILDREN');

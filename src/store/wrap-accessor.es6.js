@@ -1,17 +1,17 @@
-import isImmutable from 'util/is-immutable';
+import isImmutable from '../util/is-immutable';
 import invariant from 'invariant';
 
 import {
 	MUTABLE,
 	CONTEXT
-} from 'symbols/protected';
+} from '../symbols/protected';
 
 import {
 	CTX_VIEW_GET_STATE_FROM_STORES,
 	CTX_STORE_ACCESSOR,
 	CTX_STORE_HANDLER,
 	CTX_EMPTY_STACK
-} from 'symbols/context';
+} from '../symbols/context';
 
 export default function wrapAccessor({storeName, fn, key}) {
 	return (...args) => {

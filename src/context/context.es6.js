@@ -1,5 +1,5 @@
 import invariant from 'invariant';
-import {CTX_EMPTY_STACK} from 'symbols/context';
+import {CTX_EMPTY_STACK} from '../symbols/context';
 
 const STACK = Symbol('STACK');
 
