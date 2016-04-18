@@ -12,7 +12,8 @@ import {
 	CREATOR, 
 	PAYLOAD, 
 	DISPATCHER,
-	CONTEXT
+	CONTEXT,
+	DISPATCH
 } from '../symbols/protected';
 
 export default class Action {

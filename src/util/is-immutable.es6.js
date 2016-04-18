@@ -1,4 +1,5 @@
 import {Iterable} from 'immutable';
+import Store from '../store/store';
 
 export default function isImmutable(item) {
 	const type = typeof item;
@@ -10,6 +11,6 @@ export default function isImmutable(item) {
 		case 'function':
 			return true;
 		default:
-			return Iterable.isIterable(item);
+			return item instanceof Store || Iterable.isIterable(item);
 	}
 }
