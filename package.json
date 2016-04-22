@@ -1,6 +1,6 @@
 {
   "name": "fluxthis",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "AddThis Flux Framework",
   "main": "build/FluxThis.js",
   "license": "Apache-2.0",

@@ -1,3 +1,7 @@
+## v2.7.1 (4/22/16)
+
+- [d9d8c7e](https://github.com/addthis/fluxthis/commit/d9d8c7e0bc45dae4bef8775e3eb43999f5c1e920) - Allow other body types to API Action Creator
+
 ## v2.7.0 (4/15/16)
 
 - [#133](https://github.com/addthis/fluxthis/issues/133) - ImmutableReducerStore thanks @AlanFoster
