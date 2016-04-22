@@ -7,3 +7,5 @@ server.pid
 .DS_Store
 xunit.xml
 npm-debug.log
+*.un~
+
