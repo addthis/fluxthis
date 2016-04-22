@@ -73,10 +73,7 @@ export default class APIActionCreator extends ActionCreator {
 			APIActionCreator.defaultSuccessTest;
 
 		const payloadType = ActionCreator.PayloadTypes.shape({
-			body: ActionCreator.PayloadTypes.oneOfType([
-				ActionCreator.PayloadTypes.object,
-				ActionCreator.PayloadTypes.string
-			]),
+			body: ActionCreator.PayloadTypes.any,
 			query: ActionCreator.PayloadTypes.object,
 			params: ActionCreator.PayloadTypes.object
 		}).isRequired;
