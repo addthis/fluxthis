@@ -23,7 +23,7 @@ class ImmutableReducerStore extends ImmutableStore {
 	constructor(options) {
 		const parentOptions = Object.assign({}, options);
 
-		parentOptions.dispatchFunction = function dispatchFunction (store, actions, action) {
+		parentOptions.dispatchFunction = function dispatchFunction(store, actions, action) {
 			const {source, type, payload} = action;
 			let fn;
 
