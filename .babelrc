@@ -10,6 +10,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 {
-	presets: ['react', 'es2015', 'stage-1'],
-	plugins: ['babel-plugin-transform-decorators-legacy']
+	presets: ['react', 'es2015', 'stage-0'],
+	plugins: ['babel-plugin-transform-decorators-legacy', 'transform-class-properties']
 }
