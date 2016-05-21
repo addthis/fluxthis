@@ -249,6 +249,39 @@ describe('APIActionCreators', function () {
         aac.doThing('hi', 'mom');
     });
 
+    it('should allow for named parameters with file extensions', function (done) {
+        var userId = Math.random();
+        var aac = new APIActionCreator({
+            displayName: 'api' + Math.random(),
+            doThing: {
+                route: '/mirror/:userId.json',
+                method: 'POST',
+                createRequest: function (userId) {
+                    return {
+                        params: {
+                            userId: userId
+                        }
+                    };
+                },
+                handleFailure: function (req, res) {
+                    done(req.error || res.error || new Error('Request failed'));
+                },
+                handleSuccess: function (req, res) {
+                    try {
+                        req.params.userId.should.eql(userId);
+                        res.body.path.should.eql('/mirror/' + userId + '.json');
+                        done();
+                    }
+                    catch (err) {
+                        done(err);
+                    }
+                }
+            }
+        });
+        
+        aac.doThing(userId);
+    });
+
 	it('should throw an error for passing args without create request', function () {
 		(function () {
 			var aac = new APIActionCreator({
