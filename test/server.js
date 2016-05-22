@@ -71,6 +71,7 @@ app.get('/invalid-json', function (req, res) {
 });
 
 app.post('/mirror/:param1/:param2', bodyParser.json(), mirror);
+app.post('/mirror/:param1', bodyParser.json(), mirror);
 app.post('/mirror', bodyParser.json(), mirror);
 app.use(express.static('./'));
 
@@ -80,7 +81,8 @@ function mirror (req, res) {
     var message = JSON.stringify({
         query: req.query,
         params: req.params,
-        body: req.body
+        body: req.body,
+        path: req.path
     });
 
     res.writeHead(200, {
