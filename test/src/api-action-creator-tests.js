@@ -517,7 +517,9 @@ describe('APIActionCreators', function () {
                     },
                     handleSuccess: function (req) {
                         try {
-                            Should.not.exist(req.headers);
+                            // Key should exist but value should be `undefined`
+                            Should.not.exist(req.headers['X-FOO-HEADER']);
+                            Object.keys(req.headers).length.should.eql(1);
                             done();
                         }
                         catch (err) {
@@ -627,6 +629,24 @@ describe('APIActionCreators', function () {
             });
 
             aac.doThingWithResetHeaders();
+        });
+
+        it('should throw an invariant exception if provided anything other than undefined or a plain object', function () {
+            (function () {
+                APIActionCreator.setDefaultHeaders(null);
+            }).should.throw();
+
+            (function () {
+                APIActionCreator.setDefaultHeaders(1);
+            }).should.throw();
+
+            (function () {
+                APIActionCreator.setDefaultHeaders('test');
+            }).should.throw();
+
+            (function () {
+                APIActionCreator.setDefaultHeaders(true);
+            }).should.throw();
         });
     });
 

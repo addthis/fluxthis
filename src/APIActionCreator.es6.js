@@ -45,7 +45,7 @@ export default class APIActionCreator extends ActionCreator {
 	 * triggered by APIActionCreator instances. Can be cleared by setting
 	 * headers to `undefined`. Default headers can be overridden by
 	 * individual requests by setting the header to a different value or
-	 * to `undefined` (forcing the header not to be set) for that request.
+	 * to `undefined` (forcing the header not to be sent) for that request.
 	 *
 	 * @param {object|undefined} headers
 	 */
@@ -174,25 +174,9 @@ export default class APIActionCreator extends ActionCreator {
 			// If the user has defined default headers, merge them into the
 			// request.
 			if (defaultHeaders) {
-				if (!request.headers) {
-					// No specific headers set; just copy default headers.
-					request.headers = Object.assign({}, defaultHeaders);
-				}
-				else {
-					// Headers were specified on this request; merge them with
-					// any default headers, removing any headers set to
-					// `undefined` (thereby allowing the caller to remove even
-					// the default headers for a particular request).
-					const specifiedHeaders = Object.assign({}, defaultHeaders, request.headers);
-					request.headers = Object.keys(specifiedHeaders).reduce((headers, header) => {
-						if (typeof specifiedHeaders[header] !== 'undefined') {
-							headers = headers || {};
-							headers[header] = specifiedHeaders[header];
-						}
-
-						return headers;
-					}, undefined); // `undefined` allows for back-compatibility
-				}
+				// The || checks aren't strictly necessary here, but reduce
+				// some of the "magic."
+				request.headers = Object.assign({}, defaultHeaders || {}, request.headers || {});
 			}
 
 			request = Object.assign({
