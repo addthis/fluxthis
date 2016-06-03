@@ -320,6 +320,30 @@ describe('APIActionCreators', function () {
         }).should.throw();
     });
 
+    it('should initially set no request headers by default', function (done) {
+        var aac = new APIActionCreator({
+            displayName: 'api' + Math.random(),
+            doThing: {
+                route: '/mirror',
+                method: 'POST',
+                handleFailure: function (req, res) {
+                    done(req.error || res.error || new Error('Request failed'));
+                },
+                handleSuccess: function (req) {
+                    try {
+                        Should.not.exist(req.headers);
+                        done();
+                    }
+                    catch (err) {
+                        done(err);
+                    }
+                }
+            }
+        });
+
+        aac.doThing();
+    });
+
     describe('when making the api call', function () {
         var token;
         var pending;
@@ -439,5 +463,171 @@ describe('APIActionCreators', function () {
         });
     });
 
+    describe('when setting request headers', function () {
+        beforeEach(function () {
+            APIActionCreator.setDefaultHeaders({
+                'X-FOO-HEADER': 'foo'
+            });
+        });
+
+        afterEach(function () {
+            APIActionCreator.setDefaultHeaders(undefined);
+        });
+
+        it('should set the default headers on requests by default', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithDefaultHeaders: {
+                    route: '/mirror',
+                    method: 'POST',
+                    handleFailure: function (req, res) {
+                        done(req.error || res.error || new Error('Request failed'));
+                    },
+                    handleSuccess: function (req) {
+                        try {
+                            req.headers['X-FOO-HEADER'].should.eql('foo');
+                            Object.keys(req.headers).length.should.eql(1);
+                            done();
+                        }
+                        catch (err) {
+                            done(err);
+                        }
+                    }
+                }
+            });
+
+            aac.doThingWithDefaultHeaders();
+        });
+
+        it('should allow unsetting the default headers for specific requests', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithNoDefaultHeaders: {
+                    route: '/mirror',
+                    method: 'POST',
+                    handleFailure: function (req, res) {
+                        done(req.error || res.error || new Error('Request failed'));
+                    },
+                    createRequest: function () {
+                        return {
+                            headers: {
+                                'X-FOO-HEADER': undefined
+                            }
+                        };
+                    },
+                    handleSuccess: function (req) {
+                        try {
+                            Should.not.exist(req.headers);
+                            done();
+                        }
+                        catch (err) {
+                            done(err);
+                        }
+                    }
+                }
+            });
+
+            aac.doThingWithNoDefaultHeaders();
+        });
+
+        it('should allow overwriting the value of the default headers for specific requests', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithOverwrittenHeaders: {
+                    route: '/mirror',
+                    method: 'POST',
+                    handleFailure: function (req, res) {
+                        done(req.error || res.error || new Error('Request failed'));
+                    },
+                    createRequest: function () {
+                        return {
+                            headers: {
+                                'X-FOO-HEADER': 'lol horwitz'
+                            }
+                        };
+                    },
+                    handleSuccess: function (req) {
+                        try {
+                            req.headers['X-FOO-HEADER'].should.eql('lol horwitz');
+                            Object.keys(req.headers).length.should.eql(1);
+                            done();
+                        }
+                        catch (err) {
+                            done(err);
+                        }
+                    }
+                }
+            });
+
+            aac.doThingWithOverwrittenHeaders();
+        });
+
+        it('should merge additional specified headers with the default headers', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithAdditionalHeaders: {
+                    route: '/mirror',
+                    method: 'POST',
+                    handleFailure: function (req, res) {
+                        done(req.error || res.error || new Error('Request failed'));
+                    },
+                    createRequest: function () {
+                        return {
+                            headers: {
+                                'X-BAR-HEADER': 'bar'
+                            }
+                        };
+                    },
+                    handleSuccess: function (req) {
+                        try {
+                            req.headers['X-FOO-HEADER'].should.eql('foo');
+                            req.headers['X-BAR-HEADER'].should.eql('bar');
+                            Object.keys(req.headers).length.should.eql(2);
+                            done();
+                        }
+                        catch (err) {
+                            done(err);
+                        }
+                    }
+                }
+            });
+
+            aac.doThingWithAdditionalHeaders();
+        });
+
+        it('should allow resetting subsequent default headers', function (done) {
+            APIActionCreator.setDefaultHeaders(undefined);
+
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithResetHeaders: {
+                    route: '/mirror',
+                    method: 'POST',
+                    handleFailure: function (req, res) {
+                        done(req.error || res.error || new Error('Request failed'));
+                    },
+                    createRequest: function () {
+                        return {
+                            headers: {
+                                'X-BAR-HEADER': 'bar'
+                            }
+                        };
+                    },
+                    handleSuccess: function (req) {
+                        try {
+                            req.headers['X-BAR-HEADER'].should.eql('bar');
+                            Object.keys(req.headers).length.should.eql(1);
+                            done();
+                        }
+                        catch (err) {
+                            done(err);
+                        }
+                    }
+                }
+            });
+
+            aac.doThingWithResetHeaders();
+        });
+    });
 
 });

@@ -20,6 +20,8 @@ const send = require('../lib/implore.es6');
 const debug = require('./debug.es6');
 const ActionCreator = require('./ActionCreator.es6');
 
+let defaultHeaders;
+
 export default class APIActionCreator extends ActionCreator {
 
 	/**
@@ -36,6 +38,26 @@ export default class APIActionCreator extends ActionCreator {
 			response.status >= 200 &&
 			response.status < 300 &&
 			!response.error;
+	}
+
+	/**
+	 * Sets default headers that will be used with all subsequent requests
+	 * triggered by APIActionCreator instances. Can be cleared by setting
+	 * headers to `undefined`. Default headers can be overridden by
+	 * individual requests by setting the header to a different value or
+	 * to `undefined` (forcing the header not to be set) for that request.
+	 *
+	 * @param {object|undefined} headers
+	 */
+	static setDefaultHeaders(headers) {
+		invariant(
+			typeof headers === 'undefined' || headers instanceof Object,
+			'Cannot set default headers for APIActionCreator to %s.' +
+			'`headers` must be `undefined` or a plain object.',
+			headers
+		);
+
+		defaultHeaders = headers;
 	}
 
 	constructor(options) {
@@ -145,12 +167,32 @@ export default class APIActionCreator extends ActionCreator {
 				'these arguments in the request.'
 			);
 
-			// If the user wants to create their own request
-			// with body, query and/or params, then lets
-			// do that first.
-			let request;
-			if (createRequest) {
-				request = createRequest.apply(this, args);
+			// If the user wants to create their own request with body, query
+			// and/or params, then lets do that first.
+			let request = createRequest ? createRequest.apply(this, args) : {};
+
+			// If the user has defined default headers, merge them into the
+			// request.
+			if (defaultHeaders) {
+				if (!request.headers) {
+					// No specific headers set; just copy default headers.
+					request.headers = Object.assign({}, defaultHeaders);
+				}
+				else {
+					// Headers were specified on this request; merge them with
+					// any default headers, removing any headers set to
+					// `undefined` (thereby allowing the caller to remove even
+					// the default headers for a particular request).
+					const specifiedHeaders = Object.assign({}, defaultHeaders, request.headers);
+					request.headers = Object.keys(specifiedHeaders).reduce((headers, header) => {
+						if (typeof specifiedHeaders[header] !== 'undefined') {
+							headers = headers || {};
+							headers[header] = specifiedHeaders[header];
+						}
+
+						return headers;
+					}, undefined); // `undefined` allows for back-compatibility
+				}
 			}
 
 			request = Object.assign({
