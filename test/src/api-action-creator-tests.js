@@ -330,13 +330,8 @@ describe('APIActionCreators', function () {
                     done(req.error || res.error || new Error('Request failed'));
                 },
                 handleSuccess: function (req) {
-                    try {
-                        Should.not.exist(req.headers);
-                        done();
-                    }
-                    catch (err) {
-                        done(err);
-                    }
+                    Should.not.exist(req.headers);
+                    done();
                 }
             }
         });
@@ -484,14 +479,8 @@ describe('APIActionCreators', function () {
                         done(req.error || res.error || new Error('Request failed'));
                     },
                     handleSuccess: function (req) {
-                        try {
-                            req.headers['X-FOO-HEADER'].should.eql('foo');
-                            Object.keys(req.headers).length.should.eql(1);
-                            done();
-                        }
-                        catch (err) {
-                            done(err);
-                        }
+                        req.should.have.propertyByPath('headers', 'X-FOO-HEADER').eql('foo');
+                        done();
                     }
                 }
             });
@@ -516,15 +505,10 @@ describe('APIActionCreators', function () {
                         };
                     },
                     handleSuccess: function (req) {
-                        try {
-                            // Key should exist but value should be `undefined`
-                            Should.not.exist(req.headers['X-FOO-HEADER']);
-                            Object.keys(req.headers).length.should.eql(1);
-                            done();
-                        }
-                        catch (err) {
-                            done(err);
-                        }
+                        Should.exist(req.headers);
+                        ('X-FOO-HEADER' in req.headers).should.be.true;
+                        (typeof req.headers['X-FOO-HEADER'] === 'undefined').should.be.true;
+                        done();
                     }
                 }
             });
@@ -549,14 +533,8 @@ describe('APIActionCreators', function () {
                         };
                     },
                     handleSuccess: function (req) {
-                        try {
-                            req.headers['X-FOO-HEADER'].should.eql('lol horwitz');
-                            Object.keys(req.headers).length.should.eql(1);
-                            done();
-                        }
-                        catch (err) {
-                            done(err);
-                        }
+                        req.should.have.propertyByPath('headers', 'X-FOO-HEADER').eql('lol horwitz');
+                        done();
                     }
                 }
             });
@@ -581,15 +559,9 @@ describe('APIActionCreators', function () {
                         };
                     },
                     handleSuccess: function (req) {
-                        try {
-                            req.headers['X-FOO-HEADER'].should.eql('foo');
-                            req.headers['X-BAR-HEADER'].should.eql('bar');
-                            Object.keys(req.headers).length.should.eql(2);
-                            done();
-                        }
-                        catch (err) {
-                            done(err);
-                        }
+                        req.should.have.propertyByPath('headers', 'X-FOO-HEADER').eql('foo');
+                        req.should.have.propertyByPath('headers', 'X-BAR-HEADER').eql('bar');
+                        done();
                     }
                 }
             });
@@ -616,14 +588,9 @@ describe('APIActionCreators', function () {
                         };
                     },
                     handleSuccess: function (req) {
-                        try {
-                            req.headers['X-BAR-HEADER'].should.eql('bar');
-                            Object.keys(req.headers).length.should.eql(1);
-                            done();
-                        }
-                        catch (err) {
-                            done(err);
-                        }
+                        req.should.have.propertyByPath('headers', 'X-BAR-HEADER').eql('bar');
+                        Should.not.exist(req.headers['X-FOO-HEADER']);
+                        done();
                     }
                 }
             });
