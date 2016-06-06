@@ -90,33 +90,16 @@ export default class Route {
 
 
 function getHashString(url) {
-	const hashPosition = url.indexOf('#');
-
-	// Strip out anything before the # including the #.
-	if (hashPosition >= 0) {
-		return url.substring(hashPosition + 1);
+	const match = url.match(/#([^?]*)/);
+	if (match) {
+		return match[1];
 	}
-
 	return '';
 }
 
 function getQueryString(url) {
-	// Get the query param position and strip it from the url for parsing.
-	const queryPosition = url.indexOf('?');
-	let hashPosition = url.indexOf('#');
-
-	// Strip out query string.
-	if (queryPosition >= 0) {
-		if (hashPosition === -1 ||
-			// Handle when hash has query param (RFC says no but my body says yes).
-			hashPosition < queryPosition) {
-			hashPosition = url.length;
-		}
-			return url.substring(queryPosition + 1, url.length);
-		}
-		return url.substring(queryPosition + 1, hashPosition);
-
+	const match = url.match(/\?([^#]*)/);
+	if (match) {
+		return match[1];
 	}
-
-	return '';
 }
