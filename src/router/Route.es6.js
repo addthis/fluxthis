@@ -107,11 +107,15 @@ function getQueryString(url) {
 
 	// Strip out query string.
 	if (queryPosition >= 0) {
-		if (hashPosition === -1) {
+		if (hashPosition === -1 ||
+			// Handle when hash has query param (RFC says no but my body says yes).
+			hashPosition < queryPosition) {
 			hashPosition = url.length;
 		}
-
+			return url.substring(queryPosition + 1, url.length);
+		}
 		return url.substring(queryPosition + 1, hashPosition);
+
 	}
 
 	return '';
