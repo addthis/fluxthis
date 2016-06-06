@@ -506,8 +506,7 @@ describe('APIActionCreators', function () {
                     },
                     handleSuccess: function (req) {
                         Should.exist(req.headers);
-                        ('X-FOO-HEADER' in req.headers).should.be.true;
-                        (typeof req.headers['X-FOO-HEADER'] === 'undefined').should.be.true;
+                        req.should.have.propertyByPath('headers', 'X-FOO-HEADER').eql(undefined);
                         done();
                     }
                 }
