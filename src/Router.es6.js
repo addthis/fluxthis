@@ -81,5 +81,6 @@ module.exports.mixin = {
     navigateTo: RouterActions.navigateTo,
     getPath: RouterStore.getPath,
     getPathParams: RouterStore.getPathParams,
+    getHashQueryParams: RouterStore.getHashQueryParams,
     getQueryParams: RouterStore.getQueryParams
 };

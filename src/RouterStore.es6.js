@@ -88,7 +88,7 @@ const RouterStore = new ObjectOrientedStore({
 		},
 		/**
 		 * Get the path parameters for the current route based
-		 * on the matched path that has current been matched.
+		 * on the current matched path.
 		 *
 		 * @returns {Immutable.Map}
 		 */
@@ -96,8 +96,16 @@ const RouterStore = new ObjectOrientedStore({
 			return Immutable.fromJS(this.currentPathParams);
 		},
 		/**
+		 * Get query parameters from the hash.
+		 *
+		 * @returns {Immutable.Map}
+		 */
+		getHashQueryParams() {
+			return Immutable.fromJS(this.currentHashQueryParams);
+		},
+		/**
 		 * Get the query parameters for the current route based
-		 * on the matched path that has current been matched.
+		 * on the current matched path.
 		 *
 		 * @returns {Immutable.Map}
 		 */
@@ -208,6 +216,7 @@ const RouterStore = new ObjectOrientedStore({
 
 				if ((result = route.matches(window.location.href))) {
 					store.currentPathParams = result.pathParams;
+					store.currentHashQueryParams = result.hashQueryParams;
 					store.currentQueryParams = result.queryParams;
 					store.currentRoute = route;
 
@@ -261,6 +270,7 @@ function getRouteContext() {
 		getPath: RouterStore.getPath,
 		getPathParams: RouterStore.getPathParams,
 		getQueryParams: RouterStore.getQueryParams,
+		getHashQueryParams: RouterStore.getHashQueryParams,
 		redirectTo: RouterActions.redirectTo,
 		setReactElement: RouterActions.setReactElement
 	};
