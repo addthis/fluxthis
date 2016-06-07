@@ -1,3 +1,5 @@
+'use strict';
+
 export default function (url) {
 	// Get the query param position and strip it from the url for parsing.
 	const match = url.match(/\?([^#]*)/);
