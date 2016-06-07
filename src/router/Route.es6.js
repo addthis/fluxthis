@@ -17,8 +17,8 @@
 const pathToRegExp = require('path-to-regexp');
 const qsParse = require('qs/lib/parse');
 
-const getHashString = require('./utils/getHashString');
-const getQueryString = require('./utils/getQueryString');
+const getHashString = require('./utils/getHashString.es6');
+const getQueryString = require('./utils/getQueryString.es6');
 
 
 export default class Route {

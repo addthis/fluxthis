@@ -12,8 +12,8 @@
 * limitations under the License.
 */
 
-const getHashString = require('../../src/router/utils/getHashString');
-const getQueryString = require('../../src/router/utils/getQueryString');
+const getHashString = require('../../src/router/utils/getHashString.es6');
+const getQueryString = require('../../src/router/utils/getQueryString.es6');
 
 describe('url parsing', function () {
 	it('should extract query string', function () {
