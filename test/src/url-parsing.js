@@ -36,4 +36,9 @@ describe('url parsing', function () {
 		getHashString('xyz.com/test/#/')
 			.should.eql('/');
 	});
+
+	it('should extract only the hash without hash query string', function () {
+		getHashString('xyz.com/test/?b=2#/hash?a=1')
+			.should.eql('/hash');
+	});
 });

@@ -62,6 +62,7 @@ export default class Route {
 		}
 
 		const hashString = getHashString(url);
+
 		const queryString = getQueryString(url);
 
 		const urlMatchesRoute = this.regex.exec(hashString);
@@ -72,6 +73,7 @@ export default class Route {
 
 		const result = {
 			pathParams: {},
+			hashQueryParams: {},
 			queryParams: {}
 		};
 
@@ -80,6 +82,10 @@ export default class Route {
 			return result;
 		}
 
+		if (hashString) {
+			const hashQueryString = getQueryString(url.replace(/^.+#/, ''));
+			result.hashQueryParams = qsParse(hashQueryString);
+		}
 		// Get the query string params, if applicable. default = {}
 		result.queryParams = qsParse(queryString);
 
