@@ -57,7 +57,8 @@ export default class Route {
 			return null;
 		}
 
-		const hashString = getHashString(url);
+		const {hashString, hashQueryString} = getHashString(url);
+
 		const queryString = getQueryString(url);
 
 		const urlMatchesRoute = this.regex.exec(hashString);
@@ -68,6 +69,7 @@ export default class Route {
 
 		const result = {
 			pathParams: {},
+			hashQueryParams: {},
 			queryParams: {}
 		};
 
@@ -78,6 +80,7 @@ export default class Route {
 
 		// Get the query string params, if applicable. default = {}
 		result.queryParams = qsParse(queryString);
+		result.hashQueryParams = qsParse(hashQueryString);
 
 		// Build up all the route params from the path-to-regexp output
 		this.keys.forEach((value, index) => {
@@ -90,29 +93,28 @@ export default class Route {
 
 
 function getHashString(url) {
-	const hashPosition = url.indexOf('#');
-
-	// Strip out anything before the # including the #.
-	if (hashPosition >= 0) {
-		return url.substring(hashPosition + 1);
+	const hashMatch = url.match(/#([^?]*)/);
+	if (hashMatch) {
+		// Extract hash query params from the entire url
+		return {
+			// Extract only the hash (without any params)
+			hashString: hashMatch[1],
+			hashQueryString: getQueryString(url.substring(hashMatch.index))
+		};
 	}
-
-	return '';
+	return {
+		hashString: '',
+		hashQueryString: ''
+	};
 }
 
 function getQueryString(url) {
 	// Get the query param position and strip it from the url for parsing.
-	const queryPosition = url.indexOf('?');
-	let hashPosition = url.indexOf('#');
+	const match = url.match(/\?([^#]*)/);
 
 	// Strip out query string.
-	if (queryPosition >= 0) {
-		if (hashPosition === -1) {
-			hashPosition = url.length;
-		}
-
-		return url.substring(queryPosition + 1, hashPosition);
+	if (match) {
+		return match[1];
 	}
-
 	return '';
 }
