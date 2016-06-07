@@ -1,8 +1,8 @@
 'use strict';
 
 export default function (url) {
-	// Get the query param position and strip it from the url for parsing.
-	const match = url.match(/\?([^#]*)/);
+	const stripHash = url.replace(/#.*$/, '');
+	const match = stripHash.match(/\?(.*)/);
 
 	// Strip out query string.
 	if (match) {

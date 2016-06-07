@@ -17,7 +17,7 @@ const getQueryString = require('../../src/router/utils/getQueryString.es6');
 
 describe('url parsing', function () {
 	it('should extract query string', function () {
-		getQueryString('https://xyz.com/#/test/?a=1')
+		getQueryString('https://xyz.com/?a=1#/test')
 			.should.eql('a=1');
 		getQueryString('https://xyz.com/test/?a=1')
 			.should.eql('a=1');
@@ -25,7 +25,7 @@ describe('url parsing', function () {
 
 	it('should not extract query string within hash', function () {
 		getQueryString('https://xyz.com/test/?b=2#/hash?a=1')
-			.should.equal('b=2');
+			.should.eql('b=2');
 		getQueryString('https://xyz.com/test/#/hash?a=1')
 			.should.eql('');
 	});
