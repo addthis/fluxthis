@@ -61,8 +61,7 @@ export default class Route {
 			return null;
 		}
 
-		const {hashString, hashQueryString} = getHashString(url);
-
+		const hashString = getHashString(url);
 		const queryString = getQueryString(url);
 
 		const urlMatchesRoute = this.regex.exec(hashString);
@@ -73,7 +72,6 @@ export default class Route {
 
 		const result = {
 			pathParams: {},
-			hashQueryParams: {},
 			queryParams: {}
 		};
 
@@ -84,7 +82,6 @@ export default class Route {
 
 		// Get the query string params, if applicable. default = {}
 		result.queryParams = qsParse(queryString);
-		result.hashQueryParams = qsParse(hashQueryString);
 
 		// Build up all the route params from the path-to-regexp output
 		this.keys.forEach((value, index) => {
