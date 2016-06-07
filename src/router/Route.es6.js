@@ -17,6 +17,10 @@
 const pathToRegExp = require('path-to-regexp');
 const qsParse = require('qs/lib/parse');
 
+const getHashString = require('./utils/getHashString');
+const getQueryString = require('./utils/getQueryString');
+
+
 export default class Route {
 	/**
 	 *
@@ -89,32 +93,4 @@ export default class Route {
 
 		return result;
 	}
-}
-
-
-function getHashString(url) {
-	const hashMatch = url.match(/#([^?]*)/);
-	if (hashMatch) {
-		// Extract hash query params from the entire url
-		return {
-			// Extract only the hash (without any params)
-			hashString: hashMatch[1],
-			hashQueryString: getQueryString(url.substring(hashMatch.index))
-		};
-	}
-	return {
-		hashString: '',
-		hashQueryString: ''
-	};
-}
-
-function getQueryString(url) {
-	// Get the query param position and strip it from the url for parsing.
-	const match = url.match(/\?([^#]*)/);
-
-	// Strip out query string.
-	if (match) {
-		return match[1];
-	}
-	return '';
 }
