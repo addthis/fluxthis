@@ -20,7 +20,9 @@ const send = require('../lib/implore.es6');
 const debug = require('./debug.es6');
 const ActionCreator = require('./ActionCreator.es6');
 
-let defaultHeaders;
+let defaultHeaders = {
+	headers: undefined // no headers by default
+};
 
 export default class APIActionCreator extends ActionCreator {
 
@@ -57,7 +59,7 @@ export default class APIActionCreator extends ActionCreator {
 			headers
 		);
 
-		defaultHeaders = headers;
+		defaultHeaders.headers = headers;
 	}
 
 	constructor(options) {
@@ -173,10 +175,10 @@ export default class APIActionCreator extends ActionCreator {
 
 			// If the user has defined default headers, merge them into the
 			// request.
-			if (defaultHeaders) {
+			if (defaultHeaders.headers) {
 				// The || checks aren't strictly necessary here, but reduce
 				// some of the "magic."
-				request.headers = Object.assign({}, defaultHeaders || {}, request.headers || {});
+				request.headers = Object.assign({}, defaultHeaders.headers || {}, request.headers || {});
 			}
 
 			request = Object.assign({
