@@ -228,6 +228,7 @@ class FluxDebugger {
 			functionName,
 			context.getPath(),
 			context.getPathParams().toJS(),
+			context.getHashQueryParams().toJS(),
 			context.getQueryParams().toJS(),
 			optionalMessage
 		);
