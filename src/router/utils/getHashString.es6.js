@@ -1,4 +1,4 @@
-export default getHashString(url) {
+export default function (url) {
 	const hashMatch = url.match(/#([^?]*)/);
 	if (hashMatch) {
 		return hashMatch[1];
