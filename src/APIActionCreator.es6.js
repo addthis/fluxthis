@@ -23,6 +23,9 @@ const ActionCreator = require('./ActionCreator.es6');
 let defaultHeaders = {
 	headers: undefined // no headers by default
 };
+let defaultBaseURL = {
+	url: undefined // no base URL by default
+};
 
 export default class APIActionCreator extends ActionCreator {
 
@@ -60,6 +63,29 @@ export default class APIActionCreator extends ActionCreator {
 		);
 
 		defaultHeaders.headers = headers;
+	}
+
+	/**
+	 * Sets the default base URL for all subsequent ajax requests triggered
+	 * by APIActionCreator instances. The APIActionCreator method's route
+	 * will be appeneded to the base URL. Default base URL can be overridden by
+	 * using a fully qualified URL in an APIActionCreator's `route` option.
+	 * Default base URL can be cleared by setting to `undefined`.
+	 *
+	 * @param {string|undefined} url
+	 */
+	static setDefaultBaseURL(url) {
+		invariant(
+			typeof url === 'undefined' || typeof url === 'string',
+			'Cannot set default base domain to %s. ' +
+			'`url` must be a `string` or `undefined`.'
+		);
+
+		if (!url || url.charAt(url.length - 1) === '/') {
+			defaultBaseURL.url = url;
+		} else {
+			defaultBaseURL.url = url + '/';
+		}
 	}
 
 	constructor(options) {
@@ -181,9 +207,19 @@ export default class APIActionCreator extends ActionCreator {
 				request.headers = Object.assign({}, defaultHeaders.headers || {}, request.headers || {});
 			}
 
+			// If the user has defined a default base URL, append the route to the
+			// base URL if, and only if, the route itself is not a fully qualified
+			// URL.
+			let requestRoute = request.route ? request.route : route;
+			if (defaultBaseURL.url && requestRoute.indexOf('http') !== 0 && requestRoute.indexOf('//') !== 0) {
+				requestRoute = requestRoute.charAt(0) === '/' ? requestRoute.substr(1) : requestRoute;
+				request.route = defaultBaseURL.url + requestRoute;
+			} else {
+				request.route = requestRoute;
+			}
+
 			request = Object.assign({
-				method,
-				route
+				method
 			}, request);
 
 			this.validatePayload(name, request, payloadType);
