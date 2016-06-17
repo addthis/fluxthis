@@ -278,7 +278,7 @@ describe('APIActionCreators', function () {
                 }
             }
         });
-        
+
         aac.doThing(userId);
     });
 
@@ -331,6 +331,25 @@ describe('APIActionCreators', function () {
                 },
                 handleSuccess: function (req) {
                     Should.not.exist(req.headers);
+                    done();
+                }
+            }
+        });
+
+        aac.doThing();
+    });
+
+    it('should initially set no base url by default', function (done) {
+        var aac = new APIActionCreator({
+            displayName: 'api' + Math.random(),
+            doThing: {
+                route: '/mirror',
+                method: 'POST',
+                handleFailure: function (req, res) {
+                    done(req.error || res.error || new Error('Request failed'));
+                },
+                handleSuccess: function (req) {
+                    req.route.should.eql('/mirror');
                     done();
                 }
             }
@@ -614,6 +633,108 @@ describe('APIActionCreators', function () {
                 APIActionCreator.setDefaultHeaders(true);
             }).should.throw();
         });
+
+    });
+
+    describe('when setting default base URL', function () {
+        beforeEach(function () {
+            APIActionCreator.setDefaultBaseURL('http://127.0.0.1:21029');
+        });
+
+        afterEach(function () {
+            APIActionCreator.setDefaultBaseURL(undefined);
+        });
+
+        it('should set the default base domain on requests', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithDefaultBaseURL: {
+                    route: '/cat',
+                    method: 'GET',
+                    handleFailure: function (req, res) {
+						done(req.error || res.error || new Error('Request failed'));
+                    },
+                    handleSuccess: function (req) {
+                        req.route.should.eql('http://127.0.0.1:21029/cat');
+                        done();
+                    }
+                }
+            });
+
+            aac.doThingWithDefaultBaseURL();
+        });
+
+		it('should set the default base domain on requests with no leading slash', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithDefaultBaseURL: {
+                    route: 'cat',
+                    method: 'GET',
+                    handleFailure: function (req, res) {
+						done(req.error || res.error || new Error('Request failed'));
+                    },
+                    handleSuccess: function (req) {
+                        req.route.should.eql('http://127.0.0.1:21029/cat');
+                        done();
+                    }
+                }
+            });
+
+            aac.doThingWithDefaultBaseURL();
+        });
+
+		it('should let the default base domain be overridden', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithDefaultBaseURL: {
+                    route: 'http://localhost:21029/cat',
+                    method: 'GET',
+                    handleFailure: function (req, res) {
+						done(req.error || res.error || new Error('Request failed'));
+                    },
+                    handleSuccess: function (req) {
+                        req.route.should.eql('http://localhost:21029/cat');
+                        done();
+                    }
+                }
+            });
+
+            aac.doThingWithDefaultBaseURL();
+        });
+
+		it('should let the default base domain be overridden with leading slashes', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThingWithDefaultBaseURL: {
+                    route: '//localhost:21029/cat',
+                    method: 'GET',
+                    handleFailure: function (req, res) {
+						done(req.error || res.error || new Error('Request failed'));
+                    },
+                    handleSuccess: function (req) {
+                        req.route.should.eql('//localhost:21029/cat');
+                        done();
+                    }
+                }
+            });
+
+            aac.doThingWithDefaultBaseURL();
+        });
+
+        it('should throw an invariant exception if provided anything other than undefined or a string', function () {
+            (function () {
+                APIActionCreator.setDefaultBaseURL(null);
+            }).should.throw();
+
+            (function () {
+                APIActionCreator.setDefaultBaseURL(1);
+            }).should.throw();
+
+            (function () {
+                APIActionCreator.setDefaultBaseURL(true);
+            }).should.throw();
+        });
+
     });
 
 });
