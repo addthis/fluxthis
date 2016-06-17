@@ -20,11 +20,9 @@ const send = require('../lib/implore.es6');
 const debug = require('./debug.es6');
 const ActionCreator = require('./ActionCreator.es6');
 
-let defaultHeaders = {
-	headers: undefined // no headers by default
-};
-let defaultBaseURL = {
-	url: undefined // no base URL by default
+let defaultOptions = {
+	headers: undefined, // no headers by default
+	baseURL: undefined // no base URL by default
 };
 
 export default class APIActionCreator extends ActionCreator {
@@ -62,7 +60,7 @@ export default class APIActionCreator extends ActionCreator {
 			headers
 		);
 
-		defaultHeaders.headers = headers;
+		defaultOptions.headers = headers;
 	}
 
 	/**
@@ -81,10 +79,10 @@ export default class APIActionCreator extends ActionCreator {
 			'`url` must be a `string` or `undefined`.'
 		);
 
-		if (!url || url.charAt(url.length - 1) === '/') {
-			defaultBaseURL.url = url;
+		if (!url || url.endsWith('/')) {
+			defaultOptions.baseURL = url;
 		} else {
-			defaultBaseURL.url = url + '/';
+			defaultOptions.baseURL = url + '/';
 		}
 	}
 
@@ -201,19 +199,19 @@ export default class APIActionCreator extends ActionCreator {
 
 			// If the user has defined default headers, merge them into the
 			// request.
-			if (defaultHeaders.headers) {
+			if (defaultOptions.headers) {
 				// The || checks aren't strictly necessary here, but reduce
 				// some of the "magic."
-				request.headers = Object.assign({}, defaultHeaders.headers || {}, request.headers || {});
+				request.headers = Object.assign({}, defaultOptions.headers || {}, request.headers || {});
 			}
 
 			// If the user has defined a default base URL, append the route to the
 			// base URL if, and only if, the route itself is not a fully qualified
 			// URL.
 			let requestRoute = request.route ? request.route : route;
-			if (defaultBaseURL.url && requestRoute.indexOf('http') !== 0 && requestRoute.indexOf('//') !== 0) {
-				requestRoute = requestRoute.charAt(0) === '/' ? requestRoute.substr(1) : requestRoute;
-				request.route = defaultBaseURL.url + requestRoute;
+			if (defaultOptions.baseURL && !requestRoute.startsWith('http') && !requestRoute.startsWith('//')) {
+				requestRoute = requestRoute.startsWith('/') ? requestRoute.substr(1) : requestRoute;
+				request.route = defaultOptions.baseURL + requestRoute;
 			} else {
 				request.route = requestRoute;
 			}

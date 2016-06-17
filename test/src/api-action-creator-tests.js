@@ -636,7 +636,7 @@ describe('APIActionCreators', function () {
 
     });
 
-	describe('when setting default base URL', function () {
+    describe('when setting default base URL', function () {
         beforeEach(function () {
             APIActionCreator.setDefaultBaseURL('http://127.0.0.1:21029');
         });
