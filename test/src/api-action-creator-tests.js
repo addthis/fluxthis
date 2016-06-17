@@ -339,7 +339,7 @@ describe('APIActionCreators', function () {
         aac.doThing();
     });
 
-	it('should initially set no base url by default', function (done) {
+    it('should initially set no base url by default', function (done) {
         var aac = new APIActionCreator({
             displayName: 'api' + Math.random(),
             doThing: {
