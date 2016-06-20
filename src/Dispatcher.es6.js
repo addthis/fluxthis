@@ -186,7 +186,10 @@ export default class Dispatcher {
 		invariant(
 			!this[IS_DISPATCHING],
 			'Dispatch.dispatch(...): Cannot dispatch ' +
-			'in the middle of a dispatch.'
+			'in the middle of a dispatch. Was dispatching action ' +
+			JSON.stringify(this[PENDING_ACTION]) +
+			' when this action was called: ' +
+			JSON.stringify(action)
 		);
 
 		invariant(
