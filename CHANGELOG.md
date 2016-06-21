@@ -1,3 +1,11 @@
+## v2.8.0 (6/21/16)
+
+- [6529617](https://github.com/addthis/fluxthis/commit/652961716690a2e033591000811fad6a3f556e52) - Move babel to dev dependency (thanks @alistairjcbrown)
+- [638e523](https://github.com/addthis/fluxthis/commit/638e52306540791a7f11d7e8963dcd17efb495c0) - Add ability to set default base URL for all requests via APIActionCreator
+- [949891a](https://github.com/addthis/fluxthis/commit/949891a113eb01e55e93a3ce3428784153668ea8) - Allow setting default headers for all requests via APIActionCreator
+- [a483df8](https://github.com/addthis/fluxthis/commit/a483df8b2ca9bbab08fc86fbc2cc511edf53cb83) - Allow named parameters with file extensions in routes
+- miscellaneous bits of cleanup
+
 ## v2.7.1 (4/22/16)
 
 - [d9d8c7e](https://github.com/addthis/fluxthis/commit/d9d8c7e0bc45dae4bef8775e3eb43999f5c1e920) - Allow other body types to API Action Creator
