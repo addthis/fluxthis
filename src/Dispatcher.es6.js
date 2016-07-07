@@ -189,7 +189,7 @@ export default class Dispatcher {
 			'in the middle of a dispatch. Was dispatching action ' +
 			JSON.stringify(this[PENDING_ACTION]) +
 			' when this action was called: ' +
-			JSON.stringify(action)
+			'type: ' + type + ' source: ' + source
 		);
 
 		invariant(
