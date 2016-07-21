@@ -70,6 +70,33 @@ describe('APIActionCreators', function () {
         aac.doThing();
     });
 
+    it('should expose headers in string and hash form', function (done) {
+        var aac = new APIActionCreator({
+            displayName: 'api' + Math.random(),
+            doThing: {
+                route: '/mirror',
+                method: 'POST',
+                createRequest: function () {
+                    return {
+                        query: {
+                            contentType: 'application/json'
+                        }
+                    };
+                },
+                handleSuccess: function (req, res) {
+                    res.rawHeaders.should.be.type('string');
+                    res.headers.should.be.type('object');
+                    done();
+                },
+                handleFailure: function (req, res) {
+                    done(req.error || res.error || new Error('Request failed'));
+                }
+            }
+        });
+
+        aac.doThing();
+    });
+
     it('should not parse the body as JSON with a mimetype of "text/plain"', function (done) {
         var aac = new APIActionCreator({
             displayName: 'api' + Math.random(),
