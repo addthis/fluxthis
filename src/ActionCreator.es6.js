@@ -14,12 +14,12 @@
 
 'use strict';
 
-const dispatcher = require('./dispatcherInstance.es6');
-const debug = require('./debug.es6');
-const each = require('../lib/each.es6');
-const PropTypes = require('react/lib/ReactPropTypes');
-const deprecated = require('../lib/deprecated.es6');
-const invariant = require('invariant');
+import dispatcher from './dispatcherInstance.es6';
+import debug from './debug.es6';
+import each from '../lib/each.es6';
+import PropTypes from 'proptypes';
+import deprecated from '../lib/deprecated.es6';
+import invariant from 'invariant';
 
 const RE_REQUIRED_PROP = /Required prop `(.*?)`/;
 
