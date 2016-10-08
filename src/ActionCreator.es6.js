@@ -17,7 +17,7 @@
 import dispatcher from './dispatcherInstance.es6';
 import debug from './debug.es6';
 import each from '../lib/each.es6';
-import PropTypes from 'prop-types';
+import PropTypes from 'proptypes';
 import deprecated from '../lib/deprecated.es6';
 import invariant from 'invariant';
 
