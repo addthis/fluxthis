@@ -1,3 +1,9 @@
+## v2.9.0 (10/11/16)
+
+- [b1e205b](https://github.com/addthis/fluxthis/commit/b1e205baefbd53ad2f79d7bbfaabc875ba79eeb2) Expose response headers to APIActionCreators (thanks @matrinox)
+- [5e465e0](https://github.com/addthis/fluxthis/commit/5e465e0366665548ca2133e4df0e7b06c1d3b70f) - Moved to 3rd party proptypes library as it's deprecated in React15 (#160)
+- [a6cfbfe](https://github.com/addthis/fluxthis/commit/a6cfbfe00a60aaf78d8f5934258482ba695c5b73) - Update NOTICE and LICENSE (#158)
+
 ## v2.8.0 (6/21/16)
 
 - [6529617](https://github.com/addthis/fluxthis/commit/652961716690a2e033591000811fad6a3f556e52) - Move babel to dev dependency (thanks @alistairjcbrown)
