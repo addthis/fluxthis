@@ -1,3 +1,7 @@
+## v2.9.1 (5/30/17)
+
+- [18ee9d](https://github.com/addthis/fluxthis/commit/18ee9d9f9d5a008d5e095579b9c70286bc96250e) Ensure that Constant/ConstantCollection is JSON stringifiable
+
 ## v2.9.0 (10/11/16)
 
 - [b1e205b](https://github.com/addthis/fluxthis/commit/b1e205baefbd53ad2f79d7bbfaabc875ba79eeb2) Expose response headers to APIActionCreators (thanks @matrinox)
