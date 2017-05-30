@@ -24,6 +24,9 @@ class Constant {
 	toString() {
 		return `${this.name}_#${this.collection.id}`;
 	}
+	toJSON() {
+		return this.toString();
+	}
 }
 
 /**
