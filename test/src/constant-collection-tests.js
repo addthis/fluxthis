@@ -51,4 +51,11 @@ describe('Constant Collections', function () {
         var CC2 = new ConstantCollection('HI');
         CC1.HI.toString().should.not.equal(CC2.HI.toString());
     });
+    
+    it('should be safe to JSON.stringify', function () {
+        var CC1 = new ConstantCollection('HI');
+        (function () {
+            JSON.stringify(CC1)
+        }).should.not.throw();
+    });
 });
