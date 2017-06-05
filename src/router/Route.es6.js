@@ -17,6 +17,10 @@
 const pathToRegExp = require('path-to-regexp');
 const qsParse = require('qs/lib/parse');
 
+const getHashString = require('./utils/getHashString.es6');
+const getQueryString = require('./utils/getQueryString.es6');
+
+
 export default class Route {
 	/**
 	 *
@@ -58,6 +62,7 @@ export default class Route {
 		}
 
 		const hashString = getHashString(url);
+
 		const queryString = getQueryString(url);
 
 		const urlMatchesRoute = this.regex.exec(hashString);
@@ -68,6 +73,7 @@ export default class Route {
 
 		const result = {
 			pathParams: {},
+			hashQueryParams: {},
 			queryParams: {}
 		};
 
@@ -76,6 +82,10 @@ export default class Route {
 			return result;
 		}
 
+		if (hashString) {
+			const hashQueryString = getQueryString(url.replace(/^.+#/, ''));
+			result.hashQueryParams = qsParse(hashQueryString);
+		}
 		// Get the query string params, if applicable. default = {}
 		result.queryParams = qsParse(queryString);
 
@@ -86,33 +96,4 @@ export default class Route {
 
 		return result;
 	}
-}
-
-
-function getHashString(url) {
-	const hashPosition = url.indexOf('#');
-
-	// Strip out anything before the # including the #.
-	if (hashPosition >= 0) {
-		return url.substring(hashPosition + 1);
-	}
-
-	return '';
-}
-
-function getQueryString(url) {
-	// Get the query param position and strip it from the url for parsing.
-	const queryPosition = url.indexOf('?');
-	let hashPosition = url.indexOf('#');
-
-	// Strip out query string.
-	if (queryPosition >= 0) {
-		if (hashPosition === -1) {
-			hashPosition = url.length;
-		}
-
-		return url.substring(queryPosition + 1, hashPosition);
-	}
-
-	return '';
 }
