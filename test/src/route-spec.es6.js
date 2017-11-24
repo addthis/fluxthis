@@ -14,7 +14,7 @@ describe('Route Class', function () {
         route.handler.should.be.a.Function;
         route.options.should.eql({});
         route.keys.should.be.lengthOf(1);
-        route.regex.should.be.a.RegExp;
+        route.regex.should.be.an.instanceof(RegExp);
     });
 
     it('should match the url for the route', function () {

@@ -9,5 +9,5 @@ notifications:
     secure: GHHI1wEznZy8Mg1wqnYOUGJp43aatYPB+VlobxJ4OPKIxluetuxC9I43tX6Hn31rB3F3FwRCHOEVrTRedD5vfuiNoveCL87wKZo/y85XdRpBRws83DBZvcrbI+5bHomseTuVu4yI8eCPY4B11aQkHOpcA8ViLEfvofvcOS2doyQ=
 language: node_js
 node_js:
-- '0.12'
-- '4'
+- '6'
+- '8'

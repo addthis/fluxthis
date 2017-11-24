@@ -30,8 +30,9 @@ var saveLicense = require('uglify-save-license');
 var tag = require('./bin/tag');
 var runSequence = require('run-sequence');
 
-gulp.task('test-server-start', function () {
+gulp.task('test-server-start', function (done) {
     server.run(['test/server.js']);
+    setTimeout(done, 1000);
 });
 
 gulp.task('test-server-stop', function () {
@@ -41,6 +42,9 @@ gulp.task('test-server-stop', function () {
 gulp.task('mocha-test', function () {
     var stream = mochaPhantomJS();
     stream.write({path: 'http://localhost:21029/test/fixtures/index.html'});
+    stream.on('error', function(e) {
+        runSequence('test-server-stop', function () { throw e; });
+    });
     stream.end();
     return stream;
 });

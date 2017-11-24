@@ -22,15 +22,20 @@ describe('Integration', function () {
 	var ADD_THING;
 	var ADD_THING_2;
 	var ADD_THING_3;
+	var SOURCE;
 	var ac;
+	var ac2;
 	var viewConfig;
 	var store;
 	var store2;
 	var React;
+	var ReactDOM;
+	var createReactClass;
 
 	beforeEach(function () {
 		React = require('react');
-        ReactDOM = require('react-dom');
+		ReactDOM = require('react-dom');
+		createReactClass = require('create-react-class');
 	});
 
 	beforeEach(function () {
@@ -142,7 +147,7 @@ describe('Integration', function () {
 			store.hasThing(rand).should.be.true;
 		});
 	});
-	
+
 	describe('A created action', function () {
 		it('should update relevant stores', function () {
 			ac.addThing('hallo');
@@ -164,7 +169,7 @@ describe('Integration', function () {
 				done();
 			};
 
-			var viewClass = React.createClass(viewConfig);
+			var viewClass = createReactClass(viewConfig);
 			var test = React.createElement(viewClass);
 
 			ReactDOM.render(test, document.createElement('div'));
@@ -181,7 +186,7 @@ describe('Integration', function () {
 
 		it('should not throw errors', function () {
 			(function () {
-				var viewClass = React.createClass(viewConfig);
+				var viewClass = createReactClass(viewConfig);
 				var test = React.createElement(viewClass);
 				var element = document.createElement('div');
 				ReactDOM.render(test, element);
@@ -197,7 +202,7 @@ describe('Integration', function () {
 				}
 			};
 
-			var viewClass = React.createClass(viewConfig);
+			var viewClass = createReactClass(viewConfig);
 			var test = React.createElement(viewClass);
 
 			ReactDOM.render(test, document.createElement('div'));
