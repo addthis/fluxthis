@@ -1,5 +1,6 @@
 node_modules/*
 test/build/*
+example/build/*
 build/*
 tmp
 .idea
