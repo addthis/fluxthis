@@ -24,6 +24,7 @@ var eslint = require('gulp-eslint');
 var webpack = require('webpack');
 var gulpWebpack = require('gulp-webpack');
 var webpackConfig = require('./webpack.config');
+var exampleWebpackConfig = require('./example/webpack.config');
 var testWebpackConfig = require('./test/webpack.config');
 var saveLicense = require('uglify-save-license');
 
@@ -47,6 +48,12 @@ gulp.task('mocha-test', function () {
     });
     stream.end();
     return stream;
+});
+
+gulp.task('build-example', function () {
+    return gulp.src(exampleWebpackConfig.entry.example)
+        .pipe(gulpWebpack(exampleWebpackConfig))
+        .pipe(gulp.dest(exampleWebpackConfig.output.path));
 });
 
 gulp.task('build-test', function () {
@@ -110,7 +117,7 @@ gulp.task('watch', function () {
 });
 
 gulp.task('clean', function () {
-    return gulp.src(['build/*', 'test/build/*'])
+    return gulp.src(['build/*', 'test/build/*', 'example/build/*'])
         .pipe(clean());
 });
 

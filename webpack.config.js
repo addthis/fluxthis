@@ -25,6 +25,9 @@ module.exports = {
         library: 'FluxThis',
         libraryTarget: 'umd'
     },
+    externals: {
+        immutable: { commonjs2: 'immutable' }
+    },
     devtool: 'sourcemap',
     plugins: [
         new webpack.DefinePlugin({
