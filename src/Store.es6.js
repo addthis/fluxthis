@@ -66,9 +66,10 @@ export default class Store {
 		this.mixin = {
 			/**
 			 * Automatically add the change listener for the given
-			 * store when the component is going did mount.
+			 * store when the component is going to mount.
 			 */
 			componentDidMount() {
+				this.__fluxIsMounted = true;
 				const displayName = this.constructor.displayName;
 				invariant(
 					displayName,
@@ -99,14 +100,7 @@ export default class Store {
 
 				if (!this.__fluxChangeListener) {
 					this.__fluxChangeListener = () => {
-						// This isMounted check keeps backwards comparability
-						// with < React 14 due to how those versions
-						// handled batching calls async.
-						if (this.isMounted) {
-							if (this.isMounted()) {
-								this.setState(this.getStateFromStores());
-							}
-						} else {
+						if (this.__fluxIsMounted) {
 							this.setState(this.getStateFromStores());
 						}
 					};
@@ -120,6 +114,7 @@ export default class Store {
 			 * store when the component is going to unmount.
 			 */
 			componentWillUnmount() {
+				this.__fluxIsMounted = false;
 				renderedComponentSet.delete(this);
 				ViewDisplayNames.delete(this.constructor.displayName);
 				store.removeChangeListener(this.__fluxChangeListener);
