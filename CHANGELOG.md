@@ -1,3 +1,8 @@
+## v3.0.0 (12/19/17)
+
+- [5c2a56](https://github.com/addthis/fluxthis/commit/5c2a56d324033daa4471144b284a1b1edf7e523d) Move Immutable.js to a peer dependency to reduce overall build size
+- [c7ff40](https://github.com/addthis/fluxthis/commit/c7ff401c4be005875ec79d857e0cfafcd07afe19) Remove use of isMounted function which has been deprecated by React
+
 ## v2.9.1 (5/30/17)
 
 - [18ee9d](https://github.com/addthis/fluxthis/commit/18ee9d9f9d5a008d5e095579b9c70286bc96250e) Ensure that Constant/ConstantCollection is JSON stringifiable
