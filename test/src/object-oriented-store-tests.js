@@ -387,6 +387,21 @@ describe('ObjectOrientedStore', function () {
 			s.getThing().should.equal(privateAttribute);
 		});
 
+		it('should be able to set private members', function () {
+			var s = new Store(config);
+
+			Should.exist(s.TestUtils.setPrivateMembers);
+
+			s.TestUtils.setPrivateMembers({
+				thing: 'i am set'
+			});
+
+			s.getThing().should.equal('i am set');
+
+			s.TestUtils.reset();
+			s.getThing().should.equal(privateAttribute);
+		});
+
 		it('should be able to mock public method and reset just mocked public methods', function () {
 			var s = new Store(config);
 

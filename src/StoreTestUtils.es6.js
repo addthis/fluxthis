@@ -77,6 +77,18 @@ export default function (initializeStore,
 		},
 
 		/**
+		 * Set a private member within the context
+		 * of a store
+		 *
+		 * @param object
+		 */
+		setPrivateMembers(object) {
+			each(object, (key, value) => {
+				privateMembers[key] = value;
+			});
+		},
+
+		/**
 		 * Reset a store back to a clean state by clearing
 		 * out it's private members, and reinitializing it.
 		 */
