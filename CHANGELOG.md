@@ -1,3 +1,7 @@
+## v3.1.0 (1/23/18)
+
+- [167](https://github.com/addthis/fluxthis/pull/167) Remove invariant that blocks from having multiple views with the same display name. 
+
 ## v3.0.0 (12/19/17)
 
 - [5c2a56](https://github.com/addthis/fluxthis/commit/5c2a56d324033daa4471144b284a1b1edf7e523d) Move Immutable.js to a peer dependency to reduce overall build size
