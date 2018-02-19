@@ -1,6 +1,10 @@
+## v3.1.1 (2/19/18)
+
+- [168](https://github.com/addthis/fluxthis/pull/168) Call failure handler on network error
+
 ## v3.1.0 (1/23/18)
 
-- [167](https://github.com/addthis/fluxthis/pull/167) Remove invariant that blocks from having multiple views with the same display name. 
+- [167](https://github.com/addthis/fluxthis/pull/167) Remove invariant that blocks from having multiple views with the same display name.
 
 ## v3.0.0 (12/19/17)
 
