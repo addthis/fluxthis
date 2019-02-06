@@ -238,6 +238,7 @@ export default class APIActionCreator extends ActionCreator {
 				const {response, request} = result;
 				const success = successTest(response);
 				const isAborted = !!response.fluxthisAborted;
+				const isFailure = !success && !isAborted;
 
 				// These methods allow the user to process
 				// the request and modify it how they please
@@ -246,7 +247,7 @@ export default class APIActionCreator extends ActionCreator {
 					handleSuccess.call(this, request, response);
 				} else if (isAborted && handleAbort) {
 					handleAbort.call(this, request, response);
-				} else if (handleFailure) {
+				} else if (isFailure && handleFailure) {
 					handleFailure.call(this, request, response);
 				}
 
@@ -255,7 +256,7 @@ export default class APIActionCreator extends ActionCreator {
 					type = successActionType;
 				} else if (isAborted && abortActionType) {
 					type = abortActionType;
-				} else if (!success && failureActionType) {
+				} else if (isFailure && failureActionType) {
 					type = failureActionType;
 				}
 

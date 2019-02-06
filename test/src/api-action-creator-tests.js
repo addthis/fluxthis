@@ -51,24 +51,48 @@ describe('APIActionCreators', function () {
         Should.exist(request.abort);
     });
 
-    it('should call handleSuccess on a successful request', function (done) {
-        var aac = new APIActionCreator({
-			displayName: 'api2',
-            doThing: {
-                route: '/mirror',
-                method: 'POST',
-                pending: 'TEST_' + Math.random(),
-                handleSuccess: function () {
-                    done();
-                },
-                handleFailure: function (req, res) {
-                    done(req.error || res.error || new Error('Request failed'));
+    describe('handleSuccess', function () {
+
+        it('should call handleSuccess on a successful request', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api2',
+                doThing: {
+                    route: '/mirror',
+                    method: 'POST',
+                    pending: 'TEST_' + Math.random(),
+                    handleSuccess: function () {
+                        done();
+                    },
+                    handleFailure: function (req, res) {
+                        done(req.error || res.error || new Error('Request failed'));
+                    }
                 }
-            }
+            });
+
+            aac.doThing();
         });
 
-        aac.doThing();
+        it('should not call any other callbacks on a successful request when handleSuccess is not specified', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThing: {
+                    route: '/mirror',
+                    method: 'POST',
+                    pending: 'TEST_' + Math.random(),
+                    handleFailure: function () {
+                        done(new Error('handleFailure was called'));
+                    },
+                    handleAbort: function () {
+                        done(new Error('handleAbort was called'));
+                    }
+                }
+            });
+
+            aac.doThing();
+            setTimeout(done, 1000);
+        });
     });
+
 
     it('should expose headers in string and hash form', function (done) {
         var aac = new APIActionCreator({
@@ -175,65 +199,110 @@ describe('APIActionCreators', function () {
         aac.doThing();
     });
 
-    it('should call handleFailure on a failed request', function (done) {
-        var aac = new APIActionCreator({
-			displayName: 'api3',
-            doThing: {
-                route: '/bad-endpoint',
-                method: 'POST',
-                pending: 'TEST_' + Math.random(),
-                handleSuccess: function () {
-                    done(new Error('handleSuccess was called'));
-                },
-                handleFailure: function () {
-                    done();
+    describe('handleFailure', function () {
+
+        it('should call handleFailure on a failed request', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api3',
+                doThing: {
+                    route: '/bad-endpoint',
+                    method: 'POST',
+                    pending: 'TEST_' + Math.random(),
+                    handleSuccess: function () {
+                        done(new Error('handleSuccess was called'));
+                    },
+                    handleFailure: function () {
+                        done();
+                    }
                 }
-            }
+            });
+
+            aac.doThing();
         });
 
-        aac.doThing();
+        it('should call handleFailure when the application type is json but the payload is not valid JSON', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThing: {
+                    route: '/invalid-json',
+                    method: 'GET',
+                    handleSuccess: function () {
+                        done(new Error('handleSuccess was called'));
+                    },
+                    handleFailure: function (req, res) {
+                        res.body.should.equal('hello world');
+                        res.error.should.be.instanceOf(Error);
+                        done();
+                    }
+                }
+            });
+
+            aac.doThing();
+        });
+
+        it('should not call any other callbacks on a failed request when handleFailure is not specified', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThing: {
+                    route: '/invalid-json',
+                    method: 'GET',
+                    handleSuccess: function () {
+                        done(new Error('handleSuccess was called'));
+                    },
+                    handleAbort: function () {
+                        done(new Error('handleSuccess was called'));
+                    }
+                }
+            });
+
+            aac.doThing();
+            setTimeout(done, 1000);
+        });
+
     });
 
-    it('should call handleFailure when the application type is json but the payload is not valid JSON', function (done) {
-        var aac = new APIActionCreator({
-            displayName: 'api' + Math.random(),
-            doThing: {
-                route: '/invalid-json',
-                method: 'GET',
-                handleSuccess: function () {
-                    done(new Error('handleSuccess was called'));
-                },
-                handleFailure: function (req, res) {
-                    res.body.should.equal('hello world');
-                    res.error.should.be.instanceOf(Error);
-                    done();
+    describe('handleAbort', function () {
+        it('should call handleAbort on a aborted request', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThing: {
+                    route: '/long-time',
+                    method: 'POST',
+                    handleSuccess: function () {
+                        done(new Error('handleSuccess was called'));
+                    },
+                    handleFailure: function () {
+                        done(new Error('handleFailure was called'));
+                    },
+                    handleAbort: function () {
+                        done();
+                    }
                 }
-            }
+            });
+
+            var r = aac.doThing();
+            r.abort();
         });
 
-        aac.doThing();
-    });
-
-    it('should call handleAbort on a aborted request', function (done) {
-        var aac = new APIActionCreator({
-            displayName: 'api55',
-            doThing: {
-                route: '/long-time',
-                method: 'POST',
-                handleSuccess: function () {
-                    done(new Error('handleSuccess was called'));
-                },
-                handleFailure: function () {
-                    done(new Error('handleFailure was called'));
-                },
-                handleAbort: function () {
-                    done();
+        it('should not call any other callbacks on an aborted request when handleAbort is not specified', function (done) {
+            var aac = new APIActionCreator({
+                displayName: 'api' + Math.random(),
+                doThing: {
+                    route: '/long-time',
+                    method: 'POST',
+                    handleSuccess: function () {
+                        done(new Error('handleSuccess was called'));
+                    },
+                    handleFailure: function () {
+                        done(new Error('handleFailure was called'));
+                    }
                 }
-            }
-        });
+            });
 
-        var r = aac.doThing();
-        r.abort();
+            var r = aac.doThing();
+            r.abort();
+            setTimeout(done, 1000);
+        });
     });
 
     it('should transform a request with createRequest', function (done) {
@@ -408,6 +477,7 @@ describe('APIActionCreators', function () {
                     method: 'GET',
                     pending: pending,
                     success: success,
+                    failure: failure,
                     createRequest: function (a, b) {
                         query.a = a;
                         query.b = b;
@@ -454,6 +524,19 @@ describe('APIActionCreators', function () {
 
 
             aac.doThingFailureTest();
+            setTimeout(done, 1500);
+        });
+
+        it('should not send the failure type when aborted request without abort type', function (done) {
+            token = dispatcher.register(function (action) {
+                if (action.type !== pending) {
+                    done(new Error('an action should not have been dispatched'));
+                }
+            });
+
+
+            var r = aac.doThing();
+            r.abort();
             setTimeout(done, 1500);
         });
 
